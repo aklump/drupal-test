@@ -4,7 +4,7 @@
 
 ## Summary
 
-This is a testing solution for using PhpUnit with Drupal 7 websites.
+This is a testing solution for using PhpUnit with Drupal 7 websites.  It provides Unit, Kernel, and Client abstract test classes to use in writing your tests, as well as a set of guidelines and processes for better testing of Drupal 7 modules and websites. 
 
 **Visit <https://aklump.github.io/drupal_test> for full documentation.**
 
