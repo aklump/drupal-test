@@ -1,6 +1,6 @@
 # Drupal Test
 
-![drupal_test](images/screenshot.jpg)
+![drupal_test](docs/images/screenshot.jpg)
 
 ## Summary
 

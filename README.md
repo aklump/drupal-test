@@ -1,6 +1,6 @@
 # Drupal Test
 
-![drupal_test](images/screenshot.jpg)
+![drupal_test](docs/images/screenshot.jpg)
 
 ## Summary
 
@@ -10,7 +10,10 @@ This is a testing solution for using PhpUnit with Drupal 7 websites.
 
 ## Quick Start
 
-Download this project and rename the _dist_ folder _tests_.  Move it one level above your Drupal 7 webroot.  You may discard the rest of the project files.  From inside the new _tests_ directory run `composer install`.
+In a terminal window, one level above your Drupal 7 web root enter the following:
+
+    git clone https://github.com/aklump/drupal_test.git tests
+    cd tests && composer install 
 
 ## Requirements
 
