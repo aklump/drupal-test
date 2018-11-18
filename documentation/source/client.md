@@ -20,3 +20,13 @@ The base URL must be set in an environment variable in order for client tests to
     $ cd tests/phpunit
     $ export CLIENT_TEST_BASE_URL=http://develop.globalonenessproject.loft; phpunit -c phpunit.xml --testsuite Client
 
+
+## JSON Schema
+
+The client tests provide the means of validation using JSON Schema.  You indicate where your schema files are located in _phpunit.xml_ using the custom key `jsonschema`, e.g., 
+
+    <phpunit>
+        <jsonschema>
+            <directory>../web/sites/all/modules/custom/my_module/tests/schema</directory>
+        </jsonschema>
+    </phpunit>

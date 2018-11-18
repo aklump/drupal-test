@@ -17,6 +17,13 @@ use Sunra\PhpSimple\HtmlDomParser;
 abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
 
   /**
+   * Holds autodiscovered schema filepaths.
+   *
+   * @var array
+   */
+  protected static $jsonSchema = [];
+
+  /**
    * This is read in from the environment variable CLIENT_TEST_BASE_URL.
    *
    * @var string
@@ -229,6 +236,17 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
   /**
    * Return the filepath by basename of a schema file.
    *
+   * The directories to search are defined in phpunit.xml as jsonschema and
+   * works in the same manner as defining test suite directories.
+   *
+   * @code
+   * <phpunit>
+   *   <jsonschema>
+   *     <directory>../web/sites/all/modules/custom/my_module/tests/jsonschema</directory>
+   *   </jsonschema>
+   * </phpunit>
+   * @endcode
+   *
    * @param string $schema_filename
    *   The basename.
    *
@@ -236,7 +254,29 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
    *   The filepath to the schema.
    */
   protected function resolveSchemaFilename($schema_filename) {
-    return getcwd() . '/schema/' . trim($schema_filename, '/');
+    if (!array_key_exists($schema_filename, static::$jsonSchema)) {
+      static::$jsonSchema[$schema_filename] = NULL;
+      global $__PHPUNIT_CONFIGURATION_FILE;
+      $dir = dirname($__PHPUNIT_CONFIGURATION_FILE);
+      $config = simplexml_load_file($__PHPUNIT_CONFIGURATION_FILE);
+      $schema_dirs = [];
+      foreach ($config->jsonschema->directory as $item) {
+        $schema_dirs[] = realpath($dir . '/' . (string) $item);
+      }
+      foreach (array_filter($schema_dirs) as $schema_dir) {
+        if (is_dir($schema_dir) && ($items = scandir($schema_dir))) {
+          $path = array_filter($items, function ($item) use ($schema_filename) {
+            return $item === $schema_filename;
+          });
+          if ($path) {
+            static::$jsonSchema[$schema_filename] = rtrim($schema_dir, '/') . '/' . reset($path);
+            break;
+          }
+        }
+      }
+    }
+
+    return static::$jsonSchema[$schema_filename];
   }
 
   /**

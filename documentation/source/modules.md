@@ -1,18 +1,19 @@
-# Module Test Setup
+# Module and Theme Testing
 
 ## Quick Start
 
 1. Create _composer.json_ in the module ensuring it will autoload the module's classes that will be tested.  This file may have nothing to do with Drupal, but it is used by the test runner's unit testing strategy.
 1. Add the path to the test runner's _composer.json_, and [you must call](https://github.com/wikimedia/composer-merge-plugin#updating-sub-levels-composerjson-files) `composer update --lock` on the test runner for dependencies to be installed for the test runner.
-1. Add one or more tests to the module as described below.
-1. Run the test runner.
+1. Add one or more tests to the module.
 
 ## Test File Structure
 
-Each module or theme defines it's tests relative to it's own root directory.  Following this convention will allow the test runner to discover these tests.  e.g.,
+Each module or theme provides tests relative to it's own root directory.  Following this convention allows the test runner to auto-discover these tests.  e.g.,
 
     .
     └── tests
+        ├── jsonschema
+        │   └── story_resource.json
         └── src
             ├── Client
             │   ├── Service

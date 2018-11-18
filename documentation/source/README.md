@@ -33,7 +33,6 @@ Beginning in a directory above the web root:
     $ cd tests
     $ composer install
     
-
 ## Usage
 
 ### Run All Tests
