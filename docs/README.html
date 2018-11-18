@@ -39,6 +39,8 @@
 
 <p>Download this project and rename the <em>dist</em> folder <em>tests</em>.  Move it one level above your Drupal 7 webroot.  You may discard the rest of the project files.  From inside the new <em>tests</em> directory run <code>composer install</code>.</p>
 
+<p>Follow instructions in the documentation to write and run tests.  Load <em>docs/index.html</em> in a browser.</p>
+
 <h2>Requirements</h2>
 
 <ul>
@@ -50,9 +52,43 @@
 
 <p>If you find this project useful... please consider <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=4E5KZHDQCEUV8&amp;item_name=Gratitude%20for%20aklump%2Fdrupal_test">making a donation</a>.</p>
 
+<h2>Installation</h2>
+
+<p>Beginning in a directory above the web root:</p>
+
+<pre><code>$ git clone https://github.com/aklump/drupal_test.git
+$ mv drupal_test/dist tests
+$ cd tests
+$ composer install
+</code></pre>
+
 <h2>Usage</h2>
 
-<p>Refer to the documentation for how to use this project.</p>
+<h3>Run All Tests</h3>
+
+<pre><code>$ cd tests
+$ phpunit -c phpunit.xml
+</code></pre>
+
+<h3>Run All Unit Tests</h3>
+
+<pre><code>$ cd tests
+$ phpunit -c phpunit.xml --testsuite Unit
+</code></pre>
+
+<h3>Run All Kernel Tests</h3>
+
+<pre><code>$ cd tests
+$ phpunit -c phpunit.xml --testsuite Kernel
+</code></pre>
+
+<h3>Run All Client Tests</h3>
+
+<pre><code>$ cd tests
+$ phpunit -c phpunit.xml --testsuite Client
+</code></pre>
+
+<p>Refer to the documentation for more info.</p>
 </section>
 
 <div class="search__results">
@@ -67,7 +103,7 @@
 </div>
   
   <div id="footer-legaleeze">
-    <p class="legaleeze center">Version: 0.0.1 &bull; Last Updated: Sun, 18 Nov 2018 13:26:30 -0800</p>
+    <p class="legaleeze center">Version: 0.0.1 &bull; Last Updated: Sun, 18 Nov 2018 13:32:41 -0800</p>
   </div>
 </footer>
 

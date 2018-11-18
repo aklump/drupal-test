@@ -12,6 +12,8 @@ This is a testing solution for using PhpUnit with Drupal 7 websites.  It provide
 
 Download this project and rename the _dist_ folder _tests_.  Move it one level above your Drupal 7 webroot.  You may discard the rest of the project files.  From inside the new _tests_ directory run `composer install`.
 
+Follow instructions in the documentation to write and run tests.  Load _docs/index.html_ in a browser.
+
 ## Requirements
 
 * Composer
@@ -21,6 +23,37 @@ Download this project and rename the _dist_ folder _tests_.  Move it one level a
 
 If you find this project useful... please consider [making a donation](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=4E5KZHDQCEUV8&item_name=Gratitude%20for%20aklump%2Fdrupal_test).
 
+## Installation
+
+Beginning in a directory above the web root:
+
+    $ git clone https://github.com/aklump/drupal_test.git
+    $ mv drupal_test/dist tests
+    $ cd tests
+    $ composer install
+
 ## Usage
 
-Refer to the documentation for how to use this project.
+### Run All Tests
+
+    $ cd tests
+    $ phpunit -c phpunit.xml
+
+### Run All Unit Tests
+
+    $ cd tests
+    $ phpunit -c phpunit.xml --testsuite Unit
+    
+
+### Run All Kernel Tests
+
+    $ cd tests
+    $ phpunit -c phpunit.xml --testsuite Kernel
+    
+
+### Run All Client Tests
+
+    $ cd tests
+    $ phpunit -c phpunit.xml --testsuite Client
+    
+Refer to the documentation for more info.
