@@ -29,17 +29,7 @@
 
 <ul>
 <li>Test classnames should follow: <em>&#42;UnitTest</em></li>
-<li>Unit tests do not have access to the Drupal bootstrap; these are very fast.  You should try to write unit tests whenever possible.  Only move to Kernel tests if unit tests are not appropriate.</li>
-<li><p>For a module to be unit testable it must have a <em>composer.json</em> file, which autoloads it's classes, the path of which <strong>must be added to this project's <em>composer.json</em> file</strong>, in the section <code>extra.merge-plugin.require</code>.  This is how the unit tests are able to autoload classes without bootstrapping Drupal, e.g.,</p>
-
-<pre><code>"extra": {
-    "merge-plugin": {
-        "require": [
-            "../web/sites/all/modules/custom/gop3_core/composer.json"
-        ]
-    }
-}
-</code></pre></li>
+<li><p>Unit tests do not have access to the Drupal bootstrap; these are very fast.  You should try to write unit tests whenever possible.  Only move to Kernel tests if unit tests are not appropriate.</p></li>
 <li><p>If a unit test requires a file that is not normally autoloaded, it should be added to the <code>autoload-dev</code> section of the module's composer file.</p></li>
 </ul>
 
@@ -68,6 +58,10 @@
 
 <pre><code>phpunit . --testsuite Unit
 </code></pre>
+
+<h2>Troubleshooting</h2>
+
+<h3>Fatal error: Class ... not found ...</h3>
 </section>
 
 <div class="search__results">
@@ -82,7 +76,7 @@
 </div>
   
   <div id="footer-legaleeze">
-    <p class="legaleeze center">Version: 0.0.1 &bull; Last Updated: Sun, 18 Nov 2018 14:04:18 -0800</p>
+    <p class="legaleeze center">Version: 0.0.1 &bull; Last Updated: Sun, 18 Nov 2018 14:42:37 -0800</p>
   </div>
 </footer>
 

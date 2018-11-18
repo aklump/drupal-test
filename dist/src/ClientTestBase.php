@@ -2,7 +2,6 @@
 
 namespace AKlump\DrupalTest;
 
-use AKlump\PHPUnit\Drupal\CommandAssertion;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Psr7\Response;
