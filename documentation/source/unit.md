@@ -2,15 +2,6 @@
 
 * Test classnames should follow: _\*UnitTest_
 * Unit tests do not have access to the Drupal bootstrap; these are very fast.  You should try to write unit tests whenever possible.  Only move to Kernel tests if unit tests are not appropriate.
-* For a module to be unit testable it must have a _composer.json_ file, which autoloads it's classes, the path of which **must be added to this project's _composer.json_ file**, in the section `extra.merge-plugin.require`.  This is how the unit tests are able to autoload classes without bootstrapping Drupal, e.g.,
-
-        "extra": {
-            "merge-plugin": {
-                "require": [
-                    "../web/sites/all/modules/custom/gop3_core/composer.json"
-                ]
-            }
-        }
 
 * If a unit test requires a file that is not normally autoloaded, it should be added to the `autoload-dev` section of the module's composer file.
 
@@ -37,3 +28,8 @@ Notice how the unit tests come before the kernel tests in the code below; client
 To be sure, run the entire unit test suite standalone on occassion, e.g.,
 
     phpunit . --testsuite Unit
+
+## Troubleshooting
+
+### Fatal error: Class ... not found ...
+
