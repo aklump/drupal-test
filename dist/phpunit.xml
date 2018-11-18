@@ -1,0 +1,50 @@
+<phpunit
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/4.5/phpunit.xsd"
+        backupGlobals="true"
+        backupStaticAttributes="false"
+        bootstrap="./bootstrap_tests.php"
+        cacheTokens="false"
+        colors="true"
+        convertErrorsToExceptions="true"
+        convertNoticesToExceptions="true"
+        convertWarningsToExceptions="true"
+        forceCoversAnnotation="false"
+        mapTestClassNameToCoveredClassName="false"
+        printerClass="PHPUnit_TextUI_ResultPrinter"
+        processIsolation="false"
+        stopOnError="false"
+        stopOnFailure="false"
+        stopOnIncomplete="false"
+        stopOnSkipped="false"
+        stopOnRisky="false"
+        testSuiteLoaderClass="PHPUnit_Runner_StandardTestSuiteLoader"
+        timeoutForSmallTests="1"
+        timeoutForMediumTests="10"
+        timeoutForLargeTests="60"
+        verbose="true">
+    <testsuites>
+        <testsuite name="Unit">
+            <directory>../../web/sites/all/modules/custom/*/tests/src/Unit</directory>
+            <directory>../../web/sites/all/themes/*/tests/src/Unit</directory>
+        </testsuite>
+        <testsuite name="Client">
+            <directory>../../web/sites/all/modules/custom/*/tests/src/Client</directory>
+            <directory>../../web/sites/all/themes/*/tests/src/Client</directory>
+        </testsuite>
+        <testsuite name="Kernel">
+            <directory>../../web/sites/all/modules/custom/*/tests/src/Kernel</directory>
+            <directory>../../web/sites/all/themes/*/tests/src/Kernel</directory>
+        </testsuite>
+    </testsuites>
+    <filter>
+        <whitelist>
+            <directory suffix=".php">../../web/sites/all/modules/custom/gop3_core/src</directory>
+            <directory suffix=".php">../../web/sites/all/modules/custom/gop5_core/src</directory>
+            <file>../../web/sites/all/themes/custom/gop5_theme/template.php</file>
+            <exclude>
+                <directory>./vendor</directory>
+            </exclude>
+        </whitelist>
+    </filter>
+</phpunit>
