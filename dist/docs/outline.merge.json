@@ -1,0 +1,28 @@
+{
+    "chapters": [],
+    "sections": [
+        {
+            "id": "README",
+            "file": "README.md"
+        },
+        {
+            "id": "modules",
+            "file": "modules.md"
+        },
+        {
+            "id": "unit",
+            "file": "unit.md"
+        },
+        {
+            "id": "client",
+            "file": "client.md"
+        },
+        {
+            "id": "kernel",
+            "file": "kernel.md"
+        }
+    ],
+    "settings": {
+        "search": "tipuesearch"
+    }
+}

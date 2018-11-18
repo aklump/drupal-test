@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>Module Test Setup</title>
+  <link href="search/tipuesearch.css" rel="stylesheet">
+  <link href="style.css" rel="stylesheet">
+</head>
+
+<body class="page--modules">
+<header>
+  <div class="pager">
+  <a href="README.html" class="prev README">&laquo;Drupal Test</a>
+  <a href="index.html" class="index">Index</a>
+  <a href="unit.html" class="next unit">Unit Tests        &raquo;</a>
+</div>
+</header>
+
+  <div class="search__wrapper">
+  <form action="search--results.html">
+    <input type="text" class="search-input" name="q" id="tipue_search_input" autocomplete="off" required>
+  </form>
+</div>
+
+  <h1>Module Test Setup</h1>
+  <div class="breadcrumb"><a href="index.html">Index</a></div>
+
+<section>
+
+<p>Each module or theme defines it's tests relative to it's own root directory.  Following this convention will allow the test runner to discover these tests.  e.g.,</p>
+
+<pre><code>.
+└── tests
+    └── src
+        ├── Client
+        │   ├── Service
+        │   │   └── EarthriseServiceClientTest.php
+        ├── Kernel
+        │   ├── Service
+        │   │   ├── BreakpointServiceKernelTest.php
+        │   └── TransformKernelTest.php
+        ├── TestBase.php
+        └── Unit
+            ├── Service
+            │   └── EarthriseServiceUnitTest.php
+            └── TransformUnitTest.php
+</code></pre>
+
+<h2>Must Test Classes Test a Single Class?</h2>
+
+<p>Unit and Kernel tests do not have to test a single class, for example if you are writing a test to cover theme functions.  In order to make this happen you have to do the following in your test class:</p>
+
+<pre><code>    class Gop5ThemeKernelTest extends KernelTestBase {
+
+      protected $schema = [
+
+        // By setting this to false, we indicate we are not testing a class.
+        'classToBeTested' =&gt; FALSE,
+      ];
+
+    ...
+</code></pre>
+</section>
+
+<div class="search__results">
+  <div id="tipue_search_content"></div>
+</div>
+
+<footer>
+  <div class="pager">
+  <a href="README.html" class="prev README">&laquo;Drupal Test</a>
+  <a href="index.html" class="index">Index</a>
+  <a href="unit.html" class="next unit">Unit Tests        &raquo;</a>
+</div>
+  
+  <div id="footer-legaleeze">
+    <p class="legaleeze center">Version: 0.0.1 &bull; Last Updated: Sun, 18 Nov 2018 14:04:18 -0800</p>
+  </div>
+</footer>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  <script src="search/tipuesearch_content.js"></script>
+  <script src="search/tipuesearch_set.js"></script>
+  <script src="search/tipuesearch.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      $('#tipue_search_input').tipuesearch();
+    });
+  </script>
+<script src="js/core.js"></script>
+</body>
+</html>
+
