@@ -1,5 +1,5 @@
-master = "master"
-develop = "develop"
+master = "master develop"
+develop = "master develop"
 remote = origin
 create_tags = minor
 push_tags = auto
