@@ -68,6 +68,16 @@ $ composer install
 <pre><code>[ ! -d drupal_test ] &amp;&amp; [ ! -d tests ] &amp;&amp; git clone https://github.com/aklump/drupal_test.git &amp;&amp; mv drupal_test/dist tests &amp;&amp; rm -rf drupal_test &amp;&amp; (cd tests &amp;&amp; composer install) || echo "Installation error, nothing installed."
 </code></pre>
 
+<h2>Configuration</h2>
+
+<p>See documentation for more information about configuration.</p>
+
+<ol>
+<li>Open <em>tests/composer.json</em> and add module and theme <em>composer.json</em> filepaths.</li>
+<li>From <em>tests</em> run <code>composer update --lock</code>.</li>
+<li>Open <em>tests/phpunit.xml</em> and add any JSON schema directories.</li>
+</ol>
+
 <h2>Usage</h2>
 
 <h3>Run All Tests</h3>
@@ -109,7 +119,7 @@ $ phpunit -c phpunit.xml --testsuite Client
 </div>
   
   <div id="footer-legaleeze">
-    <p class="legaleeze center">Version: 0.1.1 &bull; Last Updated: Mon, 19 Nov 2018 08:46:26 -0800</p>
+    <p class="legaleeze center">Version: 0.1.2 &bull; Last Updated: Mon, 19 Nov 2018 08:57:57 -0800</p>
   </div>
 </footer>
 

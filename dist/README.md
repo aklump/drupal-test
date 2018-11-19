@@ -36,7 +36,15 @@ Beginning in a directory above the web root:
 Or here is a one liner:
 
     [ ! -d drupal_test ] && [ ! -d tests ] && git clone https://github.com/aklump/drupal_test.git && mv drupal_test/dist tests && rm -rf drupal_test && (cd tests && composer install) || echo "Installation error, nothing installed."
-    
+
+## Configuration
+
+See documentation for more information about configuration.
+
+1. Open _tests/composer.json_ and add module and theme _composer.json_ filepaths.
+1. From _tests_ run `composer update --lock`.
+1. Open _tests/phpunit.xml_ and add any JSON schema directories.
+
 ## Usage
 
 ### Run All Tests
