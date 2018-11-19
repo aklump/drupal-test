@@ -56,16 +56,15 @@
 
 <p>Beginning in a directory above the web root:</p>
 
-<pre><code>$ git clone https://github.com/aklump/drupal-test.git
-$ mv drupal-test/dist tests
-$ rm -rf drupal-test
+<pre><code>$ git clone https://github.com/aklump/drupal-test.git tests
 $ cd tests
+$ rm -r .web_package/ &amp;&amp; rm -r documentation/ &amp;&amp; rm -r .gitignore
 $ composer install
 </code></pre>
 
 <p>Or here is a one liner:</p>
 
-<pre><code>[ ! -d drupal-test ] &amp;&amp; [ ! -d tests ] &amp;&amp; git clone https://github.com/aklump/drupal-test.git &amp;&amp; mv drupal-test/dist tests &amp;&amp; rm -rf drupal-test &amp;&amp; (cd tests &amp;&amp; composer install) || echo "Installation error, nothing installed."
+<pre><code>[ ! -d tests ] &amp;&amp; git clone https://github.com/aklump/drupal-test.git tests &amp;&amp; (cd tests &amp;&amp; rm -r .web_package/ &amp;&amp; rm -r documentation/ &amp;&amp; rm -r .gitignore &amp;&amp; composer install) || echo "Installation error, nothing installed."
 </code></pre>
 
 <h2>Configuration</h2>
@@ -119,7 +118,7 @@ $ phpunit -c phpunit.xml --testsuite Client
 </div>
   
   <div id="footer-legaleeze">
-    <p class="legaleeze center">Version: 0.1.2 &bull; Last Updated: Mon, 19 Nov 2018 10:46:34 -0800</p>
+    <p class="legaleeze center">Version: 0.1.2 &bull; Last Updated: Mon, 19 Nov 2018 11:21:08 -0800</p>
   </div>
 </footer>
 
