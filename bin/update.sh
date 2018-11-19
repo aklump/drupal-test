@@ -27,7 +27,7 @@ cd tests
 # Move new files over.
 rsync -a --delete bin/ $app/bin/
 rsync -a --delete docs/ $app/docs/
-rsync -a --delete src/DrupalTest $app/src/DrupalTest
+rsync -a --delete src/DrupalTest/ $app/src/DrupalTest/
 cp bootstrap_tests.php $app/
 cp README.md $app/
 cp LICENSE $app/
