@@ -15,8 +15,8 @@ tempdir=$(mktemp -d 2>/dev/null || mktemp -d -t 'temp')
 app=$PWD
 
 # Detect if we're in the right place.
-if [[ "$(dirname $app)" != "tests" ]] || [[ ! -f "$app/composer.json" ]]; then
-  echo && echo "You must run the update from inside the tests folder" && exit 1
+if [[ "$(basename $app)" != "tests" ]] || [[ ! -f "$app/composer.json" ]]; then
+  echo && echo "You must run the update from inside the \"tests\" folder" && exit 1
 fi
 
 # Clone the latest version.
