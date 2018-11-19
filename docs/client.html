@@ -48,6 +48,17 @@ public function testConfirmationPageIsForbidden() {
 <pre><code>$ cd tests/phpunit
 $ export CLIENT_TEST_BASE_URL=http://develop.globalonenessproject.loft; phpunit -c phpunit.xml --testsuite Client
 </code></pre>
+
+<h2>JSON Schema</h2>
+
+<p>The client tests provide the means of validation using JSON Schema.  You indicate where your schema files are located in <em>phpunit.xml</em> using the custom key <code>jsonschema</code>, e.g.,</p>
+
+<pre><code>&lt;phpunit&gt;
+    &lt;jsonschema&gt;
+        &lt;directory&gt;../web/sites/all/modules/custom/my_module/tests/schema&lt;/directory&gt;
+    &lt;/jsonschema&gt;
+&lt;/phpunit&gt;
+</code></pre>
 </section>
 
 <div class="search__results">
@@ -62,7 +73,7 @@ $ export CLIENT_TEST_BASE_URL=http://develop.globalonenessproject.loft; phpunit 
 </div>
   
   <div id="footer-legaleeze">
-    <p class="legaleeze center">Version: 0.0.1 &bull; Last Updated: Sun, 18 Nov 2018 14:42:36 -0800</p>
+    <p class="legaleeze center">Version: 0.0.1 &bull; Last Updated: Sun, 18 Nov 2018 16:04:29 -0800</p>
   </div>
 </footer>
 

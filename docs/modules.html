@@ -2,7 +2,7 @@
 
 <html>
 <head>
-  <title>Module Test Setup</title>
+  <title>Module and Theme Testing</title>
   <link href="search/tipuesearch.css" rel="stylesheet">
   <link href="style.css" rel="stylesheet">
 </head>
@@ -22,7 +22,7 @@
   </form>
 </div>
 
-  <h1>Module Test Setup</h1>
+  <h1>Module and Theme Testing</h1>
   <div class="breadcrumb"><a href="index.html">Index</a></div>
 
 <section>
@@ -32,16 +32,17 @@
 <ol>
 <li>Create <em>composer.json</em> in the module ensuring it will autoload the module's classes that will be tested.  This file may have nothing to do with Drupal, but it is used by the test runner's unit testing strategy.</li>
 <li>Add the path to the test runner's <em>composer.json</em>, and <a href="https://github.com/wikimedia/composer-merge-plugin#updating-sub-levels-composerjson-files">you must call</a> <code>composer update --lock</code> on the test runner for dependencies to be installed for the test runner.</li>
-<li>Add one or more tests to the module as described below.</li>
-<li>Run the test runner.</li>
+<li>Add one or more tests to the module.</li>
 </ol>
 
 <h2>Test File Structure</h2>
 
-<p>Each module or theme defines it's tests relative to it's own root directory.  Following this convention will allow the test runner to discover these tests.  e.g.,</p>
+<p>Each module or theme provides tests relative to it's own root directory.  Following this convention allows the test runner to auto-discover these tests.  e.g.,</p>
 
 <pre><code>.
 └── tests
+    ├── jsonschema
+    │   └── story_resource.json
     └── src
         ├── Client
         │   ├── Service
@@ -98,7 +99,7 @@
 </div>
   
   <div id="footer-legaleeze">
-    <p class="legaleeze center">Version: 0.0.1 &bull; Last Updated: Sun, 18 Nov 2018 14:42:36 -0800</p>
+    <p class="legaleeze center">Version: 0.0.1 &bull; Last Updated: Sun, 18 Nov 2018 16:04:29 -0800</p>
   </div>
 </footer>
 
