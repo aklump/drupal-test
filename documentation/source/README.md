@@ -4,7 +4,7 @@
 
 ## Summary
 
-This is a testing solution for using PhpUnit with Drupal 7 websites.  It provides Unit, Kernel, and Client abstract test classes to use in writing your tests, a single test runner, testing for modules and themes, as well as a set of guidelines and processes for better testing of Drupal 7 modules and websites. A single test runn
+This is a testing solution for using PhpUnit with Drupal 7 websites.  It provides Unit, Kernel, and Client abstract test classes to use in writing your tests, a single test runner, testing for modules and themes, support for JsonSchema validation, as well as a set of guidelines and processes for better testing of Drupal 7 modules and websites.  All of this using a single test runner that can be divided by test suite or filtered by test class using normal PhpUnit options.
 
 **Visit <https://aklump.github.io/drupal_test> for full documentation.**
 
@@ -32,6 +32,10 @@ Beginning in a directory above the web root:
     $ rm -r drupal_test
     $ cd tests
     $ composer install
+    
+Or here is a one liner:
+
+    [ ! -d drupal_test ] && [ ! -d tests ] && git clone https://github.com/aklump/drupal_test.git && mv drupal_test/dist tests && rm -rf drupal_test && (cd tests && composer install) || echo "Installation error, nothing installed."
     
 ## Usage
 
