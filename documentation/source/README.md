@@ -27,15 +27,14 @@ If you find this project useful... please consider [making a donation](https://w
 
 Beginning in a directory above the web root:
 
-    $ git clone https://github.com/aklump/drupal-test.git
-    $ mv drupal-test/dist tests
-    $ rm -rf drupal-test
+    $ git clone https://github.com/aklump/drupal-test.git tests
     $ cd tests
+    $ rm -r .web_package/ && rm -r documentation/ && rm -r .gitignore
     $ composer install
     
 Or here is a one liner:
 
-    [ ! -d drupal-test ] && [ ! -d tests ] && git clone https://github.com/aklump/drupal-test.git && mv drupal-test/dist tests && rm -rf drupal-test && (cd tests && composer install) || echo "Installation error, nothing installed."
+    [ ! -d tests ] && git clone https://github.com/aklump/drupal-test.git tests && (cd tests && rm -r .web_package/ && rm -r documentation/ && rm -r .gitignore && composer install) || echo "Installation error, nothing installed."
 
 ## Configuration
 
