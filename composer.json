@@ -2,6 +2,7 @@
     "name": "aklump\/drupal-test",
     "description": "A solution for testing Drupal 7 using PhpUnit.",
     "version": "0.1.2",
+    "license": "BSD-3-Clause",
     "homepage": "https:\/\/github.com\/aklump\/drupal-test",
     "require-dev": {
         "mockery\/mockery": "^1.0",
