@@ -33,7 +33,7 @@ function update_dir() {
     relative_path=$1
 
     [[ -d "$app/$relative_path/" ]] || (mkdir -p "$app/$relative_path/" || return 1)
-    rsync -a --delete "bin/" "$app/$relative_path/" || return 1
+    rsync -a --delete "$relative_path/" "$app/$relative_path/" || return 1
 }
 
 # Move new files over.
