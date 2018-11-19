@@ -1,6 +1,6 @@
 # Client Tests
 
-This is a type of tests where you will be testing endpoints of an API or URLs.  Use this to check for URL statuses and headers for example.  This has the same scope as unit tests, which means you can access class constants, but no Drupal bootstrap.  You are a consumer or client of the website.
+This is a type of tests where you will be testing endpoints of an API or URLs.  Use this to check for URL statuses and headers for example.  This has the same scope as unit tests, which means you can access class constants, but no Drupal bootstrap.  Tests act as a API consumer or client of the website.  There are custom assert methods on this class to help with such testing.
 
     /**
      * Assert confirmation page is forbidden.

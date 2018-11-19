@@ -8,7 +8,7 @@ use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 /**
  * Base class for testing the GOP site with PHPUnit.
  */
-abstract class DrupalTestBase extends \PHPUnit_Framework_TestCase {
+abstract class EasyMockTestBase extends \PHPUnit_Framework_TestCase {
 
   /**
    * A flag to indicate a full mocked object.
@@ -57,7 +57,7 @@ abstract class DrupalTestBase extends \PHPUnit_Framework_TestCase {
       'mockObjectsMap' => [],
     ];
 
-    $is_unit_test = $this instanceof UnitTest;
+    $is_unit_test = $this instanceof UnitTestBase;
 
     // Allow our tests classes to not use this convention by setting the class
     // to false.  This prevents mocking and instantiation.

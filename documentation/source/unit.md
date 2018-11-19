@@ -33,3 +33,4 @@ To be sure, run the entire unit test suite standalone on occassion, e.g.,
 
 ### Fatal error: Class ... not found ...
 
+* Try running `composer update --lock` from _tests_ (the test runner directory).
