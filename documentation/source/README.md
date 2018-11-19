@@ -25,18 +25,13 @@ If you find this project useful... please consider [making a donation](https://w
 
 ## Installation
 
-Beginning in a directory above the web root:
-
-    $ git clone https://github.com/aklump/drupal-test.git tests
-    $ cd tests
-    $ rm -r .web_package/ && rm -r documentation/ && rm -r .gitignore
-    $ composer install
-    
-Or here is a one liner:
+From inside the directory above the web root run this one-liner:
 
     [ ! -d tests ] && git clone https://github.com/aklump/drupal-test.git tests && (cd tests && ./bin/install.sh) || echo "Installation error, nothing installed."
 
 ## Update to the latest version
+
+From inside the _tests_ directory, run:
 
     ./bin/install.sh
 

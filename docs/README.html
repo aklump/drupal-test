@@ -54,20 +54,14 @@
 
 <h2>Installation</h2>
 
-<p>Beginning in a directory above the web root:</p>
-
-<pre><code>$ git clone https://github.com/aklump/drupal-test.git tests
-$ cd tests
-$ rm -r .web_package/ &amp;&amp; rm -r documentation/ &amp;&amp; rm -r .gitignore
-$ composer install
-</code></pre>
-
-<p>Or here is a one liner:</p>
+<p>From inside the directory above the web root run this one-liner:</p>
 
 <pre><code>[ ! -d tests ] &amp;&amp; git clone https://github.com/aklump/drupal-test.git tests &amp;&amp; (cd tests &amp;&amp; ./bin/install.sh) || echo "Installation error, nothing installed."
 </code></pre>
 
 <h2>Update to the latest version</h2>
+
+<p>From inside the <em>tests</em> directory, run:</p>
 
 <pre><code>./bin/install.sh
 </code></pre>
@@ -123,7 +117,7 @@ $ phpunit -c phpunit.xml --testsuite Client
 </div>
   
   <div id="footer-legaleeze">
-    <p class="legaleeze center">Version: 0.1.2 &bull; Last Updated: Mon, 19 Nov 2018 11:35:31 -0800</p>
+    <p class="legaleeze center">Version: 0.1.2 &bull; Last Updated: Mon, 19 Nov 2018 11:37:06 -0800</p>
   </div>
 </footer>
 
