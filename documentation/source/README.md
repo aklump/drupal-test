@@ -38,7 +38,7 @@ The following files are considered core and should never be modified.
     LICENSE
     README.md
 
-Additionally, do not add files to the following folders as replaced on every update.  It is safe to add classes to _src_ so long as avoid _src/DrupalTest_.
+Additionally, do not add files to the following folders, which are replaced on every update.  It is safe to add classes to _src_ so long as avoid _src/DrupalTest_.
            
     bin
     docs
