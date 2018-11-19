@@ -1,8 +1,8 @@
 {
-    "name": "aklump\/drupal_test",
+    "name": "aklump\/drupal-test",
     "description": "A solution for testing Drupal 7 using PhpUnit.",
     "version": "0.1.2",
-    "homepage": "https:\/\/github.com\/aklump\/drupal_test",
+    "homepage": "https:\/\/github.com\/aklump\/drupal-test",
     "require-dev": {
         "mockery\/mockery": "^1.0",
         "guzzlehttp\/guzzle": "^6.3",

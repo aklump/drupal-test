@@ -1,12 +1,12 @@
 # Drupal Test
 
-![drupal_test](images/screenshot.jpg)
+![drupal-test](images/screenshot.jpg)
 
 ## Summary
 
 This is a testing solution for using PhpUnit with Drupal 7 websites.  It provides Unit, Kernel, and Client abstract test classes to use in writing your tests, a single test runner, testing for modules and themes, support for JsonSchema validation, as well as a set of guidelines and processes for better testing of Drupal 7 modules and websites.  All of this using a single test runner that can be divided by test suite or filtered by test class using normal PhpUnit options.
 
-**Visit <https://aklump.github.io/drupal_test> for full documentation.**
+**Visit <https://aklump.github.io/drupal-test> for full documentation.**
 
 ## Quick Start
 
@@ -21,21 +21,21 @@ Follow instructions in the documentation to write and run tests.  Load _docs/ind
 
 ## Contributing
 
-If you find this project useful... please consider [making a donation](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=4E5KZHDQCEUV8&item_name=Gratitude%20for%20aklump%2Fdrupal_test).
+If you find this project useful... please consider [making a donation](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=4E5KZHDQCEUV8&item_name=Gratitude%20for%20aklump%2Fdrupal-test).
 
 ## Installation
 
 Beginning in a directory above the web root:
 
-    $ git clone https://github.com/aklump/drupal_test.git
-    $ mv drupal_test/dist tests
-    $ rm -rf drupal_test
+    $ git clone https://github.com/aklump/drupal-test.git
+    $ mv drupal-test/dist tests
+    $ rm -rf drupal-test
     $ cd tests
     $ composer install
     
 Or here is a one liner:
 
-    [ ! -d drupal_test ] && [ ! -d tests ] && git clone https://github.com/aklump/drupal_test.git && mv drupal_test/dist tests && rm -rf drupal_test && (cd tests && composer install) || echo "Installation error, nothing installed."
+    [ ! -d drupal-test ] && [ ! -d tests ] && git clone https://github.com/aklump/drupal-test.git && mv drupal-test/dist tests && rm -rf drupal-test && (cd tests && composer install) || echo "Installation error, nothing installed."
 
 ## Configuration
 
