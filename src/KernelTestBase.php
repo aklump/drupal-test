@@ -13,7 +13,7 @@ use Drupal\Driver\DrupalDriver;
  *
  * @see Jig pattern gop/unit_test for implementation details.
  */
-abstract class KernelTestBase extends UnitKernelTestBase {
+abstract class KernelTestBase extends EasyMockTestBase {
 
   /**
    * Tracks if the Kernel tests have bootstrapped Drupal.

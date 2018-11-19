@@ -10,6 +10,6 @@ namespace AKlump\DrupalTest;
  *
  * @see Jig pattern gop/unit_test for implementation details.
  */
-abstract class UnitTestBase extends UnitKernelTestBase {
+abstract class UnitTestBase extends EasyMockTestBase {
 
 }

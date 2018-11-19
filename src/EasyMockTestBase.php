@@ -6,7 +6,7 @@ use Mockery;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 
 /**
- * Base class for testing the GOP site with PHPUnit.
+ * Abstract test class to easily test objects with auto mocking.
  */
 abstract class EasyMockTestBase extends \PHPUnit_Framework_TestCase {
 
