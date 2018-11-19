@@ -40,7 +40,7 @@ function update_dir() {
 update_dir bin
 update_dir docs
 update_dir src/DrupalTest
-cp bootstrap_drupal_test.php $app/
+cp drupal_test_bootstrap.php $app/
 cp README.md $app/
 cp LICENSE $app/
 
