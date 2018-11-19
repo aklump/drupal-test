@@ -15,4 +15,4 @@ root="$( cd -P "$( dirname "$source" )" && pwd )"
 cd ../
 git pull
 
-source "$root/update.sh"
+source "$root/install.sh"

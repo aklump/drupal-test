@@ -5,7 +5,7 @@
 #
 
 [[ -d .web_package ]] && rm -r .web_package/
-[[ -d .documentation ]] && rm -r .documentation/
+[[ -d documentation ]] && rm -r documentation/
 [[ -f .gitignore ]] && rm .gitignore
 
 composer update --lock
