@@ -24,10 +24,22 @@ cd $tempdir
 git clone https://github.com/aklump/drupal-test.git tests
 cd tests
 
+# Update an entire directory.
+#
+# $1 - The relative path of the directory to update.
+#
+# Returns 0 if moved.
+function update_dir() {
+    relative_path=$1
+
+    [ -d "$app/$relative_path/" ] || (mkdir "$app/$relative_path/" || return 1)
+    rsync -a --delete "bin/" "$app/$relative_path/" || return 1
+}
+
 # Move new files over.
-rsync -a --delete bin/ $app/bin/
-rsync -a --delete docs/ $app/docs/
-rsync -a --delete src/DrupalTest/ $app/src/DrupalTest/
+update_dir bin
+update_dir docs
+update_dir src/DrupalTest
 cp bootstrap_tests.php $app/
 cp README.md $app/
 cp LICENSE $app/
