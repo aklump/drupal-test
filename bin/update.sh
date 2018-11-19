@@ -41,6 +41,7 @@ update_dir bin
 update_dir docs
 update_dir src/DrupalTest
 cp drupal_test_bootstrap.php $app/
+cp drupal_test.yml $app/
 cp README.md $app/
 cp LICENSE $app/
 

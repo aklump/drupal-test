@@ -32,6 +32,7 @@ From inside the directory above the web root run this one-liner:
 
 The following files are considered core and should never be modified.
 
+    drupal_test.yml
     drupal_test_bootstrap.php
     LICENSE
     README.md

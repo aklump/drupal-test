@@ -7,4 +7,4 @@ push_master = auto
 push_develop = auto
 patch_prefix = .
 git_root = .
-info_file = composer.json
+info_file = drupal_test.yml
