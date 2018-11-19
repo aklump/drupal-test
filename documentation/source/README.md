@@ -36,6 +36,10 @@ Or here is a one liner:
 
     [ ! -d tests ] && git clone https://github.com/aklump/drupal-test.git tests && (cd tests && ./bin/install.sh) || echo "Installation error, nothing installed."
 
+## Update to the latest version
+
+    ./bin/install.sh
+
 ## Configuration
 
 See documentation for more information about configuration.
