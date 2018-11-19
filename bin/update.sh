@@ -32,7 +32,7 @@ cd tests
 function update_dir() {
     relative_path=$1
 
-    [ -d "$app/$relative_path/" ] || (mkdir "$app/$relative_path/" || return 1)
+    [[ -d "$app/$relative_path/" ]] || (mkdir "$app/$relative_path/" || return 1)
     rsync -a --delete "bin/" "$app/$relative_path/" || return 1
 }
 
