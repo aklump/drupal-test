@@ -10,14 +10,12 @@ This is a testing solution for using PhpUnit with Drupal 7 websites.  It provide
 
 ## Quick Start
 
-Download this project and rename the _dist_ folder _tests_.  Move it one level above your Drupal 7 webroot.  You may discard the rest of the project files.  From inside the new _tests_ directory run `composer install`.
-
-Follow instructions in the documentation to write and run tests.  Load _docs/index.html_ in a browser.
+After installation (see below), follow instructions in the documentation (_docs/index.html_) to write and run tests.
 
 ## Requirements
 
 * Composer
-* PhpUnit
+* PHPUnit
 
 ## Contributing
 
@@ -38,7 +36,7 @@ The following files are considered core and should never be modified.
     LICENSE
     README.md
 
-Additionally, do not add files to the following folders, which are replaced on every update.  It is safe to add classes to _src_ so long as avoid _src/DrupalTest_.
+Additionally, do not add files to the following folders, which are replaced on every update.  It is safe to add classes to _src_ so long as you avoid _src/DrupalTest_.
            
     bin
     docs
