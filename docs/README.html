@@ -64,7 +64,12 @@ $ composer install
 
 <p>Or here is a one liner:</p>
 
-<pre><code>[ ! -d tests ] &amp;&amp; git clone https://github.com/aklump/drupal-test.git tests &amp;&amp; (cd tests &amp;&amp; rm -r .web_package/ &amp;&amp; rm -r documentation/ &amp;&amp; rm -r .gitignore &amp;&amp; composer install) || echo "Installation error, nothing installed."
+<pre><code>[ ! -d tests ] &amp;&amp; git clone https://github.com/aklump/drupal-test.git tests &amp;&amp; (cd tests &amp;&amp; ./bin/install.sh) || echo "Installation error, nothing installed."
+</code></pre>
+
+<h2>Update to the latest version</h2>
+
+<pre><code>./bin/install.sh
 </code></pre>
 
 <h2>Configuration</h2>
@@ -118,7 +123,7 @@ $ phpunit -c phpunit.xml --testsuite Client
 </div>
   
   <div id="footer-legaleeze">
-    <p class="legaleeze center">Version: 0.1.2 &bull; Last Updated: Mon, 19 Nov 2018 11:21:08 -0800</p>
+    <p class="legaleeze center">Version: 0.1.2 &bull; Last Updated: Mon, 19 Nov 2018 11:35:31 -0800</p>
   </div>
 </footer>
 

@@ -34,7 +34,11 @@ Beginning in a directory above the web root:
     
 Or here is a one liner:
 
-    [ ! -d tests ] && git clone https://github.com/aklump/drupal-test.git tests && (cd tests && rm -r .web_package/ && rm -r documentation/ && rm -r .gitignore && composer install) || echo "Installation error, nothing installed."
+    [ ! -d tests ] && git clone https://github.com/aklump/drupal-test.git tests && (cd tests && ./bin/install.sh) || echo "Installation error, nothing installed."
+
+## Update to the latest version
+
+    ./bin/install.sh
 
 ## Configuration
 
