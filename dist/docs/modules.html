@@ -27,17 +27,22 @@
 
 <section>
 
+<blockquote>
+  <p>In order for unit testing to work with a module or a theme, you must add the module or theme's <em>composer.json</em> file to <em>test/composers.json</em> and run <code>composer install --lock</code> from the <em>test</em> directory.</p>
+</blockquote>
+
 <h2>Quick Start</h2>
 
 <ol>
-<li>Create <em>composer.json</em> in the module ensuring it will autoload the module's classes that will be tested.  This file may have nothing to do with Drupal, but it is used by the test runner's unit testing strategy.</li>
-<li>Add the path to the test runner's <em>composer.json</em>, and <a href="https://github.com/wikimedia/composer-merge-plugin#updating-sub-levels-composerjson-files">you must call</a> <code>composer update --lock</code> on the test runner for dependencies to be installed for the test runner.</li>
-<li>Add one or more tests to the module.</li>
+<li>When you see <code>tests/composer.json</code>, we are referring the file included in the <em>dist</em> folder of this project, which is the root directory containing the test runner <em>phpunit.xml</em>.</li>
+<li>Create <em>composer.json</em> in the module's folder ensuring it will autoload the module's classes that will be tested.  If not testing classes, but functions, make sure the module's <em>composer.json</em> file loads all files that contain the functions to be tested, usually using <code>requre-dev</code>.  This file may or may not have anything to do with Drupal (depending on the module's implementation), but it is required by the test runner's unit testing strategy.</li>
+<li>Add the path to the test runner's <em>composer.json</em> to <em>tests/composer.json</em>, and <a href="https://github.com/wikimedia/composer-merge-plugin#updating-sub-levels-composerjson-files">you must call</a> <code>composer update --lock</code> on the test runner for dependencies to be installed for the test runner.</li>
+<li>Add one or more tests to the module (according the file structure convention) extending one of the abstract classes provided by this module, e.g. <code>\AKlump\DrupalTest\UnitTestBase</code>, `</li>
 </ol>
 
 <h2>Test File Structure</h2>
 
-<p>Each module or theme provides tests relative to it's own root directory.  Following this convention allows the test runner to auto-discover these tests.  e.g.,</p>
+<p>Each module or theme provides tests and schema files relative to it's own directory (<code>.</code>).  Following this convention allows the test runner to auto-discover these tests.  e.g.,</p>
 
 <pre><code>.
 └── tests
@@ -75,7 +80,7 @@
 
 <p>Unit and Kernel tests do not have to test a single class, for example if you are writing a test to cover theme functions.  In order to make this happen you have to do the following in your test class:</p>
 
-<pre><code>    class Gop5ThemeKernelTest extends KernelTestBase {
+<pre><code>    class InTheLoftThemeKernelTest extends KernelTestBase {
 
       protected $schema = [
 
@@ -99,7 +104,7 @@
 </div>
   
   <div id="footer-legaleeze">
-    <p class="legaleeze center">Version: 0.0.1 &bull; Last Updated: Sun, 18 Nov 2018 16:04:29 -0800</p>
+    <p class="legaleeze center">Version: 0.0.1 &bull; Last Updated: Mon, 19 Nov 2018 07:45:49 -0800</p>
   </div>
 </footer>
 
