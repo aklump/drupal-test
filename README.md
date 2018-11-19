@@ -32,7 +32,7 @@ From inside the directory above the web root run this one-liner:
 
 The following files are considered core and should never be modified.
 
-    bootstrap_tests.php
+    bootstrap_drupal_test.php
     LICENSE
     README.md
 

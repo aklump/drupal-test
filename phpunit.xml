@@ -3,7 +3,7 @@
         xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/4.5/phpunit.xsd"
         backupGlobals="true"
         backupStaticAttributes="false"
-        bootstrap="./bootstrap_tests.php"
+        bootstrap="./bootstrap_drupal_test.php"
         cacheTokens="false"
         colors="true"
         convertErrorsToExceptions="true"
