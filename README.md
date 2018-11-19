@@ -29,7 +29,7 @@ Beginning in a directory above the web root:
 
     $ git clone https://github.com/aklump/drupal_test.git
     $ mv drupal_test/dist tests
-    $ rm -r drupal_test
+    $ rm -rf drupal_test
     $ cd tests
     $ composer install
     
