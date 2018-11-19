@@ -28,12 +28,29 @@ If you find this project useful... please consider [making a donation](https://w
 From inside the directory above the web root run this one-liner:
 
     [ ! -d tests ] && git clone https://github.com/aklump/drupal-test.git tests && (cd tests && ./bin/install.sh) || echo "Installation error, nothing installed."
+   
+   
+### About the files in this project
+
+The following files are considered core and should never be modified.
+
+    bootstrap_tests.php
+    LICENSE
+    README.md
+
+Additionally, do not add files to the following folders as replaced on every update.  It is safe to add classes to _src_ so long as avoid _src/DrupalTest_.
+           
+    bin
+    docs
+    src/DrupalTest
 
 ## Update to the latest version
 
 From inside the _tests_ directory, run:
 
-    ./bin/install.sh
+    ./bin/update.sh
+    
+This will copy over the core files from the latest repository, but leave the non-core files alone, namely _phpunit.xml_ and _composer.json_, which you most-likely will have modified.
 
 ## Configuration
 

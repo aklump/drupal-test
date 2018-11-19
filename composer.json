@@ -13,7 +13,7 @@
     },
     "autoload": {
         "psr-4": {
-            "AKlump\\DrupalTest\\": "src\/"
+            "AKlump\\DrupalTest\\": "src\/DrupalTest"
         }
     },
     "require": {

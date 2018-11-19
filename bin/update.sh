@@ -18,8 +18,9 @@ app=$PWD
 cd $tempdir
 git clone https://github.com/aklump/drupal-test.git tests
 cd tests
-rsync -a src/ $app/src/
-rsync -a docs/ $app/docs/
+rsync -a --delete bin/ $app/bin/
+rsync -a --delete docs/ $app/docs/
+rsync -a --delete src/DrupalTest $app/src/DrupalTest
 cp bootstrap_tests.php $app/
 cp README.md $app/
 cp LICENSE $app/
