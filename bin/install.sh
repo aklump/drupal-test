@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 
 #
-# Install and clean up unnecessary files.
+# Install and remove unnecessary files.
 #
 
+[[ -d .git ]] && rm -r .git/
 [[ -d .web_package ]] && rm -r .web_package/
 [[ -d documentation ]] && rm -r documentation/
 [[ -f .gitignore ]] && rm .gitignore
