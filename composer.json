@@ -10,7 +10,7 @@
         }
     },
     "require": {
-        "aklump/phpunit-extras": "^1.0.1",
+        "aklump/phpunit-extras": "^1.0.2",
         "drupal\/drupal-driver": "^1.4",
         "guzzlehttp\/guzzle": "^6.3",
         "justinrainbow\/json-schema": "^5.2",

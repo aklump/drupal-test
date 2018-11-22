@@ -12,8 +12,8 @@ abstract class EasyMockTestBase extends Base {
   /**
    * {@inheritdoc}
    */
-  public function getContainer() {
-    return \Drupal::getContainer();
+  public function getService($service_name) {
+    return \Drupal::getContainer()->get(ltrim($service_name, '@'));
   }
 
 }
