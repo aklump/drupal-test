@@ -2,7 +2,6 @@
 
 /**
  * @file
- *
  * Fix the path the the screenshot for the root README.
  */
 
