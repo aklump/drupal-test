@@ -12,7 +12,7 @@ abstract class EasyMockTestBase extends Base {
   /**
    * {@inheritdoc}
    */
-  public static function getContainer() {
+  public function getContainer() {
     return \Drupal::getContainer();
   }
 
