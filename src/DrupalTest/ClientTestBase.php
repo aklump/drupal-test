@@ -31,6 +31,13 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
   protected static $baseUrl = NULL;
 
   /**
+   * Holds the response of the last remote call.
+   *
+   * @var null
+   */
+  protected $response = NULL;
+
+  /**
    * A \simple_html_dom instance.
    *
    * @var \simple_html_dom
@@ -158,49 +165,71 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * Check a remote URL for an http status code.
+   * Load an URL as $this->response.
    *
-   * @param int $http_status
-   *   The expected status code.
    * @param string $url
-   *   The absolute url.
+   *   May be absolute (begins with http) or local to the Drupal site.
+   *
+   * @return $this
    */
-  public function assertRemoteUrlStatus($http_status, $url) {
+  public function loadHeadByUrl($url) {
+    $options = [];
+    if (strpos($url, 'http') !== 0) {
+      $options = [
+        'base_uri' => static::$baseUrl,
+      ];
+    }
+    $client = new Client($options);
     if (empty($url)) {
       throw new \RuntimeException("\$url cannot be empty");
     }
-    $client = new Client();
     try {
-      $response = $client->head($url);
+      $this->response = $client->head($url);
     }
     catch (ClientException $e) {
-      $response = $e->getResponse();
+      $this->response = $e->getResponse();
     }
-    $this->assertSame($http_status, $response->getStatusCode());
+
+    return $this;
   }
 
   /**
-   * Check a local URL for an http status code.
+   * Assert an HTTP status.
    *
-   * @param int $http_status
-   *   The expected status code.
-   * @param string $local_url
-   *   The relative from drupal root.
+   * @param int $status
+   *
+   * @return $this
+   *
+   * @code
+   * $this->loadHeadByUrl('get/discussion-guide/22')
+   *   ->assertHttpStatus(200);
+   * @endcode
    */
-  public function assertLocalUrlStatus($http_status, $local_url) {
-    if (empty($local_url)) {
-      throw new \RuntimeException("\$local_url cannot be empty");
-    }
-    $client = new Client([
-      'base_uri' => static::$baseUrl,
-    ]);
-    try {
-      $response = $client->head($local_url);
-    }
-    catch (ClientException $e) {
-      $response = $e->getResponse();
-    }
-    $this->assertSame($http_status, $response->getStatusCode());
+  public function assertHttpStatus($status) {
+    $this->assertSame($status, $this->response->getStatusCode());
+
+    return $this;
+  }
+
+  /**
+   * Assert content type on $this->response.
+   *
+   * @param string $header
+   *   This will be matched case insensitively.
+   *
+   * @return $this
+   *
+   * @code
+   * $this->loadHeadByUrl('get/discussion-guide/22')
+   *   ->assertContentType('application/pdf');
+   * @endcode
+   */
+  public function assertContentType($header) {
+    $type = $this->response->getHeader('Content-type');
+    $type = strtolower(reset($type));
+    $this->assertSame(strtolower($header), $type);
+
+    return $this;
   }
 
   /**
@@ -316,10 +345,39 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
   }
 
   /**
+   * Check a local URL for an http status code.
+   *
+   * @param int $http_status
+   *   The expected status code.
+   * @param string $local_url
+   *   The relative from drupal root.
+   *
+   * @deprecated Use ::loadHeadByUrl && ::assertHttpStatus instead.
+   */
+  public function assertLocalUrlStatus($http_status, $local_url) {
+    $this->assertSame($http_status, $this->loadHeadByUrl($local_url)->response->getStatusCode());
+  }
+
+  /**
+   * Check a remote URL for an http status code.
+   *
+   * @param int $http_status
+   *   The expected status code.
+   * @param string $url
+   *   The absolute url.
+   *
+   * @deprecated Use ::loadHeadByUrl && ::assertHttpStatus instead.
+   */
+  public function assertRemoteUrlStatus($http_status, $url) {
+    $this->assertSame($http_status, $this->loadHeadByUrl($url)->response->getStatusCode());
+  }
+
+  /**
    * {@inheritdoc}
    */
   public function tearDown() {
     $this->dom = NULL;
+    $this->response = NULL;
     CommandAssertion::handleAssertions($this);
   }
 

@@ -51,4 +51,25 @@ abstract class KernelTestBase extends EasyMockTestBase {
     static::assertRegExp('/[ "]' . preg_quote($class) . '[ "]/', $html);
   }
 
+  /**
+   * Return a random, published node by bundle type.
+   *
+   * @param string $bundle_type
+   *   The node type.
+   *
+   * @return \stdClass|false
+   *   The loaded node or false if none found.
+   */
+  public function getRandomPublishedEntityByBundle($bundle_type) {
+    $query = db_select('node', 'n')
+      ->fields('n', array('nid'))
+      ->condition('status', 1)
+      ->condition('type', $bundle_type)
+      ->orderRandom()
+      ->range(0, 1);
+    $nid = $query->execute()->fetchField();
+
+    return node_load($nid);
+  }
+
 }
