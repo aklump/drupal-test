@@ -61,12 +61,17 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
    *
    * @param string $url
    *   The URL to load into the DOM.
+   *
+   * @return \AKlump\DrupalTest\ClientTestBase
+   *   Self for chaining.
    */
   public function loadDomByUrl($url) {
     $client = $this->getHtmlClient()->get($url);
     $body = $client->getBody()->__toString();
 
     $this->dom = HtmlDomParser::str_get_html($body);
+
+    return $this;
   }
 
   /**
@@ -87,10 +92,15 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
    *   The DOM selector.
    * @param int $index
    *   The index when the selector returns multiple nodes. Defaults to 0.
+   *
+   * @return \AKlump\DrupalTest\ClientTestBase
+   *   Self for chaining.
    */
   public function assertDomRegExp($expected, $selector, $index = 0) {
     static::verifyDomIsLoaded();
     static::assertRegExp($expected, $this->dom->find($selector)[$index]->innertext);
+
+    return $this;
   }
 
   /**
@@ -98,10 +108,15 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
    *
    * @param string $selector
    *   A CSS selector of the element you want to check for.
+   *
+   * @return \AKlump\DrupalTest\ClientTestBase
+   *   Self for chaining.
    */
   public function assertDomElementExists($selector) {
     static::verifyDomIsLoaded();
-    static::assertNotEmpty($this->dom->find($selector));
+    self::assertThat(!empty($this->dom->find($selector)), self::isTrue(), "$selector exists in the DOM.");
+
+    return $this;
   }
 
   /**
@@ -113,10 +128,15 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
    *   The DOM selector.
    * @param int $index
    *   The index when the selector returns multiple nodes. Defaults to 0.
+   *
+   * @return \AKlump\DrupalTest\ClientTestBase
+   *   Self for chaining.
    */
   public function assertDomSame($expected, $selector, $index = 0) {
     static::verifyDomIsLoaded();
     static::assertSame($expected, $this->dom->find($selector)[$index]->innertext);
+
+    return $this;
   }
 
   /**
@@ -128,10 +148,15 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
    *   The name.
    * @param string $attribute
    *   THe attribute to check for value.
+   *
+   * @return \AKlump\DrupalTest\ClientTestBase
+   *   Self for chaining.
    */
   public function assertDomMetaTagSame($expected, $name, $attribute) {
     static::verifyDomIsLoaded();
     static::assertSame($expected, $this->dom->find('meta[name="' . $name . '"]')[0]->content);
+
+    return $this;
   }
 
   /**
@@ -197,8 +222,10 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
    * Assert an HTTP status.
    *
    * @param int $status
+   *   The desired status to pass.
    *
    * @return $this
+   *   Self for chaining.
    *
    * @code
    * $this->loadHeadByUrl('get/discussion-guide/22')
@@ -218,6 +245,7 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
    *   This will be matched case insensitively.
    *
    * @return $this
+   *  Self for chaining.
    *
    * @code
    * $this->loadHeadByUrl('get/discussion-guide/22')
