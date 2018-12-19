@@ -2,17 +2,17 @@
 
 <html>
 <head>
-  <title>Kernel Tests</title>
+  <title>Manual Tests</title>
   <link href="search/tipuesearch.css" rel="stylesheet">
   <link href="style.css" rel="stylesheet">
 </head>
 
-<body class="page--kernel">
+<body class="page--manual-tests">
 <header>
   <div class="pager">
-  <a href="client.html" class="prev client">&laquo;Client Tests</a>
+  <a href="kernel.html" class="prev kernel">&laquo;Kernel Tests</a>
   <a href="index.html" class="index">Index</a>
-  <a href="manual-tests.html" class="next manual-tests">Manual Tests&raquo;</a>
+  <a href="index.html" class="next index">Index&raquo;</a>
 </div>
 </header>
 
@@ -22,21 +22,39 @@
   </form>
 </div>
 
-  <h1>Kernel Tests</h1>
+  <h1>Manual Tests</h1>
   <div class="breadcrumb"><a href="index.html">Index</a></div>
 
-<section>
+<section><h2>Test Case Id</h2>
 
 <ul>
-<li>Test classnames should follow: <em>&#42;KernelTest</em></li>
-<li>Kernel tests have a full Drupal bootstrap and access to the database, global functions and constants.</li>
+<li>Should be lower-cased, and hyphenated.</li>
+<li>Short and unique across tests.</li>
+<li>The first component should reflect the group, e.g. first initial(s).</li>
 </ul>
 
-<h2>Data Providers and Kernel Tests</h2>
+<h2>Pre-Conditions</h2>
 
 <ul>
-<li>Bootstrapped Drupal elements, e.g. constants are not available in the data provider methods of a test class.</li>
-<li>Class constants are available, however.</li>
+<li>Imperative statements telling the tester what to do before the test begins, so that the test can be performed.</li>
+</ul>
+
+<h2>Test Data</h2>
+
+<ul>
+<li>Enter these as a two-column markdown table: key, value.</li>
+</ul>
+
+<h2>Test Steps</h2>
+
+<ul>
+<li>Imperative statements telling the tester what to do from start to finish.</li>
+</ul>
+
+<h2>Expected Results</h2>
+
+<ul>
+<li>These should be short statements that resolve to true or false, where false indicates a failure.</li>
 </ul>
 </section>
 
@@ -46,9 +64,9 @@
 
 <footer>
   <div class="pager">
-  <a href="client.html" class="prev client">&laquo;Client Tests</a>
+  <a href="kernel.html" class="prev kernel">&laquo;Kernel Tests</a>
   <a href="index.html" class="index">Index</a>
-  <a href="manual-tests.html" class="next manual-tests">Manual Tests&raquo;</a>
+  <a href="index.html" class="next index">Index&raquo;</a>
 </div>
   
   <div id="footer-legaleeze">
