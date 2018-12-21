@@ -45,6 +45,13 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
   protected $dom;
 
   /**
+   * The loaded html document from loadPageByUrl.
+   *
+   * @var string
+   */
+  protected $html;
+
+  /**
    * {@inheritdoc}
    */
   public function setUp() {
@@ -65,11 +72,10 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
    * @return \AKlump\DrupalTest\ClientTestBase
    *   Self for chaining.
    */
-  public function loadDomByUrl($url) {
+  public function loadPageByUrl($url) {
     $client = $this->getHtmlClient()->get($url);
-    $body = $client->getBody()->__toString();
-
-    $this->dom = HtmlDomParser::str_get_html($body);
+    $this->html = $client->getBody()->__toString();
+    $this->dom = HtmlDomParser::str_get_html($this->html);
 
     return $this;
   }
@@ -77,7 +83,7 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
   /**
    * Mark test as incomplete if the dom has not yet been loaded.
    */
-  public function verifyDomIsLoaded() {
+  public function verifyPageIsLoaded() {
     if (empty($this->dom)) {
       static::markTestIncomplete('DOM not loaded!');
     }
@@ -97,8 +103,23 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
    *   Self for chaining.
    */
   public function assertDomRegExp($expected, $selector, $index = 0) {
-    static::verifyDomIsLoaded();
+    static::verifyPageIsLoaded();
     static::assertRegExp($expected, $this->dom->find($selector)[$index]->innertext);
+
+    return $this;
+  }
+
+  /**
+   * Assert a loaded page contains a string.
+   *
+   * @param string $expected
+   *   The string to search for.
+   *
+   * @return $this
+   */
+  public function assertPageContains($expected) {
+    static::verifyPageIsLoaded();
+    static::assertContains($expected, $this->html);
 
     return $this;
   }
@@ -113,7 +134,7 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
    *   Self for chaining.
    */
   public function assertDomElementExists($selector) {
-    static::verifyDomIsLoaded();
+    static::verifyPageIsLoaded();
     self::assertThat(!empty($this->dom->find($selector)), self::isTrue(), "$selector exists in the DOM.");
 
     return $this;
@@ -133,7 +154,7 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
    *   Self for chaining.
    */
   public function assertDomSame($expected, $selector, $index = 0) {
-    static::verifyDomIsLoaded();
+    static::verifyPageIsLoaded();
     static::assertSame($expected, $this->dom->find($selector)[$index]->innertext);
 
     return $this;
@@ -153,7 +174,7 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
    *   Self for chaining.
    */
   public function assertDomMetaTagSame($expected, $name, $attribute) {
-    static::verifyDomIsLoaded();
+    static::verifyPageIsLoaded();
     static::assertSame($expected, $this->dom->find('meta[name="' . $name . '"]')[0]->content);
 
     return $this;
