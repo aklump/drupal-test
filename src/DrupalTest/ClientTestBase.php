@@ -13,6 +13,8 @@ use Sunra\PhpSimple\HtmlDomParser;
  *
  * Extend this class for test scenarios where you need to check URLs or consume
  * API endpoints.
+ *
+ * @link http://simplehtmldom.sourceforge.net/manual.htm
  */
 abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
 
@@ -120,6 +122,38 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
   public function assertPageContains($expected) {
     static::verifyPageIsLoaded();
     static::assertContains($expected, $this->html);
+
+    return $this;
+  }
+
+  /**
+   * Assert an element is found in the DOM by CSS selector and is not empty.
+   *
+   * @param string $selector
+   *   A CSS selector of the element you want to check for.
+   *
+   * @return \AKlump\DrupalTest\ClientTestBase
+   *   Self for chaining.
+   */
+  public function assertDomElementNotEmpty($selector, $index = 0) {
+    static::verifyPageIsLoaded();
+    self::assertNotEmpty(trim($this->dom->find($selector)[$index]->innertext), "$selector is not empty.");
+
+    return $this;
+  }
+
+  /**
+   * Assert a DOM element's attribute is not empty.
+   *
+   * @param string $selector
+   *   A CSS selector of the element you want to check for.
+   *
+   * @return \AKlump\DrupalTest\ClientTestBase
+   *   Self for chaining.
+   */
+  public function assertDomElementAttributeNotEmpty($attribute, $selector, $index = 0) {
+    static::verifyPageIsLoaded();
+    self::assertThat(!empty(trim($this->dom->find($selector)[$index]->{$attribute})), self::isTrue(), "$selector.$attribute is not empty.");
 
     return $this;
   }
