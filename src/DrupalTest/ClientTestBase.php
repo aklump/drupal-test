@@ -464,4 +464,52 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
     CommandAssertion::handleAssertions($this);
   }
 
+  /**
+   * Prepend the baseUrl to paths not beginning with http.
+   *
+   * @param string $path
+   *   The path to prepend to if local.
+   *
+   * @return string
+   *   The resolved or original path.
+   */
+  private function resolvePath($path) {
+    if (strpos($path, 'http') !== 0) {
+      $path = rtrim(static::$baseUrl, '/') . "/$path";
+    }
+
+    return $path;
+  }
+
+  /**
+   * Assert that one URL redirects to another.
+   *
+   * @param string $redirected_url
+   *   The expected destinaton URL.
+   * @param string $url
+   *   The URL that will redirect.
+   *
+   * @return $this
+   *   Self for chaining.
+   */
+  public function assertUrlRedirectsTo($redirected_url, $url) {
+    $options = ['allow_redirects' => FALSE];
+    $url = $this->resolvePath($url);
+    $client = new Client($options);
+    if (empty($url)) {
+      throw new \RuntimeException("\$url cannot be empty");
+    }
+    try {
+      $response = $client->head($url);
+      $location = $response->getHeader('location')[0];
+      $redirected_url = $this->resolvePath($redirected_url);
+      static::assertThat($redirected_url === $location, static::isTrue(), "Failed asserting that $url redirects to $redirected_url.");
+    }
+    catch (ClientException $e) {
+      $this->fail($e->getMessage());
+    }
+
+    return $this;
+  }
+
 }
