@@ -10,8 +10,6 @@ use Drupal\Driver\DrupalDriver;
  * Kernel tests have access to the Drupal database and is fully bootstrapped.
  * Extend this class when a unit test is too mockey or relies on too many
  * outside things, e.g. constants and global functions.
- *
- * @see Jig pattern gop/unit_test for implementation details.
  */
 abstract class KernelTestBase extends EasyMockTestBase {
 

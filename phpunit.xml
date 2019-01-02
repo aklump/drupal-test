@@ -37,14 +37,4 @@
             <directory>../web/sites/all/themes/*/tests/src/Kernel</directory>
         </testsuite>
     </testsuites>
-    <filter>
-        <whitelist>
-            <directory suffix=".php">../web/sites/all/modules/custom/gop3_core/src</directory>
-            <directory suffix=".php">../web/sites/all/modules/custom/gop5_core/src</directory>
-            <file>../web/sites/all/themes/custom/gop5_theme/template.php</file>
-            <exclude>
-                <directory>./vendor</directory>
-            </exclude>
-        </whitelist>
-    </filter>
 </phpunit>
