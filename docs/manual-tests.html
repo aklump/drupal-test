@@ -2,7 +2,7 @@
 
 <html>
 <head>
-  <title>Manual Tests</title>
+  <title>Add Manual Tests</title>
   <link href="search/tipuesearch.css" rel="stylesheet">
   <link href="style.css" rel="stylesheet">
 </head>
@@ -22,40 +22,39 @@
   </form>
 </div>
 
-  <h1>Manual Tests</h1>
+  <h1>Add Manual Tests</h1>
   <div class="breadcrumb"><a href="index.html">Index</a></div>
 
-<section><h2>Test Case Id</h2>
+<section>
 
-<ul>
-<li>Should be lower-cased, and hyphenated.</li>
-<li>Short and unique across tests.</li>
-<li>The first component should reflect the group, e.g. first initial(s).</li>
-</ul>
+<p>This project uses <a href="https://github.com/aklump/manual-test">aklump/manual-test</a> for manual tests.  This page shows how to integrate manual tests into your Drupal project.</p>
 
-<h2>Pre-Conditions</h2>
+<h2>Configuration</h2>
 
-<ul>
-<li>Imperative statements telling the tester what to do before the test begins, so that the test can be performed.</li>
-</ul>
+<ol>
+<li><p>Add configuration like the following (replacing tokens) to <em>phpunit.xml</em>:</p>
 
-<h2>Test Data</h2>
+<pre><code>&lt;phpunit ...&gt;
+  ...
+  &lt;manualtests&gt;
+      &lt;title&gt;{{ website or domain}}&lt;/title&gt;
+      &lt;tester&gt;{{ default tester name }}&lt;/tester&gt;
+      &lt;output&gt;{{ path to pdf output file }}&lt;/output&gt;
+      &lt;testsuite name="Manual"&gt;
+          &lt;directory&gt;../web/sites/all/modules/custom/*/tests/src/Manual/*&lt;/directory&gt;
+      &lt;/testsuite&gt;
+  &lt;/manualtests&gt;
+&lt;/phpunit&gt;
+</code></pre></li>
+</ol>
 
-<ul>
-<li>Enter these as a two-column markdown table: key, value.</li>
-</ul>
+<h2>Generate tests</h2>
 
-<h2>Test Steps</h2>
+<p>To create the PDF file for manual test running... See the <a href="https://github.com/aklump/manual-test">documentation</a> for more info.</p>
 
-<ul>
-<li>Imperative statements telling the tester what to do from start to finish.</li>
-</ul>
-
-<h2>Expected Results</h2>
-
-<ul>
-<li>These should be short statements that resolve to true or false, where false indicates a failure.</li>
-</ul>
+<pre><code>cd tests
+export CLIENT_TEST_BASE_URL="http://www.mysite.com"; ./vendor/bin/generate --configuration=phpunit.xml
+</code></pre>
 </section>
 
 <div class="search__results">
@@ -70,7 +69,7 @@
 </div>
   
   <div id="footer-legaleeze">
-    <p class="legaleeze center">Version: 0.1.2 &bull; Last Updated: Tue, 18 Dec 2018 17:45:35 -0800</p>
+    <p class="legaleeze center">Version: 0.1.2 &bull; Last Updated: Wed, 02 Jan 2019 09:01:51 -0800</p>
   </div>
 </footer>
 
