@@ -26,7 +26,7 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
   protected static $jsonSchema = [];
 
   /**
-   * This is read in from the environment variable CLIENT_TEST_BASE_URL.
+   * This is read in from the environment variable TEST_BASE_URL.
    *
    * @var string
    */
@@ -57,8 +57,8 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
    * {@inheritdoc}
    */
   public function setUp() {
-    if (!($url = getenv('CLIENT_TEST_BASE_URL'))) {
-      $this->markTestSkipped('Missing environment variable: CLIENT_TEST_BASE_URL');
+    if (!($url = getenv('TEST_BASE_URL'))) {
+      $this->markTestSkipped('Missing environment variable: TEST_BASE_URL');
     }
     static::$baseUrl = $url;
   }

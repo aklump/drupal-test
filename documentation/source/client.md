@@ -18,7 +18,7 @@ This is a type of tests where you will be testing endpoints of an API or URLs.  
 The base URL must be set in an environment variable in order for client tests to work, e.g., 
 
     $ cd tests/phpunit
-    $ export CLIENT_TEST_BASE_URL=http://develop.globalonenessproject.loft; phpunit -c phpunit.xml --testsuite Client
+    $ export TEST_BASE_URL=http://my-website.loft; phpunit -c phpunit.xml --testsuite Client
 
 
 ## JSON Schema

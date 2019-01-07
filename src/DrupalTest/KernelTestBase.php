@@ -26,8 +26,11 @@ abstract class KernelTestBase extends EasyMockTestBase {
    * @throws \Drupal\Driver\Exception\BootstrapException
    */
   public static function setUpBeforeClass() {
+    if (!($url = getenv('TEST_BASE_URL'))) {
+      throw new \RuntimeException("Missing environment variable: TEST_BASE_URL");
+    }
     if (!static::$isBootstrapped) {
-      $driver = new DrupalDriver(WEB_ROOT, 'http://develop.globalonenessproject.loft');
+      $driver = new DrupalDriver(WEB_ROOT, $url);
       $driver->setCoreFromVersion();
       $driver->bootstrap();
       static::$isBootstrapped = TRUE;
