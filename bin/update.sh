@@ -26,10 +26,26 @@ cd tests
 
 # Update an entire directory.
 #
+# User-added files will NOT be deleted.
+#
 # $1 - The relative path of the directory to update.
 #
 # Returns 0 if moved.
 function update_dir() {
+    relative_path=$1
+
+    [[ -d "$app/$relative_path/" ]] || (mkdir -p "$app/$relative_path/" || return 1)
+    rsync -a "$relative_path/" "$app/$relative_path/" || return 1
+}
+
+# Replace contents of an entire directory.
+#
+# User-added files WILL BE deleted.
+#
+# $1 - The relative path of the directory to update.
+#
+# Returns 0 if moved.
+function exact_match_dir() {
     relative_path=$1
 
     [[ -d "$app/$relative_path/" ]] || (mkdir -p "$app/$relative_path/" || return 1)
@@ -38,8 +54,8 @@ function update_dir() {
 
 # Move new files over.
 update_dir bin
-update_dir docs
-update_dir src/DrupalTest
+exact_match_dir docs
+exact_match_dir src/DrupalTest
 cp drupal_test_bootstrap.php $app/
 cp drupal_test.yml $app/
 cp README.md $app/
