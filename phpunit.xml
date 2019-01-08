@@ -24,14 +24,16 @@
         timeoutForLargeTests="60"
         verbose="true">
     <testsuites>
-        <testsuite name="Unit">
-            <directory>../web/sites/all/modules/custom/*/tests/src/Unit</directory>
-            <directory>../web/sites/all/themes/*/tests/src/Unit</directory>
-        </testsuite>
+        <!--Client tests must come first-->
         <testsuite name="Client">
             <directory>../web/sites/all/modules/custom/*/tests/src/Client</directory>
             <directory>../web/sites/all/themes/*/tests/src/Client</directory>
         </testsuite>
+        <testsuite name="Unit">
+            <directory>../web/sites/all/modules/custom/*/tests/src/Unit</directory>
+            <directory>../web/sites/all/themes/*/tests/src/Unit</directory>
+        </testsuite>
+        <!--Kernel tests must come last-->
         <testsuite name="Kernel">
             <directory>../web/sites/all/modules/custom/*/tests/src/Kernel</directory>
             <directory>../web/sites/all/themes/*/tests/src/Kernel</directory>
