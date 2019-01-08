@@ -40,9 +40,10 @@ The following files are considered core and should never be modified.
 
 Additionally, do not add files to the following folders, which are replaced on every update.  It is safe to add classes to _src_ so long as you avoid _src/DrupalTest_.
            
-    bin
     docs
     src/DrupalTest
+    
+Do not modify any of the files in _bin_, which are provided by this module.  You may add your own files to _bin_, if you wish.        
 
 ## Update to the latest version
 
