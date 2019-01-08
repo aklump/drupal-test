@@ -469,13 +469,30 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
    *
    * @param string $path
    *   The path to prepend to if local.
+   * @param bool $remove_authentication_credentials
+   *   True to remove http authentication from absolute paths.
    *
    * @return string
    *   The resolved or original path.
    */
-  private function resolvePath($path) {
+  private function resolvePath($path, $remove_authentication_credentials = FALSE) {
     if (strpos($path, 'http') !== 0) {
       $path = rtrim(static::$baseUrl, '/') . "/$path";
+      $parts = parse_url($path);
+      if ($remove_authentication_credentials) {
+        $auth = [];
+        if ($parts['user']) {
+          $auth[] = $parts['user'];
+        }
+        if ($parts['pass']) {
+          $auth[] = $parts['pass'];
+        }
+        if ($auth) {
+          $find = $parts['scheme'] . '://' . implode(':', $auth) . '@';
+          $replace = $parts['scheme'] . '://';
+          $path = str_replace($find, $replace, $path);
+        }
+      }
     }
 
     return $path;
@@ -502,7 +519,7 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
     try {
       $response = $client->head($url);
       $location = $response->getHeader('location')[0];
-      $redirected_url = $this->resolvePath($redirected_url);
+      $redirected_url = $this->resolvePath($redirected_url, TRUE);
       static::assertThat($redirected_url === $location, static::isTrue(), "Failed asserting that $url redirects to $redirected_url.");
     }
     catch (ClientException $e) {
