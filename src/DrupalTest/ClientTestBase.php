@@ -54,6 +54,20 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
   protected $html;
 
   /**
+   * Holds the response's JSON.
+   *
+   * @var \stdClass
+   */
+  protected $json;
+
+  /**
+   * Holds the response's XML.
+   *
+   * @var \SimpleXMLElement
+   */
+  protected $xml;
+
+  /**
    * {@inheritdoc}
    */
   public function setUp() {
@@ -67,6 +81,10 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
    * Load a DOM from an URL.
    *
    * This must be called in any test method using any assertDom* methods.
+   * This loads the following:
+   *   - $this->dom
+   *   - $this->html
+   *   - $this->response.
    *
    * @param string $url
    *   The URL to load into the DOM.
@@ -75,9 +93,51 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
    *   Self for chaining.
    */
   public function loadPageByUrl($url) {
-    $client = $this->getHtmlClient()->get($url);
-    $this->html = $client->getBody()->__toString();
+    $this->response = $this->getHtmlClient()->get($url);
+    $this->html = $this->response->getBody()->__toString();
     $this->dom = HtmlDomParser::str_get_html($this->html);
+
+    return $this;
+  }
+
+  /**
+   * Load a remote URL's response XML.
+   *
+   * This populates:
+   *   - $this->xml
+   *   - $this->response.
+   *
+   * @param string $url
+   *   The URL which returns XML.
+   *
+   * @return $this
+   *   Self for chaining.
+   */
+  public function loadXmlByUrl($url) {
+    $this->response = $this->getXmlClient()->get($url);
+    $this->xml = simplexml_load_string($this->response->getBody()
+      ->__toString());
+
+    return $this;
+  }
+
+  /**
+   * Load a remote URL's response JSON.
+   *
+   * This populates:
+   *   - $this->json
+   *   - $this->response.
+   *
+   * @param string $url
+   *   The URL which returns JSON.
+   *
+   * @return $this
+   *   Self for chaining.
+   */
+  public function loadJsonByUrl($url) {
+    $this->response = $this->getJsonClient()->get($url);
+    $this->json = json_decode($this->response->getBody()
+      ->__toString());
 
     return $this;
   }
@@ -219,6 +279,12 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
    *
    * @return \GuzzleHttp\Client
    *   The client to use for requests.
+   *
+   * @code
+   *   $data = $response->getBody();
+   * @endcode
+   *
+   * @link http://docs.guzzlephp.org/en/stable/quickstart.html#using-responses
    */
   public function getHtmlClient() {
     return new Client([
@@ -234,6 +300,8 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
    *
    * @return \GuzzleHttp\Client
    *   The client to use for requests.
+   *
+   * @link http://docs.guzzlephp.org/en/stable/quickstart.html#using-responses
    */
   public function getXmlClient() {
     return new Client([
@@ -335,6 +403,8 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
    *
    * @return \GuzzleHttp\Client
    *   The client to use for requests that return json.
+   *
+   * @link http://docs.guzzlephp.org/en/stable/quickstart.html#using-responses
    */
   public function getJsonClient() {
     return new Client([
@@ -372,10 +442,12 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
       $dir = dirname($__PHPUNIT_CONFIGURATION_FILE);
       $config = simplexml_load_file($__PHPUNIT_CONFIGURATION_FILE);
       $schema_dirs = [];
-      foreach ($config->jsonschema->directory as $item) {
-        $schema_dirs[] = realpath($dir . '/' . (string) $item);
+      foreach ($config->jsonschema->directory as $path) {
+        $paths = glob($dir . '/' . $path);
+        $schema_dirs = array_merge($schema_dirs, $paths);
       }
-      foreach (array_filter($schema_dirs) as $schema_dir) {
+      $schema_dirs = array_filter(array_map('realpath', $schema_dirs));
+      foreach ($schema_dirs as $schema_dir) {
         if (is_dir($schema_dir) && ($items = scandir($schema_dir))) {
           $path = array_filter($items, function ($item) use ($schema_filename) {
             return $item === $schema_filename;
@@ -397,13 +469,25 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
    * @param string $schema_filename
    *   The basename of the schema file.
    * @param \GuzzleHttp\Psr7\Response $response
-   *   The response object.
+   *   The response object.  Leave blank to use $this->response.
    */
-  public function assertResponseMatchesSchema($schema_filename, Response $response) {
-
+  public function assertResponseMatchesSchema($schema_filename, Response $response = NULL) {
+    if (is_null($response)) {
+      $response = $this->response;
+    }
     $filepath = $this->resolveSchemaFilename($schema_filename);
-
-    $data = json_decode($response->getBody()->__toString());
+    $type = $response->getHeader('Content-Type');
+    $type = reset($type);
+    if (stristr($type, '/xml')) {
+      $data = simplexml_load_string($response->getBody()->__toString());
+      $data = json_decode(json_encode($data));
+    }
+    elseif (stristr($type, '/json')) {
+      $data = json_decode($response->getBody()->__toString());
+    }
+    else {
+      throw new \RuntimeException("Cannot understand response content type: $type");
+    }
 
     $validator = new Validator();
     $validator->validate($data, (object) ['$ref' => 'file://' . $filepath]);
@@ -417,7 +501,10 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
    * @param \GuzzleHttp\Psr7\Response $response
    *   The response object.
    */
-  public function assertResponseIsAjaxCommands(Response $response) {
+  public function assertResponseIsAjaxCommands(Response $response = NULL) {
+    if (is_null($response)) {
+      $response = $this->response;
+    }
     $test = new CommandAssertion($response);
     $test->shouldHaveCommand('settings')
       ->withInternalType('object', 'settings')
@@ -481,10 +568,10 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
       $parts = parse_url($path);
       if ($remove_authentication_credentials) {
         $auth = [];
-        if ($parts['user']) {
+        if (!empty($parts['user'])) {
           $auth[] = $parts['user'];
         }
-        if ($parts['pass']) {
+        if (!empty($parts['pass'])) {
           $auth[] = $parts['pass'];
         }
         if ($auth) {
