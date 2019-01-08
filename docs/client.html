@@ -27,19 +27,14 @@
 
 <section>
 
-<p>This is a type of tests where you will be testing endpoints of an API or URLs.  Use this to check for URL statuses and headers for example.  This has the same scope as unit tests, which means you can access class constants, but no Drupal bootstrap.  Tests act as a API consumer or client of the website.  There are custom assert methods on this class to help with such testing.</p>
+<p>This is a type of tests where you will be testing endpoints of an API or URLs.  Use this to check for URL statuses and headers for example.  This has the same scope as unit tests, which means you can access class constants, but no Drupal bootstrap.  Tests act as an API consumer or client of the website.  There are custom assert methods on this class to help with such testing.  These types can test for:</p>
 
-<pre><code>/**
- * Assert confirmation page is forbidden.
- */
-public function testConfirmationPageIsForbidden() {
-  $this-&gt;assertLocalUrlStatus(403, implode('/', [
-    'node',
-    EarthriseService::NID_FORM,
-    'done',
-  ]));
-}
-</code></pre>
+<ul>
+<li>Redirects</li>
+<li>Page contents</li>
+<li>HTTP status codes</li>
+<li>REST responses</li>
+</ul>
 
 <h2>Configuration</h2>
 
@@ -49,15 +44,58 @@ public function testConfirmationPageIsForbidden() {
 $ export TEST_BASE_URL=http://my-website.loft; phpunit -c phpunit.xml --testsuite Client
 </code></pre>
 
-<h2>JSON Schema</h2>
+<p>If the site under test is behind http authorization you must also provide that, e.g.</p>
 
-<p>The client tests provide the means of validation using JSON Schema.  You indicate where your schema files are located in <em>phpunit.xml</em> using the custom key <code>jsonschema</code>, e.g.,</p>
+<pre><code>$ export TEST_BASE_URL=http://user:pass@my-website.loft; phpunit -c phpunit.xml --testsuite Client
+</code></pre>
+
+<h2>Assert Page Content</h2>
+
+<p>Using a string search:</p>
+
+<pre><code>$this-&gt;loadPageByUrl('collections')
+  -&gt;assertPageContains('logo.jpg')
+</code></pre>
+
+<p>Using CSS selectors:</p>
+
+<pre><code>$this-&gt;loadPageByUrl('search')
+  -&gt;assertDomElementExists('.views-widget-filter-id')
+</code></pre>
+
+<h2>Assert HTTP Status</h2>
+
+<pre><code>public function testBlogPage() {
+  $this-&gt;loadHeadByUrl('blog')-&gt;assertHttpStatus(200);
+}
+</code></pre>
+
+<h2>Response validation with JSON Schema</h2>
+
+<p><a href="https://json-schema.org/latest/json-schema-validation.html#rfc.section.6.3.3">https://json-schema.org/latest/json-schema-validation.html#rfc.section.6.3.3</a></p>
+
+<p>The client tests provide the means of validation using JSON Schema.  You indicate where your schema files are located in <em>phpunit.xml</em> using the custom key <code>jsonschema</code>.  Child nodes of <code>directory</code> are relative to <em>phpunit.xml</em>; you may use globs; you may have more than one <code>directory</code> node.</p>
 
 <pre><code>&lt;phpunit&gt;
     &lt;jsonschema&gt;
-        &lt;directory&gt;../web/sites/all/modules/custom/my_module/tests/schema&lt;/directory&gt;
+        &lt;directory&gt;../web/sites/all/modules/custom/*/tests/schema&lt;/directory&gt;
     &lt;/jsonschema&gt;
 &lt;/phpunit&gt;
+</code></pre>
+
+<p>Then to validate an URL do something like the following:</p>
+
+<h3>Validating XML Responses</h3>
+
+<p>This example shows how load an endpoint that returns XML and validate that using a JSON Schema; then it checks for specific values in the XML.</p>
+
+<pre><code>public function testXMLEndpoint() {
+  $this-&gt;loadXmlByUrl('api/1/some/endpoint')
+    -&gt;assertResponseMatchesSchema('resource.json');
+
+  $this-&gt;assertSame(123, (int) $this-&gt;xml-&gt;id);
+  $this-&gt;assertSame('name', (string) $this-&gt;xml-&gt;name);
+}  
 </code></pre>
 </section>
 
@@ -73,7 +111,7 @@ $ export TEST_BASE_URL=http://my-website.loft; phpunit -c phpunit.xml --testsuit
 </div>
   
   <div id="footer-legaleeze">
-    <p class="legaleeze center">Version: 0.1.2 &bull; Last Updated: Mon, 07 Jan 2019 14:00:07 -0800</p>
+    <p class="legaleeze center">Version: 0.1.2 &bull; Last Updated: Tue, 08 Jan 2019 12:52:50 -0800</p>
   </div>
 </footer>
 

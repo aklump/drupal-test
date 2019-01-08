@@ -53,7 +53,21 @@
 <p>To create the PDF file for manual test running... See the <a href="https://github.com/aklump/manual-test">documentation</a> for more info.</p>
 
 <pre><code>cd tests
-export TEST_BASE_URL="http://www.mysite.com"; ./vendor/bin/generate --configuration=phpunit.xml
+export TEST_BASE_URL="http://www.mysite.com"; ./vendor/bin/generate --configuration=phpunit.xml --output=mysite-manual-tests.com.pdf --tester="Aaron Klump"
+</code></pre>
+
+<h3>Hint, create a shortcut file, something like: <em>manual.sh</em></h3>
+
+<pre><code>#!/usr/bin/env bash
+source="${BASH_SOURCE[0]}"
+while [ -h "$source" ]; do # resolve $source until the file is no longer a symlink
+  dir="$( cd -P "$( dirname "$source" )" &amp;&amp; pwd )"
+  source="$(readlink "$source")"
+  [[ $source != /* ]] &amp;&amp; source="$dir/$source" # if $source was a relative symlink, we need to resolve it relative to the path where the symlink file was located
+done
+root="$( cd -P "$( dirname "$source" )" &amp;&amp; pwd )"
+cd "$root/.."
+export TEST_BASE_URL="http://www.mysite.com"; ./vendor/bin/generate --configuration=phpunit.xml --output=mysite-manual-tests.com.pdf --tester="Josh Lewis"
 </code></pre>
 </section>
 
@@ -69,7 +83,7 @@ export TEST_BASE_URL="http://www.mysite.com"; ./vendor/bin/generate --configurat
 </div>
   
   <div id="footer-legaleeze">
-    <p class="legaleeze center">Version: 0.1.2 &bull; Last Updated: Mon, 07 Jan 2019 14:00:08 -0800</p>
+    <p class="legaleeze center">Version: 0.1.2 &bull; Last Updated: Tue, 08 Jan 2019 12:52:51 -0800</p>
   </div>
 </footer>
 
