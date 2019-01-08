@@ -1,3 +1,5 @@
 /.idea
 /vendor
+
+# Needs to be here because of the merge plugin.
 composer.lock
