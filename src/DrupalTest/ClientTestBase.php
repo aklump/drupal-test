@@ -164,7 +164,7 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
    * @return \AKlump\DrupalTest\ClientTestBase
    *   Self for chaining.
    */
-  public function assertDomRegExp($expected, $selector, $index = 0) {
+  public function assertDomElementRegExp($expected, $selector, $index = 0) {
     static::verifyPageIsLoaded();
     static::assertRegExp($expected, $this->dom->find($selector)[$index]->innertext);
 
@@ -247,7 +247,7 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
    * @return \AKlump\DrupalTest\ClientTestBase
    *   Self for chaining.
    */
-  public function assertDomSame($expected, $selector, $index = 0) {
+  public function assertDomElementSame($expected, $selector, $index = 0) {
     static::verifyPageIsLoaded();
     static::assertSame($expected, $this->dom->find($selector)[$index]->innertext);
 

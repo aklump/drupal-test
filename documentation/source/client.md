@@ -14,15 +14,34 @@ The base URL must be set in an environment variable in order for client tests to
     $ cd tests/phpunit
     $ export TEST_BASE_URL=http://my-website.loft; phpunit -c phpunit.xml --testsuite Client
 
-If you test site is behind http authorization you must also provide that, e.g.
+If the site under test is behind http authorization you must also provide that, e.g.
     
     $ export TEST_BASE_URL=http://user:pass@my-website.loft; phpunit -c phpunit.xml --testsuite Client
 
+
+## Assert Page Content
+
+Using a string search:
+
+    $this->loadPageByUrl('collections')
+      ->assertPageContains('logo.jpg')
+
+Using CSS selectors:
+      
+    $this->loadPageByUrl('search')
+      ->assertDomElementExists('.views-widget-filter-id')
+
+## Assert HTTP Status
+
+    public function testBlogPage() {
+      $this->loadHeadByUrl('blog')->assertHttpStatus(200);
+    }
+    
 ## Response validation with JSON Schema
 
 <https://json-schema.org/latest/json-schema-validation.html#rfc.section.6.3.3>
 
-The client tests provide the means of validation using JSON Schema.  You indicate where your schema files are located in _phpunit.xml_ using the custom key `jsonschema` relative to _phpunit.xml_.  You may use globs.  You may have more than one directory listed. 
+The client tests provide the means of validation using JSON Schema.  You indicate where your schema files are located in _phpunit.xml_ using the custom key `jsonschema`.  Child nodes of `directory` are relative to _phpunit.xml_; you may use globs; you may have more than one `directory` node. 
 
     <phpunit>
         <jsonschema>
@@ -43,3 +62,4 @@ This example shows how load an endpoint that returns XML and validate that using
       $this->assertSame(123, (int) $this->xml->id);
       $this->assertSame('name', (string) $this->xml->name);
     }  
+
