@@ -67,7 +67,7 @@ while [ -h "$source" ]; do # resolve $source until the file is no longer a symli
 done
 root="$( cd -P "$( dirname "$source" )" &amp;&amp; pwd )"
 cd "$root/.."
-export TEST_BASE_URL="http://www.mysite.com"; ./vendor/bin/generate --configuration=phpunit.xml --output=mysite-manual-tests.com.pdf --tester="Josh Lewis"
+export TEST_BASE_URL="http://www.mysite.com"; ./vendor/bin/generate --configuration=phpunit.xml --output=mysite-manual-tests.loft.pdf --tester="Aaron Klump" $@
 </code></pre>
 </section>
 
@@ -83,7 +83,7 @@ export TEST_BASE_URL="http://www.mysite.com"; ./vendor/bin/generate --configurat
 </div>
   
   <div id="footer-legaleeze">
-    <p class="legaleeze center">Version: 0.1.2 &bull; Last Updated: Tue, 08 Jan 2019 13:37:38 -0800</p>
+    <p class="legaleeze center">Version: 0.1.2 &bull; Last Updated: Tue, 08 Jan 2019 18:47:45 -0800</p>
   </div>
 </footer>
 
