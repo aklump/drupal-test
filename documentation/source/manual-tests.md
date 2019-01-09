@@ -36,4 +36,4 @@ To create the PDF file for manual test running... See the [documentation](https:
     done
     root="$( cd -P "$( dirname "$source" )" && pwd )"
     cd "$root/.."
-    export TEST_BASE_URL="http://www.mysite.com"; ./vendor/bin/generate --configuration=phpunit.xml --output=mysite-manual-tests.com.pdf --tester="Josh Lewis"
+    export TEST_BASE_URL="http://www.mysite.com"; ./vendor/bin/generate --configuration=phpunit.xml --output=mysite-manual-tests.loft.pdf --tester="Aaron Klump" $@
