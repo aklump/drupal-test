@@ -49,6 +49,14 @@ $ export TEST_BASE_URL=http://my-website.loft; phpunit -c phpunit.xml --testsuit
 <pre><code>$ export TEST_BASE_URL=http://user:pass@my-website.loft; phpunit -c phpunit.xml --testsuite Client
 </code></pre>
 
+<h2>Cookies</h2>
+
+<ul>
+<li>By default a single cookie jar is shared across all client tests.</li>
+<li>To reset the cookie jar for a given class use <code>static::emptyCookieJar();</code> inside of <code>::setUp()</code> on your test class.</li>
+<li>To reset the cookie jar for a given test use <code>static::emptyCookieJar();</code> inside the test method.</li>
+</ul>
+
 <h2>Assert Page Content</h2>
 
 <p>Using a string search:</p>
@@ -111,7 +119,7 @@ $ export TEST_BASE_URL=http://my-website.loft; phpunit -c phpunit.xml --testsuit
 </div>
   
   <div id="footer-legaleeze">
-    <p class="legaleeze center">Version: 0.1.2 &bull; Last Updated: Wed, 09 Jan 2019 14:39:39 -0800</p>
+    <p class="legaleeze center">Version: 0.1.2 &bull; Last Updated: Thu, 10 Jan 2019 10:59:16 -0800</p>
   </div>
 </footer>
 

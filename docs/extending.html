@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>Extending Classes</title>
+  <link href="search/tipuesearch.css" rel="stylesheet">
+  <link href="style.css" rel="stylesheet">
+</head>
+
+<body class="page--extending">
+<header>
+  <div class="pager">
+  <a href="kernel.html" class="prev kernel">&laquo;Kernel Tests</a>
+  <a href="index.html" class="index">Index</a>
+  <a href="manual-tests.html" class="next manual-tests">Add Manual Tests&raquo;</a>
+</div>
+</header>
+
+  <div class="search__wrapper">
+  <form action="search--results.html">
+    <input type="text" class="search-input" name="q" id="tipue_search_input" autocomplete="off" required>
+  </form>
+</div>
+
+  <h1>Extending Classes</h1>
+  <div class="breadcrumb"><a href="index.html">Index</a></div>
+
+<section>
+
+<p>You may want to extend the classes for your Drupal website.</p>
+
+<ol>
+<li><p>Place your extended classes in <em>src</em> like so.</p>
+
+<pre><code>.
+└── src
+    └── module_name
+        ├── ClientTestBase.php
+        ├── KernelTestBase.php
+        └── UnitTestBase.php
+</code></pre></li>
+<li><p>Add to the autoloader in <em>composer.json</em>.</p>
+
+<pre><code>{
+    "autoload": {
+        "psr-4": {
+            "AKlump\\": "src",
+            "Drupal\\Tests\\module_name\\": "src/module_name"
+        }
+    }
+}
+</code></pre></li>
+<li><code>composer dumpautoload</code></li>
+<li><p>Now create your test classes using your extended base class instead, e.g.,</p>
+
+<pre><code>&lt;?php
+
+namespace Drupal\Tests\module_name\Metrics;
+
+use Drupal\Tests\module_name\ClientTestBase;
+
+/**
+ * Client coverage for Curriculum.
+ *
+ * @group module_name
+ * @SuppressWarnings(PHPMD.StaticAccess)
+ * @SuppressWarnings(PHPMD.TooManyPublicMethods)
+ */
+class CurriculumClientTest extends ClientTestBase { 
+... 
+</code></pre></li>
+</ol>
+</section>
+
+<div class="search__results">
+  <div id="tipue_search_content"></div>
+</div>
+
+<footer>
+  <div class="pager">
+  <a href="kernel.html" class="prev kernel">&laquo;Kernel Tests</a>
+  <a href="index.html" class="index">Index</a>
+  <a href="manual-tests.html" class="next manual-tests">Add Manual Tests&raquo;</a>
+</div>
+  
+  <div id="footer-legaleeze">
+    <p class="legaleeze center">Version: 0.1.2 &bull; Last Updated: Thu, 10 Jan 2019 10:59:17 -0800</p>
+  </div>
+</footer>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  <script src="search/tipuesearch_content.js"></script>
+  <script src="search/tipuesearch_set.js"></script>
+  <script src="search/tipuesearch.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      $('#tipue_search_input').tipuesearch();
+    });
+  </script>
+<script src="js/core.js"></script>
+</body>
+</html>
+
