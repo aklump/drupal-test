@@ -293,6 +293,16 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
   }
 
   /**
+   * Return an array of shared request headers.
+   *
+   * @return array
+   *   An array of headers shared across all requests.
+   */
+  public static function getSharedRequestHeaders() {
+    return [];
+  }
+
+  /**
    * Return a new client for returning vnd.drupal7+json.
    *
    * @return \GuzzleHttp\Client
@@ -308,9 +318,9 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
     return new Client([
       'cookies' => static::$cookieJar,
       'base_uri' => static::$baseUrl,
-      'headers' => [
-        'Accept' => 'application/html',
-      ],
+      'headers' => static::getSharedRequestHeaders() + [
+          'Accept' => 'application/html',
+        ],
     ]);
   }
 
@@ -326,9 +336,9 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
     return new Client([
       'cookies' => static::$cookieJar,
       'base_uri' => static::$baseUrl,
-      'headers' => [
-        'Accept' => 'application/xml',
-      ],
+      'headers' => static::getSharedRequestHeaders() + [
+          'Accept' => 'application/xml',
+        ],
     ]);
   }
 
@@ -346,6 +356,7 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
       $options = [
         'cookies' => static::$cookieJar,
         'base_uri' => static::$baseUrl,
+        'headers' => static::getSharedRequestHeaders(),
       ];
     }
     $client = new Client($options);
@@ -414,9 +425,9 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
     return new Client([
       'cookies' => static::$cookieJar,
       'base_uri' => static::$baseUrl,
-      'headers' => [
-        'Accept' => 'application/vnd.drupal7+json',
-      ],
+      'headers' => static::getSharedRequestHeaders() + [
+          'Accept' => 'application/vnd.drupal7+json',
+        ],
     ]);
   }
 
@@ -432,9 +443,9 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
     return new Client([
       'cookies' => static::$cookieJar,
       'base_uri' => static::$baseUrl,
-      'headers' => [
-        'Accept' => 'application/json',
-      ],
+      'headers' => static::getSharedRequestHeaders() + [
+          'Accept' => 'application/json',
+        ],
     ]);
   }
 
@@ -620,7 +631,11 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
    *   Self for chaining.
    */
   public function assertUrlRedirectsTo($redirected_url, $url) {
-    $options = ['allow_redirects' => FALSE];
+    $options = [
+      'cookies' => static::$cookieJar,
+      'allow_redirects' => FALSE,
+      'headers' => static::getSharedRequestHeaders(),
+    ];
     $url = $this->resolvePath($url);
     $client = new Client($options);
     if (empty($url)) {
