@@ -18,6 +18,11 @@ If the site under test is behind http authorization you must also provide that, 
     
     $ export TEST_BASE_URL=http://user:pass@my-website.loft; phpunit -c phpunit.xml --testsuite Client
 
+## Cookies
+
+* By default a single cookie jar is shared across all client tests.
+* To reset the cookie jar for a given class use `static::emptyCookieJar();` inside of `::setUp()` on your test class.
+* To reset the cookie jar for a given test use `static::emptyCookieJar();` inside the test method.   
 
 ## Assert Page Content
 

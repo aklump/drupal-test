@@ -3,6 +3,7 @@
 namespace AKlump\DrupalTest;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Cookie\CookieJar;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Psr7\Response;
 use JsonSchema\Validator;
@@ -31,6 +32,13 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
    * @var string
    */
   protected static $baseUrl = NULL;
+
+  /**
+   * Holds the cookie jar used by requests.
+   *
+   * @var \GuzzleHttp\Cookie\CookieJar
+   */
+  protected static $cookieJar;
 
   /**
    * Holds the response of the last remote call.
@@ -70,11 +78,21 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
   /**
    * {@inheritdoc}
    */
-  public function setUp() {
+  public static function setUpBeforeClass() {
     if (!($url = getenv('TEST_BASE_URL'))) {
-      $this->markTestSkipped('Missing environment variable: TEST_BASE_URL');
+      static::markTestSkipped('Missing environment variable: TEST_BASE_URL');
     }
     static::$baseUrl = $url;
+    if (empty(static::$cookieJar)) {
+      static::emptyCookieJar();
+    }
+  }
+
+  /**
+   * Empty the cookie jar to create a new browsing session.
+   */
+  public static function emptyCookieJar() {
+    static::$cookieJar = new CookieJar();
   }
 
   /**
@@ -286,8 +304,9 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
    *
    * @link http://docs.guzzlephp.org/en/stable/quickstart.html#using-responses
    */
-  public function getHtmlClient() {
+  public static function getHtmlClient() {
     return new Client([
+      'cookies' => static::$cookieJar,
       'base_uri' => static::$baseUrl,
       'headers' => [
         'Accept' => 'application/html',
@@ -303,8 +322,9 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
    *
    * @link http://docs.guzzlephp.org/en/stable/quickstart.html#using-responses
    */
-  public function getXmlClient() {
+  public static function getXmlClient() {
     return new Client([
+      'cookies' => static::$cookieJar,
       'base_uri' => static::$baseUrl,
       'headers' => [
         'Accept' => 'application/xml',
@@ -324,6 +344,7 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
     $options = [];
     if (strpos($url, 'http') !== 0) {
       $options = [
+        'cookies' => static::$cookieJar,
         'base_uri' => static::$baseUrl,
       ];
     }
@@ -389,8 +410,9 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
    * @return \GuzzleHttp\Client
    *   The client to use for requests.
    */
-  public function getDrupalCommandsClient() {
+  public static function getDrupalCommandsClient() {
     return new Client([
+      'cookies' => static::$cookieJar,
       'base_uri' => static::$baseUrl,
       'headers' => [
         'Accept' => 'application/vnd.drupal7+json',
@@ -406,8 +428,9 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
    *
    * @link http://docs.guzzlephp.org/en/stable/quickstart.html#using-responses
    */
-  public function getJsonClient() {
+  public static function getJsonClient() {
     return new Client([
+      'cookies' => static::$cookieJar,
       'base_uri' => static::$baseUrl,
       'headers' => [
         'Accept' => 'application/json',
