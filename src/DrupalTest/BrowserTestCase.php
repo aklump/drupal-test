@@ -2,13 +2,13 @@
 
 namespace AKlump\DrupalTest;
 
+use aik099\PHPUnit\BrowserTestCase as ParentBrowserTestCase;
 use AKlump\DrupalTest\Utilities\WebAssertProxy;
 
-
 /**
- * A trait providing common methods for the HttpTestInterface.
+ * A base class for Browser Tests.
  */
-trait HttpTestBaseTrait {
+abstract class BrowserTestCase extends ParentBrowserTestCase {
 
   /**
    * This is read in from the environment variable TEST_BASE_URL.
@@ -54,7 +54,10 @@ trait HttpTestBaseTrait {
    */
   public function resolvePath($path, $remove_authentication_credentials = FALSE) {
     if (strpos($path, 'http') !== 0) {
-      $path = rtrim(static::$baseUrl, '/') . "/$path";
+      if (substr($path, 0, 1) !== '/') {
+        throw new \RuntimeException("relative \$path must begin with a forward slash.");
+      }
+      $path = rtrim(static::$baseUrl, '/') . "$path";
       $parts = parse_url($path);
       if ($remove_authentication_credentials) {
         $auth = [];

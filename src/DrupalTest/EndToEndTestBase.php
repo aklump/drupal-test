@@ -2,7 +2,6 @@
 
 namespace AKlump\DrupalTest;
 
-use aik099\PHPUnit\BrowserTestCase;
 use AKlump\DrupalTest\Utilities\DestructiveTrait;
 use AKlump\DrupalTest\Utilities\Generators;
 use AKlump\DrupalTest\Utilities\WebAssertTrait;
@@ -12,7 +11,6 @@ use AKlump\DrupalTest\Utilities\WebAssertTrait;
  */
 abstract class EndToEndTestBase extends BrowserTestCase {
 
-  use HttpTestBaseTrait;
   use DestructiveTrait;
 
   public static $browsers = array(

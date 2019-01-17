@@ -2,7 +2,6 @@
 
 namespace AKlump\DrupalTest;
 
-use aik099\PHPUnit\BrowserTestCase;
 use AKlump\DrupalTest\Utilities\DestructiveTrait;
 use GuzzleHttp\Client;
 use GuzzleHttp\Cookie\CookieJar;
@@ -11,7 +10,7 @@ use GuzzleHttp\Psr7\Response;
 use JsonSchema\Validator;
 
 /**
- * A class to act as a client against URLs and API endpoints.
+ * A class to act as a headless client against URLs and API endpoints.
  *
  * Extend this class for test scenarios where you need to check URLs or consume
  * API endpoints.
@@ -20,7 +19,6 @@ use JsonSchema\Validator;
  */
 abstract class ClientTestBase extends BrowserTestCase {
 
-  use HttpTestBaseTrait;
   use DestructiveTrait;
 
   public static $browsers = array(
@@ -53,14 +51,6 @@ abstract class ClientTestBase extends BrowserTestCase {
    * @var null
    */
   protected $response = NULL;
-
-  /**
-   * A \simple_html_dom instance.
-   *
-   * @var \simple_html_dom
-   */
-  protected $dom;
-
 
   /**
    * Holds the response's JSON.
@@ -306,7 +296,8 @@ abstract class ClientTestBase extends BrowserTestCase {
    * @endcode
    */
   public function assertContentType($expected_type) {
-    $actual_type = strtolower($this->getSession()->getResponseHeader('Content-type'));
+    $actual_type = strtolower($this->getSession()
+      ->getResponseHeader('Content-type'));
     $this->assertSame(strtolower($expected_type), $actual_type);
 
     return $this;
@@ -449,7 +440,6 @@ abstract class ClientTestBase extends BrowserTestCase {
    * {@inheritdoc}
    */
   public function tearDown() {
-    $this->dom = NULL;
     $this->response = NULL;
     CommandAssertion::handleAssertions($this);
   }
