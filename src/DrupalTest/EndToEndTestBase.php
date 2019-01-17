@@ -30,31 +30,6 @@ abstract class EndToEndTestBase extends BrowserTestCase {
    */
   protected static $cookieJar;
 
-  protected static $generate;
-
-  /**
-   * Holds data from the generator, keyed by method name.
-   *
-   * Use this to access earlier generated data, later in the test.
-   *
-   * @var \stdClass
-   */
-  protected static $stored;
-
-  /**
-   * An extra message to use for failed WebAssert assertions.
-   *
-   * @var string
-   */
-  public $webAssertMessage;
-
-  /**
-   * Holds an instance with the current session.
-   *
-   * @var \AKlump\DrupalTest\Utilities\WebAssertProxy
-   */
-  protected $webAssert;
-
   /**
    * Holds the response of the last remote call.
    *
@@ -69,76 +44,11 @@ abstract class EndToEndTestBase extends BrowserTestCase {
    */
   protected $page;
 
-  private $generator;
-
   /**
    * {@inheritdoc}
    */
   public static function setUpBeforeClass() {
     static::handleBaseUrl();
-  }
-
-
-  /**
-   * Generate and store a value.
-   *
-   * @param string $method
-   *   Any method on \AKlump\DrupalTest\Utilities\Generators.
-   *
-   * @return mixed
-   *   The generated value, is also added as $this->stored->{$method}.
-   */
-  public function generate($method) {
-    static $generator;
-    if (empty($generator)) {
-      $generator = new Generators([
-        'baseUrl' => static::$baseUrl,
-      ]);
-    }
-    $value = $generator->{$method}();
-    $this->store($method, $value);
-
-    return $value;
-  }
-
-  /**
-   * Store/overwrite a value for later retrieval.
-   *
-   * @param string $key
-   *   The key to use in $this->stored.
-   * @param mixed $value
-   *   THe value to store.
-   *
-   * @return $this
-   *
-   * @see ::generate()
-   */
-  public function store($key, $value) {
-    if (is_null(static::$stored)) {
-      static::$stored = new \stdClass();
-    }
-    static::$stored->{$key} = $value;
-
-    return $this;
-  }
-
-  /**
-   * Return a stored value.
-   *
-   * @param string $key
-   *   The key of the stored value.
-   * @param null $default
-   *   An optional default value if not already stored.
-   *
-   * @return mixed
-   *   The stored or default value.
-   */
-  public function getStored($key, $default = NULL) {
-    if (!isset(static::$stored->{$key})) {
-      return $default;
-    }
-
-    return static::$stored->{$key};
   }
 
   /**

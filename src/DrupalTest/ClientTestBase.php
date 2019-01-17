@@ -461,7 +461,7 @@ abstract class ClientTestBase extends BrowserTestCase {
       'allow_redirects' => FALSE,
       'headers' => static::getSharedRequestHeaders(),
     ];
-    $url = $this->resolvePath($url);
+    $url = $this->resolveUrl($url);
     $client = new Client($options);
     if (empty($url)) {
       throw new \RuntimeException("\$url cannot be empty");
@@ -469,7 +469,7 @@ abstract class ClientTestBase extends BrowserTestCase {
     try {
       $response = $client->head($url);
       $location = $response->getHeader('location')[0];
-      $redirected_url = $this->resolvePath($redirected_url, TRUE);
+      $redirected_url = $this->resolveUrl($redirected_url, TRUE);
       static::assertThat($redirected_url === $location, static::isTrue(), "Failed asserting that $url redirects to $redirected_url.");
     }
     catch (ClientException $e) {
