@@ -17,7 +17,10 @@ use Sunra\PhpSimple\HtmlDomParser;
  *
  * @link http://simplehtmldom.sourceforge.net/manual.htm
  */
-abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
+abstract class ClientTestBase extends \PHPUnit_Framework_TestCase implements HttpTestInterface {
+
+  use HttpTestBaseTrait;
+  use DestructiveTrait;
 
   /**
    * Holds autodiscovered schema filepaths.
