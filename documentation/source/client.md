@@ -2,6 +2,8 @@
 
 Client tests use [Mink](http://mink.behat.org/en/latest/) for the most part, sometimes just [Guzzle](http://docs.guzzlephp.org/en/stable/).  These tests are headless.  If you need a full browser, take a look at End to End.
 
+If you can achieve your test with a Client test instead of an End to End test, it will be faster.
+
 This is a type of tests where you will be testing endpoints of an API or URLs.  Use this to check for URL statuses and headers for example.  This has the same scope as unit tests, which means you can access class constants, but no Drupal bootstrap.  Tests act as an API consumer or client of the website.  There are custom assert methods on this class to help with such testing.  These types can test for:
 
 * Redirects

@@ -29,6 +29,8 @@
 
 <p>Client tests use <a href="http://mink.behat.org/en/latest/">Mink</a> for the most part, sometimes just <a href="http://docs.guzzlephp.org/en/stable/">Guzzle</a>.  These tests are headless.  If you need a full browser, take a look at End to End.</p>
 
+<p>If you can achieve your test with a Client test instead of an End to End test, it will be faster.</p>
+
 <p>This is a type of tests where you will be testing endpoints of an API or URLs.  Use this to check for URL statuses and headers for example.  This has the same scope as unit tests, which means you can access class constants, but no Drupal bootstrap.  Tests act as an API consumer or client of the website.  There are custom assert methods on this class to help with such testing.  These types can test for:</p>
 
 <ul>
@@ -128,7 +130,7 @@ $this-&gt;loadPageByUrl('/collections')
 </div>
   
   <div id="footer-legaleeze">
-    <p class="legaleeze center">Version: 0.1.2 &bull; Last Updated: Wed, 16 Jan 2019 19:13:34 -0800</p>
+    <p class="legaleeze center">Version: 0.1.2 &bull; Last Updated: Wed, 16 Jan 2019 19:23:33 -0800</p>
   </div>
 </footer>
 

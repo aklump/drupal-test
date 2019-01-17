@@ -11,14 +11,20 @@
 
 Be very careful when modifying _phpunit.xml_, that you do not list even a single kernel test before any unit tests.  When any kernel test is run, Drupal will be bootstrapped which "pollutes" the global namespace with stuff that could bleed into your unit tests, giving them out-of-scope and misleading functions, classes, constants, etc.  In effect they could be acting like kernel tests, if you're not careful.
 
-Notice how the unit tests come before the kernel tests in the code below; client tests must also precede the Kernerl tests.
+Notice how the unit tests come before the kernel tests in the code below; client tests must also precede the Kernel tests.
 
     <testsuites>
-        <testsuite name="Unit">
-            <directory>../../web/sites/all/modules/custom/*/tests/src/Unit</directory>
-        </testsuite>
         <testsuite name="Client">
             <directory>../../web/sites/all/modules/custom/*/tests/src/Client</directory>
+        </testsuite>
+        <testsuite name="EndToEnd">
+            <directory>../web/sites/all/modules/custom/*/tests/src/EndToEnd</directory>
+            <directory>../web/sites/all/modules/custom/*/tests/src/EndToEnd/**</directory>
+            <directory>../web/sites/all/themes/*/tests/src/EndToEnd</directory>
+            <directory>../web/sites/all/themes/*/tests/src/EndToEnd/**</directory>
+        </testsuite>
+        <testsuite name="Unit">
+            <directory>../../web/sites/all/modules/custom/*/tests/src/Unit</directory>
         </testsuite>
         <testsuite name="Kernel">
             <directory>../../web/sites/all/modules/custom/*/tests/src/Kernel</directory>
