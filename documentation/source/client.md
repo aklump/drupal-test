@@ -34,7 +34,7 @@ Using a string search:
 Using CSS selectors:
       
     $this->loadPageByUrl('search')
-      ->assertDomElementExists('.views-widget-filter-id')
+      ->assertElementExists('.views-widget-filter-id')
 
 ## Assert HTTP Status
 

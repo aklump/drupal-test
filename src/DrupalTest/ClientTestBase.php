@@ -150,7 +150,7 @@ abstract class ClientTestBase extends BrowserTestCase {
    * @return \AKlump\DrupalTest\ClientTestBase
    *   Self for chaining.
    */
-  public function assertDomElementRegExp($expected, $selector, $index = 0) {
+  public function assertElementRegExp($expected, $selector, $index = 0) {
     $els = $this->els($selector);
     if (empty($els[$index])) {
       $this->fail();
@@ -169,7 +169,7 @@ abstract class ClientTestBase extends BrowserTestCase {
    * @return \AKlump\DrupalTest\ClientTestBase
    *   Self for chaining.
    */
-  public function assertDomElementNotEmpty($selector, $index = 0) {
+  public function assertElementNotEmpty($selector, $index = 0) {
     $els = $this->els($selector);
     if (empty($els[$index])) {
       $this->fail();
@@ -188,7 +188,7 @@ abstract class ClientTestBase extends BrowserTestCase {
    * @return \AKlump\DrupalTest\ClientTestBase
    *   Self for chaining.
    */
-  public function assertDomElementAttributeNotEmpty($attribute, $selector, $index = 0) {
+  public function assertElementAttributeNotEmpty($attribute, $selector, $index = 0) {
     $els = $this->els($selector);
     if (empty($els[$index])) {
       $this->fail();
@@ -211,7 +211,7 @@ abstract class ClientTestBase extends BrowserTestCase {
    * @return \AKlump\DrupalTest\ClientTestBase
    *   Self for chaining.
    */
-  public function assertDomElementSame($expected, $selector, $index = 0) {
+  public function assertElementSame($expected, $selector, $index = 0) {
     $els = $this->els($selector);
     if (empty($els[$index])) {
       $this->fail();
@@ -234,7 +234,7 @@ abstract class ClientTestBase extends BrowserTestCase {
    * @return \AKlump\DrupalTest\ClientTestBase
    *   Self for chaining.
    */
-  public function assertDomMetaTagSame($expected, $name, $attribute) {
+  public function assertMetaTagSame($expected, $name, $attribute) {
     static::assertSame($expected, $this->el('meta[name="' . $name . '"]')
       ->getAttribute('content'));
 
@@ -289,15 +289,6 @@ abstract class ClientTestBase extends BrowserTestCase {
           'Accept' => 'application/xml',
         ],
     ]);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function assertHttpStatus($status) {
-    $this->assertSame($status, $this->getSession()->getStatusCode());
-
-    return $this;
   }
 
   /**
