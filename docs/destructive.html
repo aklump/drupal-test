@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>Destructive Tests</title>
+  <link href="search/tipuesearch.css" rel="stylesheet">
+  <link href="style.css" rel="stylesheet">
+</head>
+
+<body class="page--destructive">
+<header>
+  <div class="pager">
+  <a href="CHANGELOG.html" class="prev CHANGELOG">&laquo;CHANGELOG</a>
+  <a href="index.html" class="index">Index</a>
+  <a href="end-to-end.html" class="next end-to-end">End to End Testing&raquo;</a>
+</div>
+</header>
+
+  <div class="search__wrapper">
+  <form action="search--results.html">
+    <input type="text" class="search-input" name="q" id="tipue_search_input" autocomplete="off" required>
+  </form>
+</div>
+
+  <h1>Destructive Tests</h1>
+  <div class="breadcrumb"><a href="index.html">Index</a></div>
+
+<section>
+
+<p>Use <code>\AKlump\DrupalTest\Utilities\DestructiveTrait</code> if you want to use a convention whereby certain tests will only be allowed to run against certain base URLs.  For example, you should not let end to end tests that modify the database run against production.  Such tests should be marked as destructive.</p>
+
+<ul>
+<li><p>You may mark entire classes <code>@destructive</code>, in which case all tests in the class will be skipped if the <code>TEST_BASE_URL</code> is not in the defined list.</p>
+
+<p>&lt;?php</p>
+
+<p>namespace Drupal\Tests\my_module;</p>
+
+<p>/**</p>
+
+<ul>
+<li>Ensures we can create a new user via registration modal.</li>
+<li></li>
+<li>@destructive
+*/
+class ModalRegistrationEndToEndTest extends EndToEndTestBase {
+...</li>
+</ul></li>
+<li><p>You may mark individual test methods <code>@destructive</code></p>
+
+<p>/**</p>
+
+<ul>
+<li>@destructive
+*/
+public function testCanDeleteAUser() {
+...</li>
+</ul></li>
+<li><p>You must define which <code>TEST_BASE_URL</code> values can run <code>@destructive</code> items using <em>phpunit.xml</em>.</p>
+
+<p><phpunit ... >
+      <allowDestructiveTests>
+          <url>http://mysite.local</url>
+          <url>https://stage.mysite.com</url>
+      </allowDestructiveTests>
+      ...</p></li>
+</ul>
+</section>
+
+<div class="search__results">
+  <div id="tipue_search_content"></div>
+</div>
+
+<footer>
+  <div class="pager">
+  <a href="CHANGELOG.html" class="prev CHANGELOG">&laquo;CHANGELOG</a>
+  <a href="index.html" class="index">Index</a>
+  <a href="end-to-end.html" class="next end-to-end">End to End Testing&raquo;</a>
+</div>
+  
+  <div id="footer-legaleeze">
+    <p class="legaleeze center">Version: 0.1.2 &bull; Last Updated: Wed, 16 Jan 2019 19:13:35 -0800</p>
+  </div>
+</footer>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  <script src="search/tipuesearch_content.js"></script>
+  <script src="search/tipuesearch_set.js"></script>
+  <script src="search/tipuesearch.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      $('#tipue_search_input').tipuesearch();
+    });
+  </script>
+<script src="js/core.js"></script>
+</body>
+</html>
+

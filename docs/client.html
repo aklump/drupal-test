@@ -27,6 +27,8 @@
 
 <section>
 
+<p>Client tests use <a href="http://mink.behat.org/en/latest/">Mink</a> for the most part, sometimes just <a href="http://docs.guzzlephp.org/en/stable/">Guzzle</a>.  These tests are headless.  If you need a full browser, take a look at End to End.</p>
+
 <p>This is a type of tests where you will be testing endpoints of an API or URLs.  Use this to check for URL statuses and headers for example.  This has the same scope as unit tests, which means you can access class constants, but no Drupal bootstrap.  Tests act as an API consumer or client of the website.  There are custom assert methods on this class to help with such testing.  These types can test for:</p>
 
 <ul>
@@ -57,24 +59,31 @@ $ export TEST_BASE_URL=http://my-website.loft; phpunit -c phpunit.xml --testsuit
 <li>To reset the cookie jar for a given test use <code>static::emptyCookieJar();</code> inside the test method.</li>
 </ul>
 
+<h2>Assertions</h2>
+
+<p>In addition to the usual assertions, you will find some new <code>assert*</code> methods on the class, see the code for more information.  Also be aware that you have access to all of Mink's <a href="https://github.com/Behat/Mink/blob/master/src/Behat/Mink/WebAssert.php">WebAssert</a> methods when you use <code>assert()</code>.  See examples to follow.</p>
+
 <h2>Assert Page Content</h2>
 
 <p>Using a string search:</p>
 
-<pre><code>$this-&gt;loadPageByUrl('collections')
-  -&gt;assertPageContains('logo.jpg')
+<pre><code>$this-&gt;loadPageByUrl('/collections')
+  -&gt;assert()-&gt;responseContains('logo.jpg')
+
+$this-&gt;loadPageByUrl('/collections')
+  -&gt;assert()-&gt;pageTextContains('Welcome home!')
 </code></pre>
 
 <p>Using CSS selectors:</p>
 
-<pre><code>$this-&gt;loadPageByUrl('search')
-  -&gt;assertDomElementExists('.views-widget-filter-id')
+<pre><code>$this-&gt;loadPageByUrl('/search')
+  -&gt;assertElementExists('.views-widget-filter-id')
 </code></pre>
 
 <h2>Assert HTTP Status</h2>
 
 <pre><code>public function testBlogPage() {
-  $this-&gt;loadHeadByUrl('blog')-&gt;assertHttpStatus(200);
+  $this-&gt;loadPageByUrl('/blog')-&gt;assert()-&gt;statusCodeEquals(200);
 }
 </code></pre>
 
@@ -119,7 +128,7 @@ $ export TEST_BASE_URL=http://my-website.loft; phpunit -c phpunit.xml --testsuit
 </div>
   
   <div id="footer-legaleeze">
-    <p class="legaleeze center">Version: 0.1.2 &bull; Last Updated: Thu, 10 Jan 2019 18:10:56 -0800</p>
+    <p class="legaleeze center">Version: 0.1.2 &bull; Last Updated: Wed, 16 Jan 2019 19:13:34 -0800</p>
   </div>
 </footer>
 
