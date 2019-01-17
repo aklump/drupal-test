@@ -19,6 +19,25 @@ class Generators {
   }
 
   /**
+   * Generate a name with a leading capital.
+   *
+   * @param int $length
+   *   The length of the name
+   *
+   * @return string
+   */
+  public function name($length = 5) {
+    $generator = new PWGenerator();
+    $generator->setMinLength($length);
+    $generator->setNumberOfUpperCaseLetters(0);
+    $generator->setNumberOfNumbers(0);
+    $generator->setNumberOfSymbols(0);
+    $this->config['name'] = ucfirst(strtolower($generator->generate()));
+
+    return $this->config['name'];
+  }
+
+  /**
    * Generate a username.
    *
    * @param int $length
