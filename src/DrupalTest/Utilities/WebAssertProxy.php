@@ -2,7 +2,8 @@
 
 namespace AKlump\DrupalTest\Utilities;
 
-use AKlump\DrupalTest\EndToEndTestBase;
+use aik099\PHPUnit\BrowserTestCase;
+use AKlump\DrupalTest\HttpTestInterface;
 use Behat\Mink\Exception\ExpectationException;
 use Behat\Mink\Session;
 use Behat\Mink\WebAssert;
@@ -17,12 +18,12 @@ class WebAssertProxy {
   /**
    * WebAssertProxy constructor.
    *
-   * @param \AKlump\DrupalTest\EndToEndTestBase $testcase
+   * @param \AKlump\DrupalTest\HttpTestInterface $testcase
    *   The PHPUnit test case using these asserts.
    * @param \Behat\Mink\Session $session
    *   The Mink session.
    */
-  public function __construct(EndToEndTestBase $testcase, Session $session) {
+  public function __construct(BrowserTestCase $testcase, Session $session) {
     $this->testcase = $testcase;
     $this->session = $session;
   }
@@ -35,7 +36,7 @@ class WebAssertProxy {
    * @param array $args
    *   The arguments to send to the method.
    *
-   * @return \AKlump\DrupalTest\EndToEndTestBase
+   * @return \AKlump\DrupalTest\HttpTestInterface
    *   An instance for chaining.
    *
    * @see $this->testcase->assertMessage
