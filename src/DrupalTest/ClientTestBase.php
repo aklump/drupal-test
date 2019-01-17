@@ -2,12 +2,13 @@
 
 namespace AKlump\DrupalTest;
 
+use AKlump\DrupalTest\Utilities\DestructiveTrait;
+use AKlump\DrupalTest\Utilities\NodeElement;
 use GuzzleHttp\Client;
 use GuzzleHttp\Cookie\CookieJar;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Psr7\Response;
 use JsonSchema\Validator;
-use Sunra\PhpSimple\HtmlDomParser;
 
 /**
  * A class to act as a client against URLs and API endpoints.
@@ -28,13 +29,6 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase implements Htt
    * @var array
    */
   protected static $jsonSchema = [];
-
-  /**
-   * This is read in from the environment variable TEST_BASE_URL.
-   *
-   * @var string
-   */
-  protected static $baseUrl = NULL;
 
   /**
    * Holds the cookie jar used by requests.
@@ -82,10 +76,7 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase implements Htt
    * {@inheritdoc}
    */
   public static function setUpBeforeClass() {
-    if (!($url = getenv('TEST_BASE_URL'))) {
-      static::markTestSkipped('Missing environment variable: TEST_BASE_URL');
-    }
-    static::$baseUrl = $url;
+    static::handleBaseUrl();
     if (empty(static::$cookieJar)) {
       static::emptyCookieJar();
     }
@@ -99,19 +90,7 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase implements Htt
   }
 
   /**
-   * Load a DOM from an URL.
-   *
-   * This must be called in any test method using any assertDom* methods.
-   * This loads the following:
-   *   - $this->dom
-   *   - $this->html
-   *   - $this->response.
-   *
-   * @param string $url
-   *   The URL to load into the DOM.
-   *
-   * @return \AKlump\DrupalTest\ClientTestBase
-   *   Self for chaining.
+   * {@inheritdoc}
    */
   public function loadPageByUrl($url) {
     $this->response = $this->getHtmlClient()->get($url);
@@ -193,16 +172,11 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase implements Htt
   }
 
   /**
-   * Assert a loaded page contains a string.
-   *
-   * @param string $expected
-   *   The string to search for.
-   *
-   * @return $this
+   * {@inheritdoc}
    */
-  public function assertPageContains($expected) {
+  public function assertPageContains($expected, $failure_message = '') {
     static::verifyPageIsLoaded();
-    static::assertContains($expected, $this->html);
+    static::assertContains($expected, $this->html, $failure_message);
 
     return $this;
   }
@@ -377,18 +351,7 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase implements Htt
   }
 
   /**
-   * Assert an HTTP status.
-   *
-   * @param int $status
-   *   The desired status to pass.
-   *
-   * @return $this
-   *   Self for chaining.
-   *
-   * @code
-   * $this->loadHeadByUrl('get/discussion-guide/22')
-   *   ->assertHttpStatus(200);
-   * @endcode
+   * {@inheritdoc}
    */
   public function assertHttpStatus($status) {
     $this->assertSame($status, $this->response->getStatusCode());
@@ -655,6 +618,13 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase implements Htt
     }
 
     return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function el($css_selector) {
+    return NodeElement::import($this->dom->filter($css_selector)->getNode(0));
   }
 
 }
