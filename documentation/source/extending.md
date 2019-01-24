@@ -8,6 +8,7 @@ You may want to extend the classes for your Drupal website.
         └── src
             └── module_name
                 ├── ClientTestBase.php
+                ├── EndToEndTestBase.php
                 ├── KernelTestBase.php
                 └── UnitTestBase.php
                 

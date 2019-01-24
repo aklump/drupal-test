@@ -2,22 +2,34 @@
 
 namespace AKlump\DrupalTest;
 
+use AKlump\DrupalTest\Utilities\DestructiveTrait;
 use GuzzleHttp\Client;
 use GuzzleHttp\Cookie\CookieJar;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Psr7\Response;
 use JsonSchema\Validator;
-use Sunra\PhpSimple\HtmlDomParser;
 
 /**
- * A class to act as a client against URLs and API endpoints.
+ * A class to act as a headless client against URLs and API endpoints.
  *
  * Extend this class for test scenarios where you need to check URLs or consume
  * API endpoints.
  *
  * @link http://simplehtmldom.sourceforge.net/manual.htm
  */
-abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
+abstract class ClientTestBase extends BrowserTestCase {
+
+  use DestructiveTrait;
+
+  public static $browsers = array(
+    array(
+      'driver' => 'goutte',
+      'driverOptions' => array(
+        'server_parameters' => array(),
+        'guzzle_parameters' => array(),
+      ),
+    ),
+  );
 
   /**
    * Holds autodiscovered schema filepaths.
@@ -25,13 +37,6 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
    * @var array
    */
   protected static $jsonSchema = [];
-
-  /**
-   * This is read in from the environment variable TEST_BASE_URL.
-   *
-   * @var string
-   */
-  protected static $baseUrl = NULL;
 
   /**
    * Holds the cookie jar used by requests.
@@ -46,20 +51,6 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
    * @var null
    */
   protected $response = NULL;
-
-  /**
-   * A \simple_html_dom instance.
-   *
-   * @var \simple_html_dom
-   */
-  protected $dom;
-
-  /**
-   * The loaded html document from loadPageByUrl.
-   *
-   * @var string
-   */
-  protected $html;
 
   /**
    * Holds the response's JSON.
@@ -79,14 +70,12 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
    * {@inheritdoc}
    */
   public static function setUpBeforeClass() {
-    if (!($url = getenv('TEST_BASE_URL'))) {
-      static::markTestSkipped('Missing environment variable: TEST_BASE_URL');
-    }
-    static::$baseUrl = $url;
+    static::handleBaseUrl();
     if (empty(static::$cookieJar)) {
       static::emptyCookieJar();
     }
   }
+
 
   /**
    * Empty the cookie jar to create a new browsing session.
@@ -95,28 +84,6 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
     static::$cookieJar = new CookieJar();
   }
 
-  /**
-   * Load a DOM from an URL.
-   *
-   * This must be called in any test method using any assertDom* methods.
-   * This loads the following:
-   *   - $this->dom
-   *   - $this->html
-   *   - $this->response.
-   *
-   * @param string $url
-   *   The URL to load into the DOM.
-   *
-   * @return \AKlump\DrupalTest\ClientTestBase
-   *   Self for chaining.
-   */
-  public function loadPageByUrl($url) {
-    $this->response = $this->getHtmlClient()->get($url);
-    $this->html = $this->response->getBody()->__toString();
-    $this->dom = HtmlDomParser::str_get_html($this->html);
-
-    return $this;
-  }
 
   /**
    * Load a remote URL's response XML.
@@ -161,15 +128,6 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * Mark test as incomplete if the dom has not yet been loaded.
-   */
-  public function verifyPageIsLoaded() {
-    if (empty($this->dom)) {
-      static::markTestIncomplete('DOM not loaded!');
-    }
-  }
-
-  /**
    * Assert the inner html of a DOM node matches a regular expression.
    *
    * @param string $expected
@@ -182,24 +140,12 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
    * @return \AKlump\DrupalTest\ClientTestBase
    *   Self for chaining.
    */
-  public function assertDomElementRegExp($expected, $selector, $index = 0) {
-    static::verifyPageIsLoaded();
-    static::assertRegExp($expected, $this->dom->find($selector)[$index]->innertext);
-
-    return $this;
-  }
-
-  /**
-   * Assert a loaded page contains a string.
-   *
-   * @param string $expected
-   *   The string to search for.
-   *
-   * @return $this
-   */
-  public function assertPageContains($expected) {
-    static::verifyPageIsLoaded();
-    static::assertContains($expected, $this->html);
+  public function assertElementRegExp($expected, $selector, $index = 0) {
+    $els = $this->els($selector);
+    if (empty($els[$index])) {
+      $this->fail();
+    }
+    static::assertRegExp($expected, $els[$index]->getHtml());
 
     return $this;
   }
@@ -213,9 +159,12 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
    * @return \AKlump\DrupalTest\ClientTestBase
    *   Self for chaining.
    */
-  public function assertDomElementNotEmpty($selector, $index = 0) {
-    static::verifyPageIsLoaded();
-    self::assertNotEmpty(trim($this->dom->find($selector)[$index]->innertext), "$selector is not empty.");
+  public function assertElementNotEmpty($selector, $index = 0) {
+    $els = $this->els($selector);
+    if (empty($els[$index])) {
+      $this->fail();
+    }
+    self::assertNotEmpty(trim($els[$index]->getText()), "$selector is not empty.");
 
     return $this;
   }
@@ -229,25 +178,12 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
    * @return \AKlump\DrupalTest\ClientTestBase
    *   Self for chaining.
    */
-  public function assertDomElementAttributeNotEmpty($attribute, $selector, $index = 0) {
-    static::verifyPageIsLoaded();
-    self::assertThat(!empty(trim($this->dom->find($selector)[$index]->{$attribute})), self::isTrue(), "$selector.$attribute is not empty.");
-
-    return $this;
-  }
-
-  /**
-   * Assert an element is found in the DOM by CSS selector.
-   *
-   * @param string $selector
-   *   A CSS selector of the element you want to check for.
-   *
-   * @return \AKlump\DrupalTest\ClientTestBase
-   *   Self for chaining.
-   */
-  public function assertDomElementExists($selector) {
-    static::verifyPageIsLoaded();
-    self::assertThat(!empty($this->dom->find($selector)), self::isTrue(), "$selector exists in the DOM.");
+  public function assertElementAttributeNotEmpty($attribute, $selector, $index = 0) {
+    $els = $this->els($selector);
+    if (empty($els[$index])) {
+      $this->fail();
+    }
+    self::assertThat(!empty(trim($els[$index]->getAttribute($attribute))), self::isTrue(), "$selector.$attribute is not empty.");
 
     return $this;
   }
@@ -265,9 +201,12 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
    * @return \AKlump\DrupalTest\ClientTestBase
    *   Self for chaining.
    */
-  public function assertDomElementSame($expected, $selector, $index = 0) {
-    static::verifyPageIsLoaded();
-    static::assertSame($expected, $this->dom->find($selector)[$index]->innertext);
+  public function assertElementSame($expected, $selector, $index = 0) {
+    $els = $this->els($selector);
+    if (empty($els[$index])) {
+      $this->fail();
+    }
+    static::assertSame($expected, $els[$index]->getHtml());
 
     return $this;
   }
@@ -285,9 +224,9 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
    * @return \AKlump\DrupalTest\ClientTestBase
    *   Self for chaining.
    */
-  public function assertDomMetaTagSame($expected, $name, $attribute) {
-    static::verifyPageIsLoaded();
-    static::assertSame($expected, $this->dom->find('meta[name="' . $name . '"]')[0]->content);
+  public function assertMetaTagSame($expected, $name, $attribute) {
+    static::assertSame($expected, $this->el('meta[name="' . $name . '"]')
+      ->getAttribute('content'));
 
     return $this;
   }
@@ -343,60 +282,9 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * Load an URL as $this->response.
-   *
-   * @param string $url
-   *   May be absolute (begins with http) or local to the Drupal site.
-   *
-   * @return $this
-   */
-  public function loadHeadByUrl($url) {
-    $options = [];
-    if (strpos($url, 'http') !== 0) {
-      $options = [
-        'cookies' => static::$cookieJar,
-        'base_uri' => static::$baseUrl,
-        'headers' => static::getSharedRequestHeaders(),
-      ];
-    }
-    $client = new Client($options);
-    if (empty($url)) {
-      throw new \RuntimeException("\$url cannot be empty");
-    }
-    try {
-      $this->response = $client->head($url);
-    }
-    catch (ClientException $e) {
-      $this->response = $e->getResponse();
-    }
-
-    return $this;
-  }
-
-  /**
-   * Assert an HTTP status.
-   *
-   * @param int $status
-   *   The desired status to pass.
-   *
-   * @return $this
-   *   Self for chaining.
-   *
-   * @code
-   * $this->loadHeadByUrl('get/discussion-guide/22')
-   *   ->assertHttpStatus(200);
-   * @endcode
-   */
-  public function assertHttpStatus($status) {
-    $this->assertSame($status, $this->response->getStatusCode());
-
-    return $this;
-  }
-
-  /**
    * Assert content type on $this->response.
    *
-   * @param string $header
+   * @param string $expected_type
    *   This will be matched case insensitively.
    *
    * @return $this
@@ -407,10 +295,10 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
    *   ->assertContentType('application/pdf');
    * @endcode
    */
-  public function assertContentType($header) {
-    $type = $this->response->getHeader('Content-type');
-    $type = strtolower(reset($type));
-    $this->assertSame(strtolower($header), $type);
+  public function assertContentType($expected_type) {
+    $actual_type = strtolower($this->getSession()
+      ->getResponseHeader('Content-type'));
+    $this->assertSame(strtolower($expected_type), $actual_type);
 
     return $this;
   }
@@ -549,74 +437,11 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * Check a local URL for an http status code.
-   *
-   * @param int $http_status
-   *   The expected status code.
-   * @param string $local_url
-   *   The relative from drupal root.
-   *
-   * @deprecated Use ::loadHeadByUrl && ::assertHttpStatus instead.
-   */
-  public function assertLocalUrlStatus($http_status, $local_url) {
-    $this->assertSame($http_status, $this->loadHeadByUrl($local_url)->response->getStatusCode());
-  }
-
-  /**
-   * Check a remote URL for an http status code.
-   *
-   * @param int $http_status
-   *   The expected status code.
-   * @param string $url
-   *   The absolute url.
-   *
-   * @deprecated Use ::loadHeadByUrl && ::assertHttpStatus instead.
-   */
-  public function assertRemoteUrlStatus($http_status, $url) {
-    $this->assertSame($http_status, $this->loadHeadByUrl($url)->response->getStatusCode());
-  }
-
-  /**
    * {@inheritdoc}
    */
   public function tearDown() {
-    $this->dom = NULL;
     $this->response = NULL;
     CommandAssertion::handleAssertions($this);
-  }
-
-  /**
-   * Prepend the baseUrl to paths not beginning with http.
-   *
-   * @param string $path
-   *   The path to prepend to if local.
-   * @param bool $remove_authentication_credentials
-   *   True to remove http authentication from absolute paths.
-   *
-   * @return string
-   *   The resolved or original path.
-   */
-  private function resolvePath($path, $remove_authentication_credentials = FALSE) {
-    if (strpos($path, 'http') !== 0) {
-      $path = rtrim(static::$baseUrl, '/') . "/$path";
-      $parts = parse_url($path);
-      if ($remove_authentication_credentials) {
-        $auth = [];
-        if (!empty($parts['user'])) {
-          $auth[] = $parts['user'];
-        }
-        if (!empty($parts['pass'])) {
-          $auth[] = $parts['pass'];
-        }
-        if ($auth) {
-          $find = $parts['scheme'] . '://' . implode(':', $auth) . '@';
-          $replace = $parts['scheme'] . '://';
-          $path = str_replace($find, $replace, $path);
-        }
-      }
-    }
-
-    return $path;
   }
 
   /**
@@ -636,7 +461,7 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
       'allow_redirects' => FALSE,
       'headers' => static::getSharedRequestHeaders(),
     ];
-    $url = $this->resolvePath($url);
+    $url = $this->resolveUrl($url);
     $client = new Client($options);
     if (empty($url)) {
       throw new \RuntimeException("\$url cannot be empty");
@@ -644,7 +469,7 @@ abstract class ClientTestBase extends \PHPUnit_Framework_TestCase {
     try {
       $response = $client->head($url);
       $location = $response->getHeader('location')[0];
-      $redirected_url = $this->resolvePath($redirected_url, TRUE);
+      $redirected_url = $this->resolveUrl($redirected_url, TRUE);
       static::assertThat($redirected_url === $location, static::isTrue(), "Failed asserting that $url redirects to $redirected_url.");
     }
     catch (ClientException $e) {

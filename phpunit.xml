@@ -24,16 +24,19 @@
         timeoutForLargeTests="60"
         verbose="true">
     <testsuites>
-        <!--Client tests must come first-->
         <testsuite name="Client">
             <directory>../web/sites/all/modules/custom/*/tests/src/Client</directory>
             <directory>../web/sites/all/themes/*/tests/src/Client</directory>
         </testsuite>
+        <testsuite name="EndToEnd">
+            <directory>../web/sites/all/modules/custom/*/tests/src/EndToEnd</directory>
+            <directory>../web/sites/all/themes/*/tests/src/EndToEnd</directory>
+        </testsuite>
+        <!--Unit tests must come before all Kernel tests.-->
         <testsuite name="Unit">
             <directory>../web/sites/all/modules/custom/*/tests/src/Unit</directory>
             <directory>../web/sites/all/themes/*/tests/src/Unit</directory>
         </testsuite>
-        <!--Kernel tests must come last-->
         <testsuite name="Kernel">
             <directory>../web/sites/all/modules/custom/*/tests/src/Kernel</directory>
             <directory>../web/sites/all/themes/*/tests/src/Kernel</directory>
