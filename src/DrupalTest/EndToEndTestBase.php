@@ -3,8 +3,8 @@
 namespace AKlump\DrupalTest;
 
 use AKlump\DrupalTest\Utilities\DestructiveTrait;
-use AKlump\DrupalTest\Utilities\Generators;
 use AKlump\DrupalTest\Utilities\WebAssertTrait;
+use GuzzleHttp\Client;
 
 /**
  * A class to interact with the browser for forms and navigation.
@@ -49,6 +49,27 @@ abstract class EndToEndTestBase extends BrowserTestCase {
    */
   public static function setUpBeforeClass() {
     static::handleBaseUrl();
+    if (!static::isBrowserOnline()) {
+      self::markTestSkipped('Selenium server is offline.');
+    }
+  }
+
+  /**
+   * Verify if the Selenium browser server is online or not.
+   *
+   * @return bool
+   *   True if online, false otherwise.
+   */
+  public static function isBrowserOnline() {
+    $client = new Client();
+    try {
+      $response = $client->get('http://127.0.0.1:4444/wd/hub/static/resource/hub.html');
+    }
+    catch (\Exception $exception) {
+      return FALSE;
+    }
+
+    return $response->getStatusCode() === 200;
   }
 
   /**
