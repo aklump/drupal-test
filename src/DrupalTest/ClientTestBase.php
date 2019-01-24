@@ -468,9 +468,12 @@ abstract class ClientTestBase extends BrowserTestCase {
     }
     try {
       $response = $client->head($url);
-      $location = $response->getHeader('location')[0];
-      $redirected_url = $this->resolveUrl($redirected_url, TRUE);
-      static::assertThat($redirected_url === $location, static::isTrue(), "Failed asserting that $url redirects to $redirected_url.");
+      $location = $response->getHeader('location');
+      if (!empty($location)) {
+        $location = reset($location);
+        $redirected_url = $this->resolveUrl($redirected_url, TRUE);
+      }
+      static::assertThat($redirected_url === $location, static::isTrue(), "Failed asserting that $url redirects to $redirected_url");
     }
     catch (ClientException $e) {
       $this->fail($e->getMessage());
