@@ -42,6 +42,16 @@ For a module to be unit testable it must have a _composer.json_ file, which auto
                 ]
             }
         }
+        
+### Add the module file as an autoload file
+
+If you are unit testing a module that does not use classes, but functions and it has no dependencies, you do not need to add it's composer.json file to projects _composer.json_.  Instead you can tell this project to autoload the module files that have the functions you need to test, e.g.
+
+        "autoload-dev": {
+            "files": [
+                "../web/sites/all/modules/custom/twiggy/twiggy.module"
+            ]
+        },        
 
 ## Must Test Classes Test a Single Class?
 
