@@ -10,9 +10,9 @@
 <body class="page--client">
 <header>
   <div class="pager">
-  <a href="unit.html" class="prev unit">&laquo;Unit Tests        </a>
+  <a href="modules.html" class="prev modules">&laquo;How to Setup Testing of Modules and Themes</a>
   <a href="index.html" class="index">Index</a>
-  <a href="kernel.html" class="next kernel">Kernel Tests&raquo;</a>
+  <a href="end-to-end.html" class="next end-to-end">End to End Testing&raquo;</a>
 </div>
 </header>
 
@@ -63,59 +63,7 @@ $ export TEST_BASE_URL=http://my-website.loft; phpunit -c phpunit.xml --testsuit
 
 <h2>Assertions</h2>
 
-<p>In addition to the usual assertions, you will find some new <code>assert*</code> methods on the class, see the code for more information.  Also be aware that you have access to all of Mink's <a href="https://github.com/Behat/Mink/blob/master/src/Behat/Mink/WebAssert.php">WebAssert</a> methods when you use <code>assert()</code>.  See examples to follow.</p>
-
-<h2>Assert Page Content</h2>
-
-<p>Using a string search:</p>
-
-<pre><code>$this-&gt;loadPageByUrl('/collections')
-  -&gt;assert()-&gt;responseContains('logo.jpg')
-
-$this-&gt;loadPageByUrl('/collections')
-  -&gt;assert()-&gt;pageTextContains('Welcome home!')
-</code></pre>
-
-<p>Using CSS selectors:</p>
-
-<pre><code>$this-&gt;loadPageByUrl('/search')
-  -&gt;assertElementExists('.views-widget-filter-id')
-</code></pre>
-
-<h2>Assert HTTP Status</h2>
-
-<pre><code>public function testBlogPage() {
-  $this-&gt;loadPageByUrl('/blog')-&gt;assert()-&gt;statusCodeEquals(200);
-}
-</code></pre>
-
-<h2>Response validation with JSON Schema</h2>
-
-<p><a href="https://json-schema.org/latest/json-schema-validation.html#rfc.section.6.3.3">https://json-schema.org/latest/json-schema-validation.html#rfc.section.6.3.3</a></p>
-
-<p>The client tests provide the means of validation using JSON Schema.  You indicate where your schema files are located in <em>phpunit.xml</em> using the custom key <code>jsonschema</code>.  Child nodes of <code>directory</code> are relative to <em>phpunit.xml</em>; you may use globs; you may have more than one <code>directory</code> node.</p>
-
-<pre><code>&lt;phpunit&gt;
-    &lt;jsonschema&gt;
-        &lt;directory&gt;../web/sites/all/modules/custom/*/tests/schema&lt;/directory&gt;
-    &lt;/jsonschema&gt;
-&lt;/phpunit&gt;
-</code></pre>
-
-<p>Then to validate an URL do something like the following:</p>
-
-<h3>Validating XML Responses</h3>
-
-<p>This example shows how load an endpoint that returns XML and validate that using a JSON Schema; then it checks for specific values in the XML.</p>
-
-<pre><code>public function testXMLEndpoint() {
-  $this-&gt;loadXmlByUrl('api/1/some/endpoint')
-    -&gt;assertResponseMatchesSchema('resource.json');
-
-  $this-&gt;assertSame(123, (int) $this-&gt;xml-&gt;id);
-  $this-&gt;assertSame('name', (string) $this-&gt;xml-&gt;name);
-}  
-</code></pre>
+<p>In addition to the usual <em>PHPUnit</em> assertions, you will find some new <code>assert*</code> methods on the class, see the code for more information.  Also be aware that you have access to all of Mink's <a href="https://github.com/Behat/Mink/blob/master/src/Behat/Mink/WebAssert.php">WebAssert</a> methods when you use <code>assert()</code>.  See examples to follow.</p>
 </section>
 
 <div class="search__results">
@@ -124,13 +72,13 @@ $this-&gt;loadPageByUrl('/collections')
 
 <footer>
   <div class="pager">
-  <a href="unit.html" class="prev unit">&laquo;Unit Tests        </a>
+  <a href="modules.html" class="prev modules">&laquo;How to Setup Testing of Modules and Themes</a>
   <a href="index.html" class="index">Index</a>
-  <a href="kernel.html" class="next kernel">Kernel Tests&raquo;</a>
+  <a href="end-to-end.html" class="next end-to-end">End to End Testing&raquo;</a>
 </div>
   
   <div id="footer-legaleeze">
-    <p class="legaleeze center">Version: 0.2.4 &bull; Last Updated: Thu, 24 Jan 2019 11:42:44 -0800</p>
+    <p class="legaleeze center">Version: 0.2.5 &bull; Last Updated: Thu, 21 Feb 2019 20:22:03 -0800</p>
   </div>
 </footer>
 
@@ -139,9 +87,9 @@ $this-&gt;loadPageByUrl('/collections')
   <script src="search/tipuesearch_set.js"></script>
   <script src="search/tipuesearch.min.js"></script>
   <script>
-    $(document).ready(function () {
-      $('#tipue_search_input').tipuesearch();
-    });
+    $(document).ready(function() {
+      $('#tipue_search_input').tipuesearch()
+    })
   </script>
 <script src="js/core.js"></script>
 </body>

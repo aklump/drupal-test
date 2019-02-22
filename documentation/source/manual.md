@@ -13,11 +13,27 @@ This project uses [aklump/manual-test](https://github.com/aklump/manual-test) fo
               <tester>{{ default tester name }}</tester>
               <output>{{ path to pdf output file }}</output>
               <testsuite name="Manual">
+                  <directory>../web/sites/all/modules/custom/*/tests/src/Manual</directory>
                   <directory>../web/sites/all/modules/custom/*/tests/src/Manual/*</directory>
               </testsuite>
           </manualtests>
         </phpunit>
-    
+
+1. Here is an example for a Drupal 8 site.
+
+        <phpunit ...>
+          ...
+          <manualtests>
+              <title>www.mysite.org</title>
+              <tester>Aaron Klump</tester>
+              <output>../private/default/mysite-manual-tests.pdf</output>
+              <testsuite name="Manual">
+                  <directory>../web/modules/custom/*/tests/src/Manual</directory>
+                  <directory>../web/modules/custom/*/tests/src/Manual/*</directory>
+              </testsuite>
+          </manualtests>
+        </phpunit>
+                
 ## Generate tests
 
 To create the PDF file for manual test running... See the [documentation](https://github.com/aklump/manual-test) for more info.

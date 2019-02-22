@@ -10,9 +10,9 @@
 <body class="page--extending">
 <header>
   <div class="pager">
-  <a href="end-to-end.html" class="prev end-to-end">&laquo;End to End Testing</a>
+  <a href="destructive.html" class="prev destructive">&laquo;Destructive Tests</a>
   <a href="index.html" class="index">Index</a>
-  <a href="manual-tests.html" class="next manual-tests">Add Manual Tests&raquo;</a>
+  <a href="cs--client.html" class="next cs--client">Cheatsheet for Client Tests&raquo;</a>
 </div>
 </header>
 
@@ -27,20 +27,33 @@
 
 <section>
 
-<p>You may want to extend the classes for your Drupal website.</p>
+<p>You may want to extend the classes for your Drupal website.  For example you may want to add a method that can be shared by all end to end tests, client, etc.</p>
 
 <ol>
-<li><p>Place your extended classes in <em>src</em> like so.</p>
+<li><p>Place your extended classes in the <em>src</em> directory of this project like so. Place it in a folder that is namespaced with a logical name related to your project.</p>
 
 <pre><code>.
 └── src
+    ├── DrupalTest
+    │   ├── ...
     └── module_name
         ├── ClientTestBase.php
         ├── EndToEndTestBase.php
         ├── KernelTestBase.php
         └── UnitTestBase.php
 </code></pre></li>
-<li><p>Add to the autoloader in <em>composer.json</em>.</p>
+<li><p>Make sure your classes do extend the parent:</p>
+
+<pre><code>&lt;?php
+
+namespace Drupal\Tests\module_name;
+
+use \AKlump\DrupalTest\ClientTestBase as Parent;
+
+abstract class ClientTest extends Parent { 
+  ... 
+</code></pre></li>
+<li><p>Add your namespace to the autoloader in <em>composer.json</em> so your extended classes can be located.</p>
 
 <pre><code>{
     "autoload": {
@@ -68,7 +81,7 @@ use Drupal\Tests\module_name\ClientTestBase;
  * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  */
 class CurriculumClientTest extends ClientTestBase { 
-... 
+  ... 
 </code></pre></li>
 </ol>
 </section>
@@ -79,13 +92,13 @@ class CurriculumClientTest extends ClientTestBase {
 
 <footer>
   <div class="pager">
-  <a href="end-to-end.html" class="prev end-to-end">&laquo;End to End Testing</a>
+  <a href="destructive.html" class="prev destructive">&laquo;Destructive Tests</a>
   <a href="index.html" class="index">Index</a>
-  <a href="manual-tests.html" class="next manual-tests">Add Manual Tests&raquo;</a>
+  <a href="cs--client.html" class="next cs--client">Cheatsheet for Client Tests&raquo;</a>
 </div>
   
   <div id="footer-legaleeze">
-    <p class="legaleeze center">Version: 0.2.4 &bull; Last Updated: Thu, 24 Jan 2019 11:42:45 -0800</p>
+    <p class="legaleeze center">Version: 0.2.5 &bull; Last Updated: Thu, 21 Feb 2019 20:22:05 -0800</p>
   </div>
 </footer>
 
@@ -94,9 +107,9 @@ class CurriculumClientTest extends ClientTestBase {
   <script src="search/tipuesearch_set.js"></script>
   <script src="search/tipuesearch.min.js"></script>
   <script>
-    $(document).ready(function () {
-      $('#tipue_search_input').tipuesearch();
-    });
+    $(document).ready(function() {
+      $('#tipue_search_input').tipuesearch()
+    })
   </script>
 <script src="js/core.js"></script>
 </body>

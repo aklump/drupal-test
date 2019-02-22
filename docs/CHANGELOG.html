@@ -10,7 +10,7 @@
 <body class="page--changelog">
 <header>
   <div class="pager">
-  <a href="kernel.html" class="prev kernel">&laquo;Kernel Tests</a>
+  <a href="manual.html" class="prev manual">&laquo;Add Manual Tests</a>
   <a href="index.html" class="index">Index</a>
   <a href="destructive.html" class="next destructive">Destructive Tests&raquo;</a>
 </div>
@@ -25,7 +25,15 @@
   <h1>CHANGELOG</h1>
   <div class="breadcrumb"><a href="index.html">Index</a></div>
 
-<section><h2>0.2.0</h2>
+<section><h2>0.2.5</h2>
+
+<ul>
+<li><p>You should manually update <em>composer.json</em> with the following <code>require</code>:</p>
+
+<p>"aklump/manual-test": "^1.2.1",</p></li>
+</ul>
+
+<h2>0.2.0</h2>
 
 <ul>
 <li><code>TestClass::$schema</code> has been replaced with <code>TestClass::getSchema()</code>.</li>
@@ -39,13 +47,13 @@
 
 <footer>
   <div class="pager">
-  <a href="kernel.html" class="prev kernel">&laquo;Kernel Tests</a>
+  <a href="manual.html" class="prev manual">&laquo;Add Manual Tests</a>
   <a href="index.html" class="index">Index</a>
   <a href="destructive.html" class="next destructive">Destructive Tests&raquo;</a>
 </div>
   
   <div id="footer-legaleeze">
-    <p class="legaleeze center">Version: 0.2.4 &bull; Last Updated: Thu, 24 Jan 2019 11:42:44 -0800</p>
+    <p class="legaleeze center">Version: 0.2.5 &bull; Last Updated: Thu, 21 Feb 2019 20:22:03 -0800</p>
   </div>
 </footer>
 
@@ -54,9 +62,9 @@
   <script src="search/tipuesearch_set.js"></script>
   <script src="search/tipuesearch.min.js"></script>
   <script>
-    $(document).ready(function () {
-      $('#tipue_search_input').tipuesearch();
-    });
+    $(document).ready(function() {
+      $('#tipue_search_input').tipuesearch()
+    })
   </script>
 <script src="js/core.js"></script>
 </body>

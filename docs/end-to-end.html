@@ -10,9 +10,9 @@
 <body class="page--end-to-end">
 <header>
   <div class="pager">
-  <a href="destructive.html" class="prev destructive">&laquo;Destructive Tests</a>
+  <a href="client.html" class="prev client">&laquo;Client Tests</a>
   <a href="index.html" class="index">Index</a>
-  <a href="extending.html" class="next extending">Extending Classes&raquo;</a>
+  <a href="manual.html" class="next manual">Add Manual Tests&raquo;</a>
 </div>
 </header>
 
@@ -124,93 +124,6 @@ class UserCanChangePasswordEndToEndTest extends EndToEndTestBase {</p>
 $this-&gt;assert()-&gt;elementExists('css', '.t-trigger-account-dropdown');
 </code></pre></li>
 </ol>
-
-<h2>An Example End To End Test</h2>
-
-<ol>
-<li><p>Notice we load the page using relative links.</p>
-
-<pre><code>$this-&gt;loadPageByUrl('/');
-</code></pre></li>
-<li><p>Then we get the elements by CSS selectors, which we'll need to work the test.  Notice the latter two begin with <code>.t-</code>.  To keep tests as flexible as possible I prefer to add <em>test only</em> classes directly to elements, using these over any other kind of identification (class, id, XPath, etc).  These test classes will only be rendered during testing.  <code>::getDomElements</code> requires there is only one DOM node with each given class.</p>
-
-<pre><code>$el = $this-&gt;getDomElements([
-  '.search-widget',
-  '.page-header__search a',
-  '.t-text-search__input',
-  '.t-text-search__submit',
-]);
-</code></pre></li>
-<li><p>If all elements are located in the DOM then you will be able to work with them as in the example; if not the test will fail.  Each element is a <a href="http://mink.behat.org/en/latest/guides/traversing-pages.html">Node Element</a>, with all the corresponding methods.</p>
-
-<pre><code>$el['.search-widget']-&gt;isVisible()
-</code></pre></li>
-<li><p>Notice the messages passed to the assertions.  These should be an affirmative statement describing the correct result.  You should include these as assert arguments, rather than as code comments in order to make your tests more readable.</p>
-
-<pre><code>$this-&gt;assertFalse(
-  $el['.search-widget']-&gt;isVisible(),
-  "The search modal is hidden by default."
-);
-</code></pre></li>
-<li>The use of <code>waitFor</code> is only necessary if you have to wait for some JS to execute, or to wait for an AJAX load.</li>
-<li>Lastly notice the use of <code>::readPage</code>, it must be called because the session has changed pages, and we want to make assertions on the newest page.</li>
-</ol>
-
-<h3>The Entire Test</h3>
-
-<pre><code>&lt;?php
-
-namespace Drupal\Tests\my_project;
-
-use AKlump\DrupalTest\EndToEndTestBase;
-
-/**
- * Tests the Story resource endpoint.
- */
-class SearchEndToEndTest extends EndToEndTestBase {
-
-  public function testSearchLinkInHeaderSearchesByTextAndReturnsResults() {
-    $this-&gt;loadPageByUrl('/');
-
-    $el = $this-&gt;getDomElements([
-      '.search-widget',
-      '.page-header__search a',
-      '.t-text-search__input',
-      '.t-text-search__submit',
-    ]);
-
-    $this-&gt;assertFalse(
-      $el['.search-widget']-&gt;isVisible(),
-      "The search modal is hidden by default."
-    );
-
-    $el['.page-header__search a']-&gt;click();
-
-    $this-&gt;assertTrue(
-      $el['.search-widget']-&gt;isVisible(),
-      "The search modal is revealed after clicking link."
-    );
-
-    $this-&gt;assertFalse(
-      $el['.t-text-search__submit']-&gt;isVisible(),
-      "The text search submit button is hidden by default."
-    );
-    $el['.t-text-search__input']-&gt;setValue('tree');
-
-    $this-&gt;waitFor(function () use ($el) {
-      return $el['.t-text-search__submit']-&gt;isVisible();
-    },
-      'Submit button is made visible after entering a search phrase.'
-    );
-    $el['.t-text-search__submit']-&gt;click();
-
-    $this-&gt;readPage()
-      -&gt;assertPageContains('Planting a Tree of Peace', 'Search term yielded expected results.')
-      -&gt;assertPageContains('The Axis and the Sycamore');
-  }
-
-}
-</code></pre>
 </section>
 
 <div class="search__results">
@@ -219,13 +132,13 @@ class SearchEndToEndTest extends EndToEndTestBase {
 
 <footer>
   <div class="pager">
-  <a href="destructive.html" class="prev destructive">&laquo;Destructive Tests</a>
+  <a href="client.html" class="prev client">&laquo;Client Tests</a>
   <a href="index.html" class="index">Index</a>
-  <a href="extending.html" class="next extending">Extending Classes&raquo;</a>
+  <a href="manual.html" class="next manual">Add Manual Tests&raquo;</a>
 </div>
   
   <div id="footer-legaleeze">
-    <p class="legaleeze center">Version: 0.2.4 &bull; Last Updated: Thu, 24 Jan 2019 11:42:45 -0800</p>
+    <p class="legaleeze center">Version: 0.2.5 &bull; Last Updated: Thu, 21 Feb 2019 20:22:04 -0800</p>
   </div>
 </footer>
 
@@ -234,9 +147,9 @@ class SearchEndToEndTest extends EndToEndTestBase {
   <script src="search/tipuesearch_set.js"></script>
   <script src="search/tipuesearch.min.js"></script>
   <script>
-    $(document).ready(function () {
-      $('#tipue_search_input').tipuesearch();
-    });
+    $(document).ready(function() {
+      $('#tipue_search_input').tipuesearch()
+    })
   </script>
 <script src="js/core.js"></script>
 </body>

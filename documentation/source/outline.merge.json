@@ -1,25 +1,42 @@
 {
-    "chapters": [],
+    "chapters": [
+        {
+            "id": "",
+            "title": "Using Drupal Test"
+        },
+        {
+            "id": "cs",
+            "title": "Cheatsheets"
+        },
+        {
+            "id": "ex",
+            "title": "Examples"
+        }
+    ],
     "sections": [
         {
-            "id": "README",
-            "file": "README.md"
+            "id": "readme"
         },
         {
-            "id": "modules",
-            "file": "modules.md"
+            "id": "unit"
         },
         {
-            "id": "unit",
-            "file": "unit.md"
+            "id": "kernel"
         },
         {
-            "id": "client",
-            "file": "client.md"
+            "id": "modules"
         },
         {
-            "id": "kernel",
-            "file": "kernel.md"
+            "id": "client"
+        },
+        {
+            "id": "end-to-end"
+        },
+        {
+            "id": "manual"
+        },
+        {
+            "id": "changelog"
         }
     ],
     "settings": {

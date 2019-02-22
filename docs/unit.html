@@ -10,9 +10,9 @@
 <body class="page--unit">
 <header>
   <div class="pager">
-  <a href="modules.html" class="prev modules">&laquo;Module and Theme Testing</a>
+  <a href="README.html" class="prev README">&laquo;Drupal Test</a>
   <a href="index.html" class="index">Index</a>
-  <a href="client.html" class="next client">Client Tests&raquo;</a>
+  <a href="kernel.html" class="next kernel">Kernel Tests&raquo;</a>
 </div>
 </header>
 
@@ -29,8 +29,8 @@
 
 <ul>
 <li>Test classnames should follow: <em>&#42;UnitTest</em></li>
-<li><p>Unit tests do not have access to the Drupal bootstrap; these are very fast.  You should try to write unit tests whenever possible.  Only move to Kernel tests if unit tests are not appropriate.</p></li>
-<li><p>If a unit test requires a file that is not normally autoloaded, it should be added to the <code>autoload-dev</code> section of the module's composer file.</p></li>
+<li>Unit tests do not have access to the Drupal bootstrap; these are very fast.  You should try to write unit tests whenever possible.  Only move to Kernel tests if unit tests are not appropriate.</li>
+<li>If a unit test requires a file that is not normally autoloaded, it should be added to the <code>autoload-dev</code> section of the module's composer file.</li>
 </ul>
 
 <h2>A Note About Test Suite Order in XML</h2>
@@ -80,13 +80,13 @@
 
 <footer>
   <div class="pager">
-  <a href="modules.html" class="prev modules">&laquo;Module and Theme Testing</a>
+  <a href="README.html" class="prev README">&laquo;Drupal Test</a>
   <a href="index.html" class="index">Index</a>
-  <a href="client.html" class="next client">Client Tests&raquo;</a>
+  <a href="kernel.html" class="next kernel">Kernel Tests&raquo;</a>
 </div>
   
   <div id="footer-legaleeze">
-    <p class="legaleeze center">Version: 0.2.4 &bull; Last Updated: Thu, 24 Jan 2019 11:42:46 -0800</p>
+    <p class="legaleeze center">Version: 0.2.5 &bull; Last Updated: Thu, 21 Feb 2019 20:22:07 -0800</p>
   </div>
 </footer>
 
@@ -95,9 +95,9 @@
   <script src="search/tipuesearch_set.js"></script>
   <script src="search/tipuesearch.min.js"></script>
   <script>
-    $(document).ready(function () {
-      $('#tipue_search_input').tipuesearch();
-    });
+    $(document).ready(function() {
+      $('#tipue_search_input').tipuesearch()
+    })
   </script>
 <script src="js/core.js"></script>
 </body>
