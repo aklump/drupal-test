@@ -1,3 +1,5 @@
+> There is some overlap in assertions between methods of `ClientTestBase` and methods on Mink's `WebAssert` class, but the former always uses css selectors, so it's a little less verbose.
+
 ## Working with `NodeElement` objects
 
 Learn [more here].(http://mink.behat.org/en/latest/guides/traversing-pages.html#documentelement-and-nodeelement)

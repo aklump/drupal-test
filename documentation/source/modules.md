@@ -1,4 +1,4 @@
-# Module and Theme Testing
+# How to Setup Testing of Modules and Themes
 
 > In order for unit testing to work with a module or a theme, you must add the module or theme's _composer.json_ file to _test/composers.json_ and run `composer install --lock` from the _test_ directory.
 
