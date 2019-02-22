@@ -12,7 +12,7 @@
   <div class="pager">
   <a href="CHANGELOG.html" class="prev CHANGELOG">&laquo;CHANGELOG</a>
   <a href="index.html" class="index">Index</a>
-  <a href="end-to-end.html" class="next end-to-end">End to End Testing&raquo;</a>
+  <a href="extending.html" class="next extending">Extending Classes&raquo;</a>
 </div>
 </header>
 
@@ -27,44 +27,60 @@
 
 <section>
 
-<p>Use <code>\AKlump\DrupalTest\Utilities\DestructiveTrait</code> if you want to use a convention whereby certain tests will only be allowed to run against certain base URLs.  For example, you should not let end to end tests that modify the database run against production.  Such tests should be marked as destructive.</p>
+<p><strong>Prevent certain test(s) from running against production.</strong></p>
+
+<p>In some cases, certain tests should not be allowed to run against certain base URLs.  For example, you should not let end to end tests that modify the database run against production.  These types of tests are called here as <em>destructive</em>.</p>
+
+<h2>Prevent Entire Test Class</h2>
 
 <ul>
 <li><p>You may mark entire classes <code>@destructive</code>, in which case all tests in the class will be skipped if the <code>TEST_BASE_URL</code> is not in the defined list.</p>
 
-<p>&lt;?php</p>
+<pre><code>&lt;?php
 
-<p>namespace Drupal\Tests\my_module;</p>
+namespace Drupal\Tests\my_module;
 
-<p>/**</p>
+/**
+ * Ensures we can create a new user via registration modal.
+ *
+ * @destructive
+ */
+class ModalRegistrationEndToEndTest extends EndToEndTestBase {
+...
+</code></pre></li>
+</ul>
+
+<h2>Prevent Single Test Methods</h2>
 
 <ul>
-<li>Ensures we can create a new user via registration modal.</li>
-<li></li>
-<li>@destructive
-*/
-class ModalRegistrationEndToEndTest extends EndToEndTestBase {
-...</li>
-</ul></li>
 <li><p>You may mark individual test methods <code>@destructive</code></p>
 
-<p>/**</p>
+<pre><code>/**
+ * @destructive
+ */
+public function testCanDeleteAUser() {
+...
+</code></pre></li>
+</ul>
+
+<h2>Define Which URLs Are "Production"</h2>
 
 <ul>
-<li>@destructive
-*/
-public function testCanDeleteAUser() {
-...</li>
-</ul></li>
-<li><p>You must define which <code>TEST_BASE_URL</code> values can run <code>@destructive</code> items using <em>phpunit.xml</em>.</p>
+<li>Anything marked with <code>@destructive</code> will be skipped unless <code>TEST_BASE_URL</code> is listed as shown next.</li>
+<li><p>Create the whitelist in <em>phpunit.xml</em> like this:</p>
 
-<p><phpunit ... >
-      <allowDestructiveTests>
-          <url>http://mysite.local</url>
-          <url>https://stage.mysite.com</url>
-      </allowDestructiveTests>
-      ...</p></li>
+<pre><code>&lt;phpunit ... &gt;
+    &lt;allowDestructiveTests&gt;
+        &lt;url&gt;http://mysite.local&lt;/url&gt;
+        &lt;url&gt;https://stage.mysite.com&lt;/url&gt;
+    &lt;/allowDestructiveTests&gt;
+    ...
+</code></pre></li>
 </ul>
+
+<h2>How It Works</h2>
+
+<p>A test class must <code>use \AKlump\DrupalTest\Utilities\DestructiveTrait</code> if you want to use this convention.  The base classes: <code>\AKlump\DrupalTest\ClientTestBase</code> and <code>\AKlump\DrupalTest\EndToEndTestBase</code> already include this trait so you need only include the annotation as shown above.</p>
 </section>
 
 <div class="search__results">
@@ -75,11 +91,11 @@ public function testCanDeleteAUser() {
   <div class="pager">
   <a href="CHANGELOG.html" class="prev CHANGELOG">&laquo;CHANGELOG</a>
   <a href="index.html" class="index">Index</a>
-  <a href="end-to-end.html" class="next end-to-end">End to End Testing&raquo;</a>
+  <a href="extending.html" class="next extending">Extending Classes&raquo;</a>
 </div>
   
   <div id="footer-legaleeze">
-    <p class="legaleeze center">Version: 0.2.4 &bull; Last Updated: Thu, 24 Jan 2019 11:42:44 -0800</p>
+    <p class="legaleeze center">Version: 0.2.4 &bull; Last Updated: Thu, 21 Feb 2019 19:33:40 -0800</p>
   </div>
 </footer>
 
@@ -88,9 +104,9 @@ public function testCanDeleteAUser() {
   <script src="search/tipuesearch_set.js"></script>
   <script src="search/tipuesearch.min.js"></script>
   <script>
-    $(document).ready(function () {
-      $('#tipue_search_input').tipuesearch();
-    });
+    $(document).ready(function() {
+      $('#tipue_search_input').tipuesearch()
+    })
   </script>
 <script src="js/core.js"></script>
 </body>

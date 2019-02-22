@@ -2,7 +2,7 @@
 
 <html>
 <head>
-  <title>Add Manual Tests</title>
+  <title>Manual Testing</title>
   <link href="search/tipuesearch.css" rel="stylesheet">
   <link href="style.css" rel="stylesheet">
 </head>
@@ -10,9 +10,9 @@
 <body class="page--manual-tests">
 <header>
   <div class="pager">
-  <a href="extending.html" class="prev extending">&laquo;Extending Classes</a>
+  <a href="end-to-end.html" class="prev end-to-end">&laquo;End to End Testing</a>
   <a href="index.html" class="index">Index</a>
-  <a href="index.html" class="next index">Index&raquo;</a>
+  <a href="CHANGELOG.html" class="next changelog">CHANGELOG&raquo;</a>
 </div>
 </header>
 
@@ -22,7 +22,7 @@
   </form>
 </div>
 
-  <h1>Add Manual Tests</h1>
+  <h1>Manual Testing</h1>
   <div class="breadcrumb"><a href="index.html">Index</a></div>
 
 <section>
@@ -41,7 +41,23 @@
       &lt;tester&gt;{{ default tester name }}&lt;/tester&gt;
       &lt;output&gt;{{ path to pdf output file }}&lt;/output&gt;
       &lt;testsuite name="Manual"&gt;
+          &lt;directory&gt;../web/sites/all/modules/custom/*/tests/src/Manual&lt;/directory&gt;
           &lt;directory&gt;../web/sites/all/modules/custom/*/tests/src/Manual/*&lt;/directory&gt;
+      &lt;/testsuite&gt;
+  &lt;/manualtests&gt;
+&lt;/phpunit&gt;
+</code></pre></li>
+<li><p>Here is an example for a Drupal 8 site.</p>
+
+<pre><code>&lt;phpunit ...&gt;
+  ...
+  &lt;manualtests&gt;
+      &lt;title&gt;www.mysite.org&lt;/title&gt;
+      &lt;tester&gt;Aaron Klump&lt;/tester&gt;
+      &lt;output&gt;../private/default/mysite-manual-tests.pdf&lt;/output&gt;
+      &lt;testsuite name="Manual"&gt;
+          &lt;directory&gt;../web/modules/custom/*/tests/src/Manual&lt;/directory&gt;
+          &lt;directory&gt;../web/modules/custom/*/tests/src/Manual/*&lt;/directory&gt;
       &lt;/testsuite&gt;
   &lt;/manualtests&gt;
 &lt;/phpunit&gt;
@@ -77,13 +93,13 @@ export TEST_BASE_URL="http://www.mysite.com"; ./vendor/bin/generate --configurat
 
 <footer>
   <div class="pager">
-  <a href="extending.html" class="prev extending">&laquo;Extending Classes</a>
+  <a href="end-to-end.html" class="prev end-to-end">&laquo;End to End Testing</a>
   <a href="index.html" class="index">Index</a>
-  <a href="index.html" class="next index">Index&raquo;</a>
+  <a href="CHANGELOG.html" class="next changelog">CHANGELOG&raquo;</a>
 </div>
   
   <div id="footer-legaleeze">
-    <p class="legaleeze center">Version: 0.2.4 &bull; Last Updated: Thu, 24 Jan 2019 11:42:45 -0800</p>
+    <p class="legaleeze center">Version: 0.2.4 &bull; Last Updated: Thu, 21 Feb 2019 19:33:41 -0800</p>
   </div>
 </footer>
 
@@ -92,9 +108,9 @@ export TEST_BASE_URL="http://www.mysite.com"; ./vendor/bin/generate --configurat
   <script src="search/tipuesearch_set.js"></script>
   <script src="search/tipuesearch.min.js"></script>
   <script>
-    $(document).ready(function () {
-      $('#tipue_search_input').tipuesearch();
-    });
+    $(document).ready(function() {
+      $('#tipue_search_input').tipuesearch()
+    })
   </script>
 <script src="js/core.js"></script>
 </body>

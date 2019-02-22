@@ -2,7 +2,7 @@
 
 <html>
 <head>
-  <title>Unit Tests        </title>
+  <title>Unit Testing</title>
   <link href="search/tipuesearch.css" rel="stylesheet">
   <link href="style.css" rel="stylesheet">
 </head>
@@ -12,7 +12,7 @@
   <div class="pager">
   <a href="modules.html" class="prev modules">&laquo;Module and Theme Testing</a>
   <a href="index.html" class="index">Index</a>
-  <a href="client.html" class="next client">Client Tests&raquo;</a>
+  <a href="kernel.html" class="next kernel">Kernel Testing&raquo;</a>
 </div>
 </header>
 
@@ -22,15 +22,15 @@
   </form>
 </div>
 
-  <h1>Unit Tests        </h1>
+  <h1>Unit Testing</h1>
   <div class="breadcrumb"><a href="index.html">Index</a></div>
 
 <section>
 
 <ul>
 <li>Test classnames should follow: <em>&#42;UnitTest</em></li>
-<li><p>Unit tests do not have access to the Drupal bootstrap; these are very fast.  You should try to write unit tests whenever possible.  Only move to Kernel tests if unit tests are not appropriate.</p></li>
-<li><p>If a unit test requires a file that is not normally autoloaded, it should be added to the <code>autoload-dev</code> section of the module's composer file.</p></li>
+<li>Unit tests do not have access to the Drupal bootstrap; these are very fast.  You should try to write unit tests whenever possible.  Only move to Kernel tests if unit tests are not appropriate.</li>
+<li>If a unit test requires a file that is not normally autoloaded, it should be added to the <code>autoload-dev</code> section of the module's composer file.</li>
 </ul>
 
 <h2>A Note About Test Suite Order in XML</h2>
@@ -82,11 +82,11 @@
   <div class="pager">
   <a href="modules.html" class="prev modules">&laquo;Module and Theme Testing</a>
   <a href="index.html" class="index">Index</a>
-  <a href="client.html" class="next client">Client Tests&raquo;</a>
+  <a href="kernel.html" class="next kernel">Kernel Testing&raquo;</a>
 </div>
   
   <div id="footer-legaleeze">
-    <p class="legaleeze center">Version: 0.2.4 &bull; Last Updated: Thu, 24 Jan 2019 11:42:46 -0800</p>
+    <p class="legaleeze center">Version: 0.2.4 &bull; Last Updated: Thu, 21 Feb 2019 19:33:42 -0800</p>
   </div>
 </footer>
 
@@ -95,9 +95,9 @@
   <script src="search/tipuesearch_set.js"></script>
   <script src="search/tipuesearch.min.js"></script>
   <script>
-    $(document).ready(function () {
-      $('#tipue_search_input').tipuesearch();
-    });
+    $(document).ready(function() {
+      $('#tipue_search_input').tipuesearch()
+    })
   </script>
 <script src="js/core.js"></script>
 </body>

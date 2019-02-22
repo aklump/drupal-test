@@ -1,5 +1,14 @@
 {
-    "chapters": [],
+    "chapters": [
+        {
+            "id": "cs",
+            "title": "Cheatsheets"
+        },
+        {
+            "id": "ex",
+            "title": "Examples"
+        }
+    ],
     "sections": [
         {
             "id": "README",

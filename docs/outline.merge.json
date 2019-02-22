@@ -1,5 +1,14 @@
 {
-    "chapters": [],
+    "chapters": [
+        {
+            "id": "cs",
+            "title": "Cheatsheets"
+        },
+        {
+            "id": "ex",
+            "title": "Examples"
+        }
+    ],
     "sections": [
         {
             "id": "README",
@@ -11,15 +20,32 @@
         },
         {
             "id": "unit",
+            "title": "Unit Testing",
             "file": "unit.md"
         },
         {
+            "id": "kernel",
+            "title": "Kernel Testing",
+            "file": "kernel.md"
+        },
+        {
             "id": "client",
+            "title": "Client Testing",
             "file": "client.md"
         },
         {
-            "id": "kernel",
-            "file": "kernel.md"
+            "id": "end-to-end",
+            "file": "end-to-end.md"
+        },
+        {
+            "id": "manual-tests",
+            "title": "Manual Testing",
+            "file": "manual-tests.md"
+        },
+        {
+            "id": "changelog",
+            "file": "CHANGELOG.md",
+            "sort": 100
         }
     ],
     "settings": {

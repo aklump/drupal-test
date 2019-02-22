@@ -4,7 +4,7 @@ namespace AKlump\DrupalTest;
 
 use aik099\PHPUnit\BrowserTestCase as ParentBrowserTestCase;
 use AKlump\DrupalTest\Utilities\Generators;
-use AKlump\DrupalTest\Utilities\WebAssertProxy;
+use AKlump\DrupalTest\Utilities\WebAssert;
 
 /**
  * A base class for Browser Tests.
@@ -35,16 +35,9 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
   protected static $baseUrl = NULL;
 
   /**
-   * An extra message to use for failed WebAssert assertions.
-   *
-   * @var string
-   */
-  public $webAssertMessage;
-
-  /**
    * Holds an instance with the current session.
    *
-   * @var \AKlump\DrupalTest\Utilities\WebAssertProxy
+   * @var \AKlump\DrupalTest\Utilities\WebAssert
    */
   protected $webAssert;
 
@@ -190,14 +183,14 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
    * @param string $fail_message
    *   An optional message to be displayed on failure.
    *
-   * @return \AKlump\DrupalTest\Utilities\WebAssertProxy
+   * @return \AKlump\DrupalTest\Utilities\WebAssert
    *   An instance to use for asserting.
    */
   protected function assert($fail_message = '') {
-    $this->webAssertMessage = $fail_message;
     if (empty($this->webAssert)) {
-      $this->webAssert = new WebAssertProxy($this, $this->getSession());
+      $this->webAssert = new WebAssert($this, $this->getSession());
     }
+    $this->webAssert->message = $fail_message;
 
     return $this->webAssert;
   }
