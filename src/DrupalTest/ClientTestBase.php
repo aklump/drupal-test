@@ -131,8 +131,8 @@ abstract class ClientTestBase extends BrowserTestCase {
    * Assert the inner html of a DOM node matches a regular expression.
    *
    * @param string $expected
-   *   The regex pattern to use against the inner html at $selector.
-   * @param string $selector
+   *   The regex pattern to use against the inner html at $css_selector.
+   * @param string $css_selector
    *   The DOM selector.
    * @param int $index
    *   The index when the selector returns multiple nodes. Defaults to 0.
@@ -140,8 +140,8 @@ abstract class ClientTestBase extends BrowserTestCase {
    * @return \AKlump\DrupalTest\ClientTestBase
    *   Self for chaining.
    */
-  public function assertElementRegExp($expected, $selector, $index = 0) {
-    $els = $this->els($selector);
+  public function assertElementRegExp($expected, $css_selector, $index = 0) {
+    $els = $this->els($css_selector);
     if (empty($els[$index])) {
       $this->fail();
     }
@@ -153,18 +153,18 @@ abstract class ClientTestBase extends BrowserTestCase {
   /**
    * Assert an element is found in the DOM by CSS selector and is not empty.
    *
-   * @param string $selector
+   * @param string $css_selector
    *   A CSS selector of the element you want to check for.
    *
    * @return \AKlump\DrupalTest\ClientTestBase
    *   Self for chaining.
    */
-  public function assertElementNotEmpty($selector, $index = 0) {
-    $els = $this->els($selector);
+  public function assertElementNotEmpty($css_selector, $index = 0) {
+    $els = $this->els($css_selector);
     if (empty($els[$index])) {
       $this->fail();
     }
-    self::assertNotEmpty(trim($els[$index]->getText()), "$selector is not empty.");
+    self::assertNotEmpty(trim($els[$index]->getText()), "$css_selector is not empty.");
 
     return $this;
   }
@@ -172,18 +172,18 @@ abstract class ClientTestBase extends BrowserTestCase {
   /**
    * Assert a DOM element's attribute is not empty.
    *
-   * @param string $selector
+   * @param string $css_selector
    *   A CSS selector of the element you want to check for.
    *
    * @return \AKlump\DrupalTest\ClientTestBase
    *   Self for chaining.
    */
-  public function assertElementAttributeNotEmpty($attribute, $selector, $index = 0) {
-    $els = $this->els($selector);
+  public function assertElementAttributeNotEmpty($attribute, $css_selector, $index = 0) {
+    $els = $this->els($css_selector);
     if (empty($els[$index])) {
       $this->fail();
     }
-    self::assertThat(!empty(trim($els[$index]->getAttribute($attribute))), self::isTrue(), "$selector.$attribute is not empty.");
+    self::assertThat(!empty(trim($els[$index]->getAttribute($attribute))), self::isTrue(), "$css_selector.$attribute is not empty.");
 
     return $this;
   }
@@ -192,8 +192,8 @@ abstract class ClientTestBase extends BrowserTestCase {
    * Assert the inner html of a DOM node is an exact type/value.
    *
    * @param string $expected
-   *   The expected inner html at $selector.
-   * @param string $selector
+   *   The expected inner html at $css_selector.
+   * @param string $css_selector
    *   The DOM selector.
    * @param int $index
    *   The index when the selector returns multiple nodes. Defaults to 0.
@@ -201,8 +201,8 @@ abstract class ClientTestBase extends BrowserTestCase {
    * @return \AKlump\DrupalTest\ClientTestBase
    *   Self for chaining.
    */
-  public function assertElementSame($expected, $selector, $index = 0) {
-    $els = $this->els($selector);
+  public function assertElementSame($expected, $css_selector, $index = 0) {
+    $els = $this->els($css_selector);
     if (empty($els[$index])) {
       $this->fail();
     }
