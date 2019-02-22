@@ -25,7 +25,33 @@
   <h1>CHANGELOG</h1>
   <div class="breadcrumb"><a href="index.html">Index</a></div>
 
-<section><h2>0.2.5</h2>
+<section><h2>0.3.0</h2>
+
+<ul>
+<li>BREAKING CHANGE</li>
+<li>The assert()->* are no longer chainable.</li>
+</ul>
+
+<p>Before:</p>
+
+<pre><code>$el = $this-&gt;assert()
+  -&gt;pageTextContains('Thank you for joining')
+  -&gt;getDomElements([
+    '.t-educator-status__false',
+    '.t-educator-status__true',
+  ]);
+</code></pre>
+
+<p>After, in 0.2.6 onward</p>
+
+<pre><code>$this-&gt;assert()-&gt;pageTextContains('Thank you for joining');
+$el = $this-&gt;getDomElements([
+  '.t-educator-status__false',
+  '.t-educator-status__true',
+]);    
+</code></pre>
+
+<h2>0.2.5</h2>
 
 <ul>
 <li><p>You should manually update <em>composer.json</em> with the following <code>require</code>:</p>
@@ -53,7 +79,7 @@
 </div>
   
   <div id="footer-legaleeze">
-    <p class="legaleeze center">Version: 0.2.7 &bull; Last Updated: Fri, 22 Feb 2019 12:42:27 -0800</p>
+    <p class="legaleeze center">Version: 0.3.0 &bull; Last Updated: Fri, 22 Feb 2019 12:52:47 -0800</p>
   </div>
 </footer>
 
