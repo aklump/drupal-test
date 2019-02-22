@@ -211,7 +211,7 @@ abstract class EndToEndTestBase extends BrowserTestCase {
   public function waitForPageContains($substring, $timeout = NULL) {
     $this->waitFor(function () use ($substring) {
       try {
-        return $this->assert()->pageTextContains($substring);
+        $this->assert()->pageTextContains($substring);
       }
       catch (\Exception $exception) {
         return FALSE;
