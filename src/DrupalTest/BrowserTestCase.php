@@ -207,7 +207,9 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
    *   Self for chaining.
    */
   protected function assertElementExists($css_selector, $failure_message = '') {
-    return $this->assert($failure_message)->elementExists('css', $css_selector);
+    $this->assert($failure_message)->elementExists('css', $css_selector);
+
+    return $this;
   }
 
   /**
@@ -222,8 +224,10 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
    *   Self for chaining.
    */
   protected function assertElementNotExists($css_selector, $failure_message = '') {
-    return $this->assert($failure_message)
+    $this->assert($failure_message)
       ->elementNotExists('css', $css_selector);
+
+    return $this;
   }
 
   /**
