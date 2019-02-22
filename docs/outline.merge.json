@@ -1,6 +1,10 @@
 {
     "chapters": [
         {
+            "id": "",
+            "title": "Using Drupal Test"
+        },
+        {
             "id": "cs",
             "title": "Cheatsheets"
         },
@@ -11,41 +15,28 @@
     ],
     "sections": [
         {
-            "id": "README",
-            "file": "README.md"
+            "id": "readme"
         },
         {
-            "id": "modules",
-            "file": "modules.md"
+            "id": "unit"
         },
         {
-            "id": "unit",
-            "title": "Unit Testing",
-            "file": "unit.md"
+            "id": "kernel"
         },
         {
-            "id": "kernel",
-            "title": "Kernel Testing",
-            "file": "kernel.md"
+            "id": "modules"
         },
         {
-            "id": "client",
-            "title": "Client Testing",
-            "file": "client.md"
+            "id": "client"
         },
         {
-            "id": "end-to-end",
-            "file": "end-to-end.md"
+            "id": "end-to-end"
         },
         {
-            "id": "manual-tests",
-            "title": "Manual Testing",
-            "file": "manual-tests.md"
+            "id": "manual"
         },
         {
-            "id": "changelog",
-            "file": "CHANGELOG.md",
-            "sort": 100
+            "id": "changelog"
         }
     ],
     "settings": {
