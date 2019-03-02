@@ -33,6 +33,14 @@ This project uses [aklump/manual-test](https://github.com/aklump/manual-test) fo
               </testsuite>
           </manualtests>
         </phpunit>
+           
+### Using Website Perms
+
+Add the following to the perms config:
+
+    executable_paths:
+      - tests/bin/*.sh
+      - tests/vendor/aklump/manual-test/generate
                 
 ## Generate tests
 

@@ -9,21 +9,21 @@
 
 <body class="page--manual">
 <header>
-  <div class="pager">
-  <a href="end-to-end.html" class="prev end-to-end">&laquo;End to End Testing</a>
-  <a href="index.html" class="index">Index</a>
-  <a href="CHANGELOG.html" class="next changelog">CHANGELOG&raquo;</a>
-</div>
-</header>
-
-  <div class="search__wrapper">
+  <div class="pager"><a href="end-to-end.html" class="prev end-to-end">&laquo;End to End Testing</a><a href="index.html" class="index pager__book-title">Drupal Test</a><a href="CHANGELOG.html" class="next changelog">CHANGELOG&raquo;</a></div></header>
+<section class="sub-header">
+  <div class="breadcrumbs"><a href="index.html">Index</a>
+         &raquo
+                        <a href="README.html">Using Drupal Test</a>
+         &raquo
+      </div>      <div class="search__wrapper">
   <form action="search--results.html">
     <input type="text" class="search-input" name="q" id="tipue_search_input" autocomplete="off" required>
   </form>
 </div>
+  </section>
 
-  <h1>Add Manual Tests</h1>
-  <div class="breadcrumb"><a href="index.html">Index</a></div>
+
+<h1>Add Manual Tests</h1>
 
 <section>
 
@@ -64,6 +64,15 @@
 </code></pre></li>
 </ol>
 
+<h3>Using Website Perms</h3>
+
+<p>Add the following to the perms config:</p>
+
+<pre><code>executable_paths:
+  - tests/bin/*.sh
+  - tests/vendor/aklump/manual-test/generate
+</code></pre>
+
 <h2>Generate tests</h2>
 
 <p>To create the PDF file for manual test running... See the <a href="https://github.com/aklump/manual-test">documentation</a> for more info.</p>
@@ -92,14 +101,9 @@ export TEST_BASE_URL="http://www.mysite.com"; ./vendor/bin/generate --configurat
 </div>
 
 <footer>
-  <div class="pager">
-  <a href="end-to-end.html" class="prev end-to-end">&laquo;End to End Testing</a>
-  <a href="index.html" class="index">Index</a>
-  <a href="CHANGELOG.html" class="next changelog">CHANGELOG&raquo;</a>
-</div>
-  
+  <div class="pager"><a href="end-to-end.html" class="prev end-to-end">&laquo;End to End Testing</a><a href="index.html" class="index pager__book-title">Drupal Test</a><a href="CHANGELOG.html" class="next changelog">CHANGELOG&raquo;</a></div>  
   <div id="footer-legaleeze">
-    <p class="legaleeze center">Version: 0.3.0 &bull; Last Updated: Fri, 22 Feb 2019 12:52:50 -0800</p>
+    <p class="legaleeze center">Version: 0.3.0 &bull; Last Updated: Sat, 02 Mar 2019 11:36:02 -0800</p>
   </div>
 </footer>
 
