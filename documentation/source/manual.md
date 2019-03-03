@@ -12,7 +12,7 @@ This project uses [aklump/manual-test](https://github.com/aklump/manual-test) fo
               <title>{{ website or domain}}</title>
               <tester>{{ default tester name }}</tester>
               <output>{{ path to pdf output file }}</output>
-              <testsuite name="Manual">
+              <testsuite name="Custom">
                   <directory>../web/sites/all/modules/custom/*/tests/src/Manual</directory>
                   <directory>../web/sites/all/modules/custom/*/tests/src/Manual/*</directory>
               </testsuite>
@@ -27,10 +27,14 @@ This project uses [aklump/manual-test](https://github.com/aklump/manual-test) fo
               <title>www.mysite.org</title>
               <tester>Aaron Klump</tester>
               <output>../private/default/mysite-manual-tests.pdf</output>
-              <testsuite name="Manual">
+              <testsuite name="Contrib">
+                  <directory>../web/modules/contrib/*/tests/src/Manual</directory>
+                  <directory>../web/modules/contrib/*/tests/src/Manual/*</directory>
+              </testsuite>
+              <testsuite name="Custom">
                   <directory>../web/modules/custom/*/tests/src/Manual</directory>
                   <directory>../web/modules/custom/*/tests/src/Manual/*</directory>
-              </testsuite>
+              </testsuite>              
           </manualtests>
         </phpunit>
            
@@ -60,4 +64,4 @@ To create the PDF file for manual test running... See the [documentation](https:
     done
     root="$( cd -P "$( dirname "$source" )" && pwd )"
     cd "$root/.."
-    export TEST_BASE_URL="http://www.mysite.com"; ./vendor/bin/generate --configuration=phpunit.xml --output=mysite-manual-tests.loft.pdf --tester="Aaron Klump" $@
+    export TEST_BASE_URL="http://www.mysite.com"; ./vendor/bin/generate --configuration=phpunit.xml --output=mysite-manual-tests.loft.pdf --tester="Aaron Klump" "$@"
