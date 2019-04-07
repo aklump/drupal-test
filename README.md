@@ -35,6 +35,7 @@ The following files are considered core and should never be modified.
 
     drupal_test.yml
     drupal_test_bootstrap.php
+    composer.json
     LICENSE
     README.md
 
@@ -51,13 +52,13 @@ From inside the _tests_ directory, run:
 
     ./bin/update.sh
     
-This will copy over the core files from the latest repository, but leave the non-core files alone, namely _phpunit.xml_ and _composer.json_, which you most-likely will have modified.
+This will copy over the core files from the latest repository, but leave the non-core files alone, namely _phpunit.xml_, which you most-likely will have modified.
 
 ## Configuration
 
 See documentation for more information about configuration.
 
-1. Open _tests/composer.json_ and add module and theme _composer.json_ filepaths.
+1. Open _tests/drupal_test_config.yml_ and setup [autoloading](@autoload).
 1. From _tests_ run `composer update --lock`.
 1. Open _tests/phpunit.xml_ and add any JSON schema directories.
 

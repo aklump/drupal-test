@@ -65,6 +65,7 @@
 
 <pre><code>drupal_test.yml
 drupal_test_bootstrap.php
+composer.json
 LICENSE
 README.md
 </code></pre>
@@ -84,14 +85,14 @@ src/DrupalTest
 <pre><code>./bin/update.sh
 </code></pre>
 
-<p>This will copy over the core files from the latest repository, but leave the non-core files alone, namely <em>phpunit.xml</em> and <em>composer.json</em>, which you most-likely will have modified.</p>
+<p>This will copy over the core files from the latest repository, but leave the non-core files alone, namely <em>phpunit.xml</em>, which you most-likely will have modified.</p>
 
 <h2>Configuration</h2>
 
 <p>See documentation for more information about configuration.</p>
 
 <ol>
-<li>Open <em>tests/composer.json</em> and add module and theme <em>composer.json</em> filepaths.</li>
+<li>Open <em>tests/drupal_test_config.yml</em> and setup <a href="autoloading.html">autoloading</a>.</li>
 <li>From <em>tests</em> run <code>composer update --lock</code>.</li>
 <li>Open <em>tests/phpunit.xml</em> and add any JSON schema directories.</li>
 </ol>
@@ -132,7 +133,7 @@ $ phpunit -c phpunit.xml --testsuite Client
 <footer>
   <div class="pager"><a href="index.html" class="prev index">&laquo;Drupal Test</a><a href="index.html" class="index pager__book-title">Drupal Test</a><a href="unit.html" class="next unit">Unit Tests        &raquo;</a></div>  
   <div id="footer-legaleeze">
-    <p class="legaleeze center">Version: 0.3.2 &bull; Last Updated: Sat, 09 Mar 2019 09:26:08 -0800</p>
+    <p class="legaleeze center">Version: 0.3.3 &bull; Last Updated: Sun, 07 Apr 2019 14:26:41 -0700</p>
   </div>
 </footer>
 

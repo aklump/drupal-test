@@ -28,15 +28,14 @@
 <section>
 
 <blockquote>
-  <p>In order for unit testing to work with a module or a theme, you must add the module or theme's <em>composer.json</em> file to <em>test/composers.json</em> and run <code>composer install --lock</code> from the <em>test</em> directory.</p>
+  <p>In order for unit testing to work with a module or a theme, you must <a href="autoloading.html">configure autoloading</a>.</p>
 </blockquote>
 
 <h2>Quick Start</h2>
 
 <ol>
-<li>When you see <code>tests/composer.json</code>, we are referring the file included in the <em>dist</em> folder of this project, which is the root directory containing the test runner <em>phpunit.xml</em>.</li>
-<li>Create <em>composer.json</em> in the module's folder ensuring it will autoload the module's classes that will be tested.  If not testing classes, but functions, make sure the module's <em>composer.json</em> file loads all files that contain the functions to be tested, usually using <code>requre-dev</code>.  This file may or may not have anything to do with Drupal (depending on the module's implementation), but it is required by the test runner's unit testing strategy.</li>
-<li>Add the path to the test runner's <em>composer.json</em> to <em>tests/composer.json</em>, and <a href="https://github.com/wikimedia/composer-merge-plugin#updating-sub-levels-composerjson-files">you must call</a> <code>composer update --lock</code> on the test runner for dependencies to be installed for the test runner.</li>
+<li>If your module already has a <em>composer.json</em> file then <a href="autoloading.html">add it</a> to <em>drupal_test_config.yml</em>.</li>
+<li>Otherwise determine and configure the best means of autoloading by reading <a href="autoloading.html#module">this</a>.</li>
 <li>Add one or more tests to the module (according the file structure convention) extending one of the abstract classes provided by this module, e.g. <code>\AKlump\DrupalTest\UnitTestBase</code>, `</li>
 </ol>
 
@@ -63,30 +62,6 @@
             └── TransformUnitTest.php
 </code></pre>
 
-<h2>Add the Module's <em>composer.json</em></h2>
-
-<p>For a module to be unit testable it must have a <em>composer.json</em> file, which autoloads it's classes, the path of which <strong>must be added to this project's <em>composer.json</em> file</strong>, in the section <code>extra.merge-plugin.require</code>.  This is how the unit tests are able to autoload classes without bootstrapping Drupal, e.g.,</p>
-
-<pre><code>    "extra": {
-        "merge-plugin": {
-            "require": [
-                "../web/sites/all/modules/custom/gop3_core/composer.json"
-            ]
-        }
-    }
-</code></pre>
-
-<h3>Add the module file as an autoload file</h3>
-
-<p>If you are unit testing a module that does not use classes, but functions and it has no dependencies, you do not need to add it's composer.json file to projects <em>composer.json</em>.  Instead you can tell this project to autoload the module files that have the functions you need to test, e.g.</p>
-
-<pre><code>    "autoload-dev": {
-        "files": [
-            "../web/sites/all/modules/custom/twiggy/twiggy.module"
-        ]
-    },        
-</code></pre>
-
 <h2>Must Test Classes Test a Single Class?</h2>
 
 <p>Unit and Kernel tests do not have to test a single class, for example if you are writing a test to cover theme functions.  In order to make this happen you have to do the following in your test class:</p>
@@ -110,7 +85,7 @@
 <footer>
   <div class="pager"><a href="kernel.html" class="prev kernel">&laquo;Kernel Tests</a><a href="index.html" class="index pager__book-title">Drupal Test</a><a href="client.html" class="next client">Client Tests&raquo;</a></div>  
   <div id="footer-legaleeze">
-    <p class="legaleeze center">Version: 0.3.2 &bull; Last Updated: Sat, 09 Mar 2019 09:26:12 -0800</p>
+    <p class="legaleeze center">Version: 0.3.3 &bull; Last Updated: Sun, 07 Apr 2019 14:26:47 -0700</p>
   </div>
 </footer>
 
