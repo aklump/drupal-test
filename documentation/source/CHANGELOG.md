@@ -1,3 +1,9 @@
+## 0.4.0 2019-04-07T13:01, aklump
+
+* Added _drupal_test_config.yml_ to be used instead of modifying _composer.json_.  _composer.json_ should no longer be modified as it will now be overwritten during updates.
+* You must migrate your autoloading and merge-plugin configuration to _drupal_test_config.yml_.  A backup file _composer--original.json_ should have been created on update.  Migrate your values and then delete _composer--original.json_.
+* Do not make changes to _composer.json_ from now on.
+
 ## 0.3.0
 
 * BREAKING CHANGE
