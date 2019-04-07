@@ -27,7 +27,7 @@
 
 <section>
 
-<p>You may want to extend the classes for your Drupal website.  For example you may want to add a method that can be shared by all end to end tests, client, etc.</p>
+<p>You may want to create your own abstract base test classes for your Drupal website.  For example you may want to add a method that can be shared by all end to end tests, client, etc.</p>
 
 <ol>
 <li><p>Place your extended classes in the <em>src</em> directory of this project like so. Place it in a folder that is namespaced with a logical name related to your project.</p>
@@ -53,18 +53,7 @@ use \AKlump\DrupalTest\ClientTestBase as Parent;
 abstract class ClientTest extends Parent { 
   ... 
 </code></pre></li>
-<li><p>Add your namespace to the autoloader in <em>composer.json</em> so your extended classes can be located.</p>
-
-<pre><code>{
-    "autoload": {
-        "psr-4": {
-            "AKlump\\": "src",
-            "Drupal\\Tests\\module_name\\": "src/module_name"
-        }
-    }
-}
-</code></pre></li>
-<li><code>composer dumpautoload</code></li>
+<li><p><a href="autoloading.html">Add your namespace</a> to <em>drupal_test_config.yml</em>.</p></li>
 <li><p>Now create your test classes using your extended base class instead, e.g.,</p>
 
 <pre><code>&lt;?php
@@ -93,7 +82,7 @@ class CurriculumClientTest extends ClientTestBase {
 <footer>
   <div class="pager"><a href="destructive.html" class="prev destructive">&laquo;Destructive Tests</a><a href="index.html" class="index pager__book-title">Drupal Test</a><a href="cs--client.html" class="next cs--client">Cheatsheet for Client Tests&raquo;</a></div>  
   <div id="footer-legaleeze">
-    <p class="legaleeze center">Version: 0.3.2 &bull; Last Updated: Sat, 09 Mar 2019 09:26:11 -0800</p>
+    <p class="legaleeze center">Version: 0.3.3 &bull; Last Updated: Sun, 07 Apr 2019 14:26:46 -0700</p>
   </div>
 </footer>
 
