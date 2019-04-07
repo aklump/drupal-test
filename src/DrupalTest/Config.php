@@ -28,18 +28,24 @@ class Config {
   protected static $configIsLoaded = FALSE;
 
   /**
-   * Add our configuration to composer.json during update.
+   * Add our autoload maps.
    *
    * @param \Composer\Script\Event $event
    *   The update event.
    */
-  public static function addConfig(ScriptEvent $event) {
+  public static function addAutoload(ScriptEvent $event) {
     $package = $event->getComposer()->getPackage();
-
-    // Add in our additional autoload config.
     $package->setAutoload(self::getMergedAutoload($package));
+  }
 
-    // Add in our composer merge.
+  /**
+   * Add our extra configuration.
+   *
+   * @param \Composer\Script\Event $event
+   *   The update event.
+   */
+  public static function addExtra(ScriptEvent $event) {
+    $package = $event->getComposer()->getPackage();
     $package->setExtra([
       'merge-plugin' => self::getMergedMergePlugin($package),
     ]);
