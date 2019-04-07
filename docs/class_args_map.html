@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>Class Arguments Map</title>
+  <link href="search/tipuesearch.css" rel="stylesheet">
+  <link href="style.css" rel="stylesheet">
+</head>
+
+<body class="page--class_args_map">
+<header>
+  <div class="pager"><a href="autoloading.html" class="prev autoloading">&laquo;Autoloading, Includes and Dependencies</a><a href="index.html" class="index pager__book-title">Drupal Test</a><a href="destructive.html" class="next destructive">Destructive Tests&raquo;</a></div></header>
+<section class="sub-header">
+  <div class="breadcrumbs"><a href="index.html">Index</a>
+         &raquo
+                        <a href="README.html">Using Drupal Test</a>
+         &raquo
+      </div>      <div class="search__wrapper">
+  <form action="search--results.html">
+    <input type="text" class="search-input" name="q" id="tipue_search_input" autocomplete="off" required>
+  </form>
+</div>
+  </section>
+
+
+<h1>Class Arguments Map</h1>
+
+<section>
+
+<p>This is a powerful, time-saver when understood.</p>
+
+<p>The keys of this array correspond to the class properties.
+Each value relates to the passed argument to your classe's <code>_construct</code> method.</p>
+
+<h2>Argument is: class instance</h2>
+
+<p>If an argument is an instance of a class, then do this:</p>
+
+<pre><code>'classArgumentsMap' =&gt; [
+  'core' =&gt; '\Drupal\gop\Core',
+],
+</code></pre>
+
+<p><code>$this-&gt;obj-&gt;core</code> will become a fully-mocked instance of <em>\Drupal\gop\Core</em>.  All methods will require mocking before they may be called.</p>
+
+<h3>Partial mocks.</h3>
+
+<p>You can indicate a class instance should be a <a href="http://docs.mockery.io/en/latest/reference/partial_mocks.html">partial mock</a> by doing like so:</p>
+
+<pre><code>'classArgumentsMap' =&gt; [
+  'core' =&gt; ['\Drupal\gop\Core', self::PARTIAL_MOCK]
+],
+</code></pre>
+
+<p><code>$this-&gt;obj-&gt;core</code> will become a partially-mocked instance of <em>\Drupal\gop\Core</em>.  Method calls will return the actual methods unless you override them.</p>
+
+<h3>If <code>_construct</code> calls a method on an arg</h3>
+
+<p>In order to accommodate for constructors that call a method on thier arguments, you will need to set up <code>classArgumentsMap</code> using a callback, wherein you create the mock and set it's expectations.</p>
+
+<p>If this was the constructor of your class being tested...</p>
+
+<pre><code>public function __construct(CacheBackendInterface $cache_backend) {
+  $this-&gt;cache = $cache_backend-&gt;get('data');
+}
+</code></pre>
+
+<p>... you would need to set up your test like this:</p>
+
+<pre><code>'classArgumentsMap' =&gt; [
+  'cache_backend' =&gt; function () {
+    $mock = \Mockery::mock('\Drupal\Core\Cache\CacheBackendInterface');
+    $mock-&gt;shouldReceive('get')-&gt;andReturn('15');
+    return $mock;
+  },
+],
+</code></pre>
+
+<h2>Argument is: a value</h2>
+
+<p>If a passed argument is a value, do like this:</p>
+
+<pre><code>'classArgumentsMap' =&gt; [
+  'age' =&gt; [64, self::VALUE],
+  'name' =&gt; ['Aaron', self::VALUE],
+],
+</code></pre>
+
+<p><code>$this-&gt;obj-&gt;age</code> will become an integer value of <code>64</code>.
+<code>$this-&gt;obj-&gt;name</code> will become a string value of <code>Aaron</code>.</p>
+
+<h2>Argument value at runtime</h2>
+</section>
+
+<div class="search__results">
+  <div id="tipue_search_content"></div>
+</div>
+
+<footer>
+  <div class="pager"><a href="autoloading.html" class="prev autoloading">&laquo;Autoloading, Includes and Dependencies</a><a href="index.html" class="index pager__book-title">Drupal Test</a><a href="destructive.html" class="next destructive">Destructive Tests&raquo;</a></div>  
+  <div id="footer-legaleeze">
+    <p class="legaleeze center">Version: 0.3.3 &bull; Last Updated: Sun, 07 Apr 2019 14:26:42 -0700</p>
+  </div>
+</footer>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  <script src="search/tipuesearch_content.js"></script>
+  <script src="search/tipuesearch_set.js"></script>
+  <script src="search/tipuesearch.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      $('#tipue_search_input').tipuesearch()
+    })
+  </script>
+<script src="js/core.js"></script>
+</body>
+</html>
+

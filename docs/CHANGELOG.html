@@ -9,7 +9,7 @@
 
 <body class="page--changelog">
 <header>
-  <div class="pager"><a href="manual.html" class="prev manual">&laquo;Add Manual Tests</a><a href="index.html" class="index pager__book-title">Drupal Test</a><a href="destructive.html" class="next destructive">Destructive Tests&raquo;</a></div></header>
+  <div class="pager"><a href="manual.html" class="prev manual">&laquo;Add Manual Tests</a><a href="index.html" class="index pager__book-title">Drupal Test</a><a href="autoloading.html" class="next autoload">Autoloading, Includes and Dependencies&raquo;</a></div></header>
 <section class="sub-header">
   <div class="breadcrumbs"><a href="index.html">Index</a>
          &raquo
@@ -25,7 +25,15 @@
 
 <h1>CHANGELOG</h1>
 
-<section><h2>0.3.0</h2>
+<section><h2>0.4.0 2019-04-07T13:01, aklump</h2>
+
+<ul>
+<li>Added <em>drupal_test_config.yml</em> to be used instead of modifying <em>composer.json</em>.  <em>composer.json</em> should no longer be modified as it will now be overwritten during updates.</li>
+<li>You must migrate your autoloading and merge-plugin configuration to <em>drupal_test_config.yml</em>.  A backup file <em>composer--original.json</em> should have been created on update.  Migrate your values and then delete <em>composer--original.json</em>.</li>
+<li>Do not make changes to <em>composer.json</em> from now on.</li>
+</ul>
+
+<h2>0.3.0</h2>
 
 <ul>
 <li>BREAKING CHANGE</li>
@@ -72,9 +80,9 @@ $el = $this-&gt;getDomElements([
 </div>
 
 <footer>
-  <div class="pager"><a href="manual.html" class="prev manual">&laquo;Add Manual Tests</a><a href="index.html" class="index pager__book-title">Drupal Test</a><a href="destructive.html" class="next destructive">Destructive Tests&raquo;</a></div>  
+  <div class="pager"><a href="manual.html" class="prev manual">&laquo;Add Manual Tests</a><a href="index.html" class="index pager__book-title">Drupal Test</a><a href="autoloading.html" class="next autoload">Autoloading, Includes and Dependencies&raquo;</a></div>  
   <div id="footer-legaleeze">
-    <p class="legaleeze center">Version: 0.3.2 &bull; Last Updated: Sat, 09 Mar 2019 09:26:08 -0800</p>
+    <p class="legaleeze center">Version: 0.3.3 &bull; Last Updated: Sun, 07 Apr 2019 14:26:41 -0700</p>
   </div>
 </footer>
 

@@ -2,7 +2,10 @@
 
 * Test classnames should follow: _\*UnitTest_
 * Unit tests do not have access to the Drupal bootstrap; these are very fast.  You should try to write unit tests whenever possible.  Only move to Kernel tests if unit tests are not appropriate.
-* If a unit test requires a file that is not normally autoloaded, it should be added to the `autoload-dev` section of the module's composer file.
+
+## Setup Autoloading
+
+* Refer to [autoloading setup](@autoload) to allow your module to be tested.
 
 ## A Note About Test Suite Order in XML
 

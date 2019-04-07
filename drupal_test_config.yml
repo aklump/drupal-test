@@ -1,0 +1,17 @@
+#
+# @file
+# Configuration for Drupal Test
+#
+
+# @see https://getcomposer.org/doc/04-schema.md#autoload for more info
+
+autoload_psr4:
+
+autoload_psr0:
+
+autoload_files:
+
+autoload_classmap:
+
+# An array of paths to composer.json files that should be merged into the test runner.
+merge_composer.json:

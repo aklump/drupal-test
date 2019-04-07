@@ -61,8 +61,17 @@ cp drupal_test.yml $app/
 cp README.md $app/
 cp LICENSE $app/
 
+if [[ ! -f "$app/drupal_test_config.yml" ]]; then
+  cp drupal_test_config.yml
+fi
+
 # Update composer.
+if [[ -f "$app/composer--original.json" ]]; then
+  echo "You must delete composer--original.json to continue" && exit 1
+fi
+cp $app/composer.json $app/composer--original.json
+cp composer.json $app/
 cd $app
-composer update --lock
+composer update --lock || exit 1
 
 echo && echo "Updated to the latest version."

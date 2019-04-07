@@ -5,7 +5,7 @@
  * Bootstrap our Unit and Kernel tests.
  */
 
-require_once dirname(__FILE__) . '/vendor/autoload.php';
+$loader = require __DIR__ . '/vendor/autoload.php';
 
 /**
  * The webroot directory.

@@ -11,6 +11,8 @@ use GuzzleHttp\Client;
  */
 abstract class EndToEndTestBase extends BrowserTestCase {
 
+  const WAIT_TIMEOUT = 10;
+
   use DestructiveTrait;
 
   public static $browsers = array(
@@ -104,7 +106,7 @@ abstract class EndToEndTestBase extends BrowserTestCase {
    */
   public function waitFor(callable $test, $description = NULL, $timeout = NULL) {
     if (is_null($timeout)) {
-      $timeout = 5;
+      $timeout = self::WAIT_TIMEOUT;
     }
     if (is_null($description)) {
       $description = 'callback to return true';
