@@ -22,7 +22,7 @@ fi
 
 if [[ ! -f "$app/drupal_test_config.yml" ]]; then
   cp $app/composer.json $app/composer--original.json
-  cp drupal_test_config.yml
+  cp drupal_test_config.yml $app/
 fi
 
 cp composer.json $app/
