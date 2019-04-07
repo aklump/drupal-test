@@ -52,6 +52,7 @@ function exact_match_dir() {
     rsync -a --delete "$relative_path/" "$app/$relative_path/" || return 1
 }
 
+update_dir bin
 source "$root/_update.sh"
 cd $app && composer update --lock || exit 1
 
