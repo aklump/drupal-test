@@ -73,7 +73,7 @@ class Config {
       if (!isset($config[$config_key])) {
         continue;
       }
-      foreach ($config[$config_key] as $prefix => $paths) {
+      foreach ((array) $config[$config_key] as $prefix => $paths) {
         if (!is_array($paths)) {
           $paths = [$paths];
         }
@@ -121,7 +121,7 @@ class Config {
       'merge_composer.json' => [],
     ];
 
-    return ['require' => array_unique(array_merge($merge['require'], $config['merge_composer.json']))];
+    return ['require' => array_unique(array_merge($merge['require'], (array) $config['merge_composer.json']))];
   }
 
   /**
