@@ -9,7 +9,7 @@
 
 <body class="page--destructive">
 <header>
-  <div class="pager"><a href="class_args_map.html" class="prev class_args_map">&laquo;Class Arguments Map</a><a href="index.html" class="index pager__book-title">Drupal Test</a><a href="extending.html" class="next extending">Extending Classes&raquo;</a></div></header>
+  <div class="pager"><a href="coverage.html" class="prev coverage">&laquo;Code Coverage Reports</a><a href="index.html" class="index pager__book-title">Drupal Test</a><a href="extending.html" class="next extending">Extending Classes&raquo;</a></div></header>
 <section class="sub-header">
   <div class="breadcrumbs"><a href="index.html">Index</a>
          &raquo
@@ -45,7 +45,7 @@ namespace Drupal\Tests\my_module;
  *
  * @destructive
  */
-class ModalRegistrationEndToEndTest extends EndToEndTestBase {
+class ModalRegistrationEndToEndTest extends EndToEndTestCase {
 ...
 </code></pre></li>
 </ul>
@@ -80,7 +80,7 @@ public function testCanDeleteAUser() {
 
 <h2>How It Works</h2>
 
-<p>A test class must <code>use \AKlump\DrupalTest\Utilities\DestructiveTrait</code> if you want to use this convention.  The base classes: <code>\AKlump\DrupalTest\ClientTestBase</code> and <code>\AKlump\DrupalTest\EndToEndTestBase</code> already include this trait so you need only include the annotation as shown above.</p>
+<p>A test class must <code>use \AKlump\DrupalTest\Utilities\DestructiveTrait</code> if you want to use this convention.  The base classes: <code>\AKlump\DrupalTest\ClientTestCase</code> and <code>\AKlump\DrupalTest\EndToEndTestCase</code> already include this trait so you need only include the annotation as shown above.</p>
 </section>
 
 <div class="search__results">
@@ -88,9 +88,9 @@ public function testCanDeleteAUser() {
 </div>
 
 <footer>
-  <div class="pager"><a href="class_args_map.html" class="prev class_args_map">&laquo;Class Arguments Map</a><a href="index.html" class="index pager__book-title">Drupal Test</a><a href="extending.html" class="next extending">Extending Classes&raquo;</a></div>  
+  <div class="pager"><a href="coverage.html" class="prev coverage">&laquo;Code Coverage Reports</a><a href="index.html" class="index pager__book-title">Drupal Test</a><a href="extending.html" class="next extending">Extending Classes&raquo;</a></div>  
   <div id="footer-legaleeze">
-    <p class="legaleeze center">Version: 0.4.7 &bull; Last Updated: Sun, 07 Apr 2019 18:46:57 -0700</p>
+    <p class="legaleeze center">Version: 0.4.7 &bull; Last Updated: Mon, 08 Apr 2019 16:10:49 -0700</p>
   </div>
 </footer>
 

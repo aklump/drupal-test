@@ -9,7 +9,7 @@
 
 <body class="page--class_args_map">
 <header>
-  <div class="pager"><a href="autoloading.html" class="prev autoloading">&laquo;Autoloading, Includes and Dependencies</a><a href="index.html" class="index pager__book-title">Drupal Test</a><a href="destructive.html" class="next destructive">Destructive Tests&raquo;</a></div></header>
+  <div class="pager"><a href="autoloading.html" class="prev autoloading">&laquo;Autoloading, Includes and Dependencies</a><a href="index.html" class="index pager__book-title">Drupal Test</a><a href="coverage.html" class="next coverage">Code Coverage Reports&raquo;</a></div></header>
 <section class="sub-header">
   <div class="breadcrumbs"><a href="index.html">Index</a>
          &raquo
@@ -48,7 +48,7 @@ Each value relates to the passed argument to your classe's <code>_construct</cod
 <p>You can indicate a class instance should be a <a href="http://docs.mockery.io/en/latest/reference/partial_mocks.html">partial mock</a> by doing like so:</p>
 
 <pre><code>'classArgumentsMap' =&gt; [
-  'core' =&gt; ['\Drupal\gop\Core', self::PARTIAL_MOCK]
+  'core' =&gt; ['\Drupal\gop\Core', EasyMock::PARTIAL]
 ],
 </code></pre>
 
@@ -97,9 +97,9 @@ Each value relates to the passed argument to your classe's <code>_construct</cod
 </div>
 
 <footer>
-  <div class="pager"><a href="autoloading.html" class="prev autoloading">&laquo;Autoloading, Includes and Dependencies</a><a href="index.html" class="index pager__book-title">Drupal Test</a><a href="destructive.html" class="next destructive">Destructive Tests&raquo;</a></div>  
+  <div class="pager"><a href="autoloading.html" class="prev autoloading">&laquo;Autoloading, Includes and Dependencies</a><a href="index.html" class="index pager__book-title">Drupal Test</a><a href="coverage.html" class="next coverage">Code Coverage Reports&raquo;</a></div>  
   <div id="footer-legaleeze">
-    <p class="legaleeze center">Version: 0.4.7 &bull; Last Updated: Sun, 07 Apr 2019 18:46:56 -0700</p>
+    <p class="legaleeze center">Version: 0.4.7 &bull; Last Updated: Mon, 08 Apr 2019 16:10:47 -0700</p>
   </div>
 </footer>
 

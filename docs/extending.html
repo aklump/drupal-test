@@ -37,10 +37,10 @@
     ├── DrupalTest
     │   ├── ...
     └── module_name
-        ├── ClientTestBase.php
-        ├── EndToEndTestBase.php
-        ├── KernelTestBase.php
-        └── UnitTestBase.php
+        ├── ClientTestCase.php
+        ├── EndToEndTestCase.php
+        ├── KernelTestCase.php
+        └── UnitTestCase.php
 </code></pre></li>
 <li><p>Make sure your classes do extend the parent:</p>
 
@@ -48,7 +48,7 @@
 
 namespace Drupal\Tests\module_name;
 
-use \AKlump\DrupalTest\ClientTestBase as Parent;
+use \AKlump\DrupalTest\ClientTestCase as Parent;
 
 abstract class ClientTest extends Parent { 
   ... 
@@ -60,7 +60,7 @@ abstract class ClientTest extends Parent {
 
 namespace Drupal\Tests\module_name\Metrics;
 
-use Drupal\Tests\module_name\ClientTestBase;
+use Drupal\Tests\module_name\ClientTestCase;
 
 /**
  * Client coverage for Curriculum.
@@ -69,7 +69,7 @@ use Drupal\Tests\module_name\ClientTestBase;
  * @SuppressWarnings(PHPMD.StaticAccess)
  * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  */
-class CurriculumClientTest extends ClientTestBase { 
+class CurriculumClientTest extends ClientTestCase { 
   ... 
 </code></pre></li>
 </ol>
@@ -82,7 +82,7 @@ class CurriculumClientTest extends ClientTestBase {
 <footer>
   <div class="pager"><a href="destructive.html" class="prev destructive">&laquo;Destructive Tests</a><a href="index.html" class="index pager__book-title">Drupal Test</a><a href="cs--client.html" class="next cs--client">Cheatsheet for Client Tests&raquo;</a></div>  
   <div id="footer-legaleeze">
-    <p class="legaleeze center">Version: 0.4.7 &bull; Last Updated: Sun, 07 Apr 2019 18:46:58 -0700</p>
+    <p class="legaleeze center">Version: 0.4.7 &bull; Last Updated: Mon, 08 Apr 2019 16:10:50 -0700</p>
   </div>
 </footer>
 

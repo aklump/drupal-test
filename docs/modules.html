@@ -27,16 +27,17 @@
 
 <section>
 
-<blockquote>
-  <p>In order for unit testing to work with a module or a theme, you must <a href="autoloading.html">configure autoloading</a>.</p>
-</blockquote>
+<p>The term <em>extension</em> will be used to refer to themes and modules interchangeably.</p>
 
-<h2>Quick Start</h2>
+<h2>Unit Test Quick Start</h2>
 
 <ol>
-<li>If your module already has a <em>composer.json</em> file then <a href="autoloading.html">add it</a> to <em>drupal_test_config.yml</em>.</li>
-<li>Otherwise determine and configure the best means of autoloading by reading <a href="autoloading.html#module">this</a>.</li>
-<li>Add one or more tests to the module (according the file structure convention) extending one of the abstract classes provided by this module, e.g. <code>\AKlump\DrupalTest\UnitTestBase</code>, `</li>
+<li>Ensure your <em>extension</em> has <em>composer.json</em> in it's root directory.</li>
+<li>Configure <a href="autoloading.html">Drupal Test autoloading</a> for your extension.</li>
+<li>Namespace all tests with <code>Drupal\Tests\{extension_name}\{suite type}</code></li>
+<li>Place all tests relative to your extension's root directory in <em>tests/src/{suite type}/</em>, e.g. <em>my_module/tests/src/Unit/MyModuleUnitTest.php</em></li>
+<li>Suffix all test classes with <em>{suite type}Test.php</em>; not just <em>Test.php</em>.</li>
+<li>Extend <code>\AKlump\DrupalTest\*\UnitTestCase</code> for your Unit test classes.</li>
 </ol>
 
 <h2>Test File Structure</h2>
@@ -66,7 +67,7 @@
 
 <p>Unit and Kernel tests do not have to test a single class, for example if you are writing a test to cover theme functions.  In order to make this happen you have to do the following in your test class:</p>
 
-<pre><code>    class InTheLoftThemeKernelTest extends KernelTestBase {
+<pre><code>    class InTheLoftThemeKernelTest extends KernelTestCase {
 
       protected $schema = [
 
@@ -85,7 +86,7 @@
 <footer>
   <div class="pager"><a href="kernel.html" class="prev kernel">&laquo;Kernel Tests</a><a href="index.html" class="index pager__book-title">Drupal Test</a><a href="client.html" class="next client">Client Tests&raquo;</a></div>  
   <div id="footer-legaleeze">
-    <p class="legaleeze center">Version: 0.4.7 &bull; Last Updated: Sun, 07 Apr 2019 18:46:59 -0700</p>
+    <p class="legaleeze center">Version: 0.4.7 &bull; Last Updated: Mon, 08 Apr 2019 16:10:52 -0700</p>
   </div>
 </footer>
 

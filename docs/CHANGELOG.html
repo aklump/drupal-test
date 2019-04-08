@@ -25,7 +25,20 @@
 
 <h1>CHANGELOG</h1>
 
-<section><h2>0.4.0 2019-04-07T13:01, aklump</h2>
+<section><h2>0.5.0</h2>
+
+<ul>
+<li>This release marks the movement toward making this project compatible with Drupal 8 as well.</li>
+<li>Replace <code>AKlump\DrupalTest\UnitTestCase</code> with <code>AKlump\DrupalTest\Drupal7\UnitTestBase</code>; notice <code>Case</code> turns to <code>Base</code> to match with Drupal 8.</li>
+<li>Replace <code>AKlump\DrupalTest\KernelTestCase</code> with <code>AKlump\DrupalTest\Drupal7\KernelTestBase</code></li>
+<li>Replace <code>\AKlump\DrupalTest\ClientTestCase</code> with <code>\AKlump\DrupalTest\ClientTestCase</code></li>
+<li>Replace <code>\AKlump\DrupalTest\EndToEndTestCase</code> with <code>\AKlump\DrupalTest\EndToEndTestCase</code></li>
+<li>Replace <code>self::FULL_MOCK</code> with <code>EasyMock::FULL</code></li>
+<li>Replace <code>self::PARTIAL_MOCK</code> with <code>EasyMock::PARTIAL</code></li>
+<li>Replace <code>self::VALUE</code> with <code>EasyMock::VALUE</code></li>
+</ul>
+
+<h2>0.4.0</h2>
 
 <ul>
 <li>Added <em>drupal_test_config.yml</em> to be used instead of modifying <em>composer.json</em>.  <em>composer.json</em> should no longer be modified as it will now be overwritten during updates.</li>
@@ -83,7 +96,7 @@ $el = $this-&gt;getDomElements([
 <footer>
   <div class="pager"><a href="manual.html" class="prev manual">&laquo;Add Manual Tests</a><a href="index.html" class="index pager__book-title">Drupal Test</a><a href="autoloading.html" class="next autoload">Autoloading, Includes and Dependencies&raquo;</a></div>  
   <div id="footer-legaleeze">
-    <p class="legaleeze center">Version: 0.4.7 &bull; Last Updated: Sun, 07 Apr 2019 18:46:55 -0700</p>
+    <p class="legaleeze center">Version: 0.4.7 &bull; Last Updated: Mon, 08 Apr 2019 16:10:46 -0700</p>
   </div>
 </footer>
 
