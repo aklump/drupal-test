@@ -5,6 +5,7 @@ namespace AKlump\DrupalTest;
 use Composer\Package\RootPackageInterface;
 use Composer\Script\Event as ScriptEvent;
 use Symfony\Component\Yaml\Yaml;
+use Wikimedia\Composer\MergePlugin;
 
 /**
  * Handles special config for Drupal Test.
@@ -28,27 +29,32 @@ class Config {
   protected static $configIsLoaded = FALSE;
 
   /**
-   * Add our autoload maps.
+   * Add our custom configuration.
    *
    * @param \Composer\Script\Event $event
    *   The update event.
    */
-  public static function addAutoload(ScriptEvent $event) {
+  public static function addConfig(ScriptEvent $event) {
     $package = $event->getComposer()->getPackage();
     $package->setAutoload(self::getMergedAutoload($package));
-  }
-
-  /**
-   * Add our extra configuration.
-   *
-   * @param \Composer\Script\Event $event
-   *   The update event.
-   */
-  public static function addExtra(ScriptEvent $event) {
-    $package = $event->getComposer()->getPackage();
     $package->setExtra([
       'merge-plugin' => self::getMergedMergePlugin($package),
     ]);
+
+    // We have to call the merge plugin manually here, otherwise the autoload
+    // gets messed up.  And we loose autoload paths gleaned in the update
+    // command.
+    $plugins = $event->getComposer()->getPluginManager()->getPlugins();
+    $merge_plugin = array_filter($plugins, function ($plugin) {
+      return $plugin instanceof MergePlugin;
+    });
+    $merge_plugin = reset($merge_plugin);
+    if (empty($merge_plugin)) {
+      throw new \RuntimeException("Unable to call: MergePlugin::onInstallUpdateOrDump. The autoload files my be corrupt.");
+    }
+    if ($merge_plugin) {
+      $merge_plugin->onInstallUpdateOrDump($event);
+    }
   }
 
   /**

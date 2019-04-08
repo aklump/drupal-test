@@ -9,8 +9,9 @@
         }
     },
     "scripts": {
-        "pre-update-cmd": "AKlump\\DrupalTest\\Config::addExtra",
-        "pre-autoload-dump": "AKlump\\DrupalTest\\Config::addAutoload"
+        "pre-install-cmd": "AKlump\\DrupalTest\\Config::addConfig",
+        "pre-update-cmd": "AKlump\\DrupalTest\\Config::addConfig",
+        "pre-autoload-dump": "AKlump\\DrupalTest\\Config::addConfig"
     },
     "require": {
         "aklump/phpunit-extras": "^1.1",
