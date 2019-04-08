@@ -2,7 +2,7 @@
 
 namespace AKlump\DrupalTest\Drupal7;
 
-use AKlump\DrupalTest\EasyMockTestBase;
+use AKlump\PHPUnit\EasyMockTestBase;
 
 /**
  * Base class for unit tests.
@@ -11,5 +11,12 @@ use AKlump\DrupalTest\EasyMockTestBase;
  * Drupal bootstrapped.
  */
 abstract class UnitTestCase extends EasyMockTestBase {
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getService($service_name) {
+    return \Drupal::getContainer()->get(ltrim($service_name, '@'));
+  }
 
 }

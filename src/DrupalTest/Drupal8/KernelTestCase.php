@@ -1,9 +1,9 @@
 <?php
 
-namespace AKlump\DrupalTest\Drupal7;
+namespace AKlump\DrupalTest\Drupal8;
 
-use AKlump\PHPUnit\EasyMockTestBase;
 use Drupal\Driver\DrupalDriver;
+use AKlump\DrupalTest\EasyMockTestBase;
 
 /**
  * Base class for kernel tests.
@@ -20,13 +20,6 @@ abstract class KernelTestCase extends EasyMockTestBase {
    * @var bool
    */
   protected static $isBootstrapped = FALSE;
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getService($service_name) {
-    return \Drupal::getContainer()->get(ltrim($service_name, '@'));
-  }
 
   /**
    * Bootstrap Drupal for our Kernel testing.

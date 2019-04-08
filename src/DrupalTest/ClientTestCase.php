@@ -17,7 +17,7 @@ use JsonSchema\Validator;
  *
  * @link http://simplehtmldom.sourceforge.net/manual.htm
  */
-abstract class ClientTestBase extends BrowserTestCase {
+abstract class ClientTestCase extends BrowserTestCase {
 
   use DestructiveTrait;
 
@@ -137,7 +137,7 @@ abstract class ClientTestBase extends BrowserTestCase {
    * @param int $index
    *   The index when the selector returns multiple nodes. Defaults to 0.
    *
-   * @return \AKlump\DrupalTest\ClientTestBase
+   * @return \AKlump\DrupalTest\ClientTestCase
    *   Self for chaining.
    */
   public function assertElementRegExp($expected, $css_selector, $index = 0) {
@@ -156,7 +156,7 @@ abstract class ClientTestBase extends BrowserTestCase {
    * @param string $css_selector
    *   A CSS selector of the element you want to check for.
    *
-   * @return \AKlump\DrupalTest\ClientTestBase
+   * @return \AKlump\DrupalTest\ClientTestCase
    *   Self for chaining.
    */
   public function assertElementNotEmpty($css_selector, $index = 0) {
@@ -175,7 +175,7 @@ abstract class ClientTestBase extends BrowserTestCase {
    * @param string $css_selector
    *   A CSS selector of the element you want to check for.
    *
-   * @return \AKlump\DrupalTest\ClientTestBase
+   * @return \AKlump\DrupalTest\ClientTestCase
    *   Self for chaining.
    */
   public function assertElementAttributeNotEmpty($attribute, $css_selector, $index = 0) {
@@ -198,7 +198,7 @@ abstract class ClientTestBase extends BrowserTestCase {
    * @param int $index
    *   The index when the selector returns multiple nodes. Defaults to 0.
    *
-   * @return \AKlump\DrupalTest\ClientTestBase
+   * @return \AKlump\DrupalTest\ClientTestCase
    *   Self for chaining.
    */
   public function assertElementSame($expected, $css_selector, $index = 0) {
@@ -221,7 +221,7 @@ abstract class ClientTestBase extends BrowserTestCase {
    * @param string $attribute
    *   THe attribute to check for value.
    *
-   * @return \AKlump\DrupalTest\ClientTestBase
+   * @return \AKlump\DrupalTest\ClientTestCase
    *   Self for chaining.
    */
   public function assertMetaTagSame($expected, $name, $attribute) {

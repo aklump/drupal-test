@@ -1,5 +1,5 @@
 # Cheatsheet for Client Tests
 
-{% include('_ClientTestBase.md') %}
+{% include('_ClientTestCase.md') %}
 {% include('_BrowserTestBase.md') %}
 

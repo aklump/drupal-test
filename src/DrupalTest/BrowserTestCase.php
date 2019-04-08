@@ -203,7 +203,7 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
    * @param string $failure_message
    *   An optional message to be displayed on failure.
    *
-   * @return \AKlump\DrupalTest\EndToEndTestBase
+   * @return \AKlump\DrupalTest\EndToEndTestCase
    *   Self for chaining.
    */
   protected function assertElementExists($css_selector, $failure_message = '') {
@@ -220,7 +220,7 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
    * @param string $failure_message
    *   An optional message to be displayed on failure.
    *
-   * @return \AKlump\DrupalTest\EndToEndTestBase
+   * @return \AKlump\DrupalTest\EndToEndTestCase
    *   Self for chaining.
    */
   protected function assertElementNotExists($css_selector, $failure_message = '') {
@@ -238,7 +238,7 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
    * @param string $failure_message
    *   An optional message to be displayed on failure.
    *
-   * @return \AKlump\DrupalTest\EndToEndTestBase
+   * @return \AKlump\DrupalTest\EndToEndTestCase
    *   Self for chaining.
    */
   protected function assertElementVisible($css_selector, $failure_message = '') {
@@ -261,7 +261,7 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
    * @param string $failure_message
    *   An optional message to be displayed on failure.
    *
-   * @return \AKlump\DrupalTest\EndToEndTestBase
+   * @return \AKlump\DrupalTest\EndToEndTestCase
    */
   protected function assertElementNotVisible($css_selector, $failure_message = '') {
     if (empty($failure_message)) {

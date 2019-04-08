@@ -9,7 +9,7 @@ The term _extension_ will be used to refer to themes and modules interchangeably
 1. Namespace all tests with `Drupal\Tests\{extension_name}\{suite type}`
 1. Place all tests relative to your extension's root directory in _tests/src/{suite type}/_, e.g. _my_module/tests/src/Unit/MyModuleUnitTest.php_
 1. Suffix all test classes with _{suite type}Test.php_; not just _Test.php_.
-1. Extend `\AKlump\DrupalTest\UnitTestBase` for your Unit test classes.
+1. Extend `\AKlump\DrupalTest\*\UnitTestCase` for your Unit test classes.
 
 ## Test File Structure
 
@@ -37,7 +37,7 @@ Each module or theme provides tests and schema files relative to it's own direct
 
 Unit and Kernel tests do not have to test a single class, for example if you are writing a test to cover theme functions.  In order to make this happen you have to do the following in your test class:
 
-        class InTheLoftThemeKernelTest extends KernelTestBase {
+        class InTheLoftThemeKernelTest extends KernelTestCase {
         
           protected $schema = [
           

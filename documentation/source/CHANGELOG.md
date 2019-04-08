@@ -1,7 +1,13 @@
 ## 0.5.0
 
+* This release marks the movement toward making this project compatible with Drupal 8 as well.
 * Replace `AKlump\DrupalTest\UnitTestCase` with `AKlump\DrupalTest\Drupal7\UnitTestBase`; notice `Case` turns to `Base` to match with Drupal 8.
 * Replace `AKlump\DrupalTest\KernelTestCase` with `AKlump\DrupalTest\Drupal7\KernelTestBase`
+* Replace `\AKlump\DrupalTest\ClientTestCase` with `\AKlump\DrupalTest\ClientTestCase`
+* Replace `\AKlump\DrupalTest\EndToEndTestCase` with `\AKlump\DrupalTest\EndToEndTestCase`
+* Replace `self::FULL_MOCK` with `EasyMock::FULL`
+* Replace `self::PARTIAL_MOCK` with `EasyMock::PARTIAL`
+* Replace `self::VALUE` with `EasyMock::VALUE`
 
 ## 0.4.0
 

@@ -32,12 +32,12 @@
     
     namespace Drupal\Tests\my_project;
     
-    use AKlump\DrupalTest\EndToEndTestBase;
+    use AKlump\DrupalTest\EndToEndTestCase;
     
     /**
      * Tests the Story resource endpoint.
      */
-    class SearchEndToEndTest extends EndToEndTestBase {
+    class SearchEndToEndTest extends EndToEndTestCase {
     
       public function testSearchLinkInHeaderSearchesByTextAndReturnsResults() {
         $this->loadPageByUrl('/');
