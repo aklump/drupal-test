@@ -1,8 +1,9 @@
 <?php
 
-namespace AKlump\DrupalTest;
+namespace AKlump\DrupalTest\Drupal7;
 
 use Drupal\Driver\DrupalDriver;
+use AKlump\DrupalTest\EasyMockTestBase;
 
 /**
  * Base class for kernel tests.
@@ -11,7 +12,7 @@ use Drupal\Driver\DrupalDriver;
  * Extend this class when a unit test is too mockey or relies on too many
  * outside things, e.g. constants and global functions.
  */
-abstract class KernelTestBase extends EasyMockTestBase {
+abstract class KernelTestCase extends EasyMockTestBase {
 
   /**
    * Tracks if the Kernel tests have bootstrapped Drupal.
