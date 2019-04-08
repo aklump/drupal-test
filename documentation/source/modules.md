@@ -1,12 +1,15 @@
 # How to Setup Testing of Modules and Themes
 
-> In order for unit testing to work with a module or a theme, you must [configure autoloading](@autoload).
+The term _extension_ will be used to refer to themes and modules interchangeably.
 
-## Quick Start
+## Unit Test Quick Start
 
-1. If your module already has a _composer.json_ file then [add it](@autoload) to _drupal_test_config.yml_.
-1. Otherwise determine and configure the best means of autoloading by reading [this](@autoload:module).
-1. Add one or more tests to the module (according the file structure convention) extending one of the abstract classes provided by this module, e.g. `\AKlump\DrupalTest\UnitTestBase`, `
+1. Ensure your _extension_ has _composer.json_ in it's root directory.
+1. Configure [Drupal Test autoloading](@autoload) for your extension.
+1. Namespace all tests with `Drupal\Tests\{extension_name}\{suite type}`
+1. Place all tests relative to your extension's root directory in _tests/src/{suite type}/_, e.g. _my_module/tests/src/Unit/MyModuleUnitTest.php_
+1. Suffix all test classes with _{suite type}Test.php_; not just _Test.php_.
+1. Extend `\AKlump\DrupalTest\UnitTestBase` for your Unit test classes.
 
 ## Test File Structure
 
