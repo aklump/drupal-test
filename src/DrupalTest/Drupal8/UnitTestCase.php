@@ -2,7 +2,7 @@
 
 namespace AKlump\DrupalTest\Drupal8;
 
-use AKlump\DrupalTest\EasyMockTrait;
+use AKlump\PHPUnit\EasyMockTrait;
 use Drupal\Tests\UnitTestCase as DrupalUnitTestCase;
 
 /**

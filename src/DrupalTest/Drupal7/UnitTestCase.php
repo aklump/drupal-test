@@ -2,7 +2,7 @@
 
 namespace AKlump\DrupalTest\Drupal7;
 
-use AKlump\PHPUnit\EasyMockTestBase;
+use AKlump\PHPUnit\EasyMockTrait;
 
 /**
  * Base class for unit tests.
@@ -10,7 +10,16 @@ use AKlump\PHPUnit\EasyMockTestBase;
  * Unit tests do not have access to the database, are faster and have not been
  * Drupal bootstrapped.
  */
-abstract class UnitTestCase extends EasyMockTestBase {
+abstract class UnitTestCase extends \PHPUnit_Framework_TestCase {
+
+  use EasyMockTrait;
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setUp() {
+    $this->easyMockSetUp();
+  }
 
   /**
    * {@inheritdoc}

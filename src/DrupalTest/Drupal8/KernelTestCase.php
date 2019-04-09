@@ -2,8 +2,8 @@
 
 namespace AKlump\DrupalTest\Drupal8;
 
+use AKlump\PHPUnit\EasyMockTrait;
 use Drupal\Driver\DrupalDriver;
-use AKlump\DrupalTest\EasyMockTestBase;
 
 /**
  * Base class for kernel tests.
@@ -12,7 +12,9 @@ use AKlump\DrupalTest\EasyMockTestBase;
  * Extend this class when a unit test is too mockey or relies on too many
  * outside things, e.g. constants and global functions.
  */
-abstract class KernelTestCase extends EasyMockTestBase {
+abstract class KernelTestCase extends \PHPUnit_Framework_TestCase {
+
+  use EasyMockTrait;
 
   /**
    * Tracks if the Kernel tests have bootstrapped Drupal.
@@ -36,6 +38,13 @@ abstract class KernelTestCase extends EasyMockTestBase {
       $driver->bootstrap();
       static::$isBootstrapped = TRUE;
     }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setUp() {
+    $this->easyMockSetUp();
   }
 
   /**
