@@ -50,7 +50,8 @@ class Config {
     });
     $merge_plugin = reset($merge_plugin);
     if (empty($merge_plugin)) {
-      throw new \RuntimeException("Unable to call: MergePlugin::onInstallUpdateOrDump. The autoload files my be corrupt.");
+      // TODO How to output in red?
+      echo "Unable to call: MergePlugin::onInstallUpdateOrDump. The autoload files may be corrupt.";
     }
     if ($merge_plugin) {
       $merge_plugin->onInstallUpdateOrDump($event);
@@ -138,11 +139,16 @@ class Config {
    */
   public static function getConfig() {
     if (!self::$configIsLoaded) {
-      self::$configIsLoaded = TRUE;
-      $config_filepath = getcwd() . '/drupal_test_config.yml';
-      self::$config = [];
-      if (file_exists($config_filepath)) {
-        self::$config = Yaml::parse(file_get_contents($config_filepath));
+      if (!class_exists(Yaml::class)) {
+        echo "Missing class Yaml; unable to load Drupal Test config";
+      }
+      else {
+        self::$configIsLoaded = TRUE;
+        $config_filepath = getcwd() . '/drupal_test_config.yml';
+        self::$config = [];
+        if (file_exists($config_filepath)) {
+          self::$config = Yaml::parse(file_get_contents($config_filepath));
+        }
       }
     }
 

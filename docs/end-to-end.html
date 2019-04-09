@@ -31,9 +31,9 @@
   <p>End-to-end testing is a Software testing methodology to test an application flow from start to end. The purpose of end to end testing is to simulate the real user scenario and validate the system under test and its components for integration and data integrity.</p>
 </blockquote>
 
-<p>Create these tests by extending <code>\AKlump\DrupalTest\EndToEndTestBase</code>.  They should be saved in your <em>Client</em> folders.</p>
+<p>Create these tests by extending <code>\AKlump\DrupalTest\EndToEndTestCase</code>.  They should be saved in your <em>Client</em> folders.</p>
 
-<p>These tests are the slowest as they offer a full browser environment, so they facilitate the testing of forms, multi-page workflows, and Javascript interaction.  If you just want to check for elements on a single page, use <code>\AKlump\DrupalTest\ClientTestBase</code> instead.</p>
+<p>These tests are the slowest as they offer a full browser environment, so they facilitate the testing of forms, multi-page workflows, and Javascript interaction.  If you just want to check for elements on a single page, use <code>\AKlump\DrupalTest\ClientTestCase</code> instead.</p>
 
 <p>These tests use <a href="http://mink.behat.org/en/latest/index.html">Mink</a> and <a href="https://www.seleniumhq.org">Selenium</a> to have a fully controllable browser, but <strong>run against a real site in it's active state.</strong>  These should be used when you wish to interact at the Browser level with a website in it's current state, just as you would as a human running manual tests.</p>
 
@@ -96,7 +96,7 @@ java -jar /Users/aklump/selenium/selenium-server-standalone-3.141.59.jar  -host 
 <li></li>
 <li><p>@destructive
 */
-class UserCanChangePasswordEndToEndTest extends EndToEndTestBase {</p>
+class UserCanChangePasswordEndToEndTest extends EndToEndTestCase {</p>
 
 <p>public function testLoggedInUserCanAccessUserSettingsPage() {
 ...</p></li>
@@ -113,7 +113,7 @@ class UserCanChangePasswordEndToEndTest extends EndToEndTestBase {</p>
 <pre><code>public function testPageTextOnHomepage() {
   $this-&gt;loadPageByUrl('/');
 
-  // This is a method from \Behat\Mink\WebAssert that has been made available by \AKlump\DrupalTest\EndToEndTestBase
+  // This is a method from \Behat\Mink\WebAssert that has been made available by \AKlump\DrupalTest\EndToEndTestCase
   $this-&gt;assert()-&gt;pageTextContains('Welcome to My Website');
 }
 </code></pre></li>
@@ -133,7 +133,7 @@ $this-&gt;assert()-&gt;elementExists('css', '.t-trigger-account-dropdown');
 <footer>
   <div class="pager"><a href="client.html" class="prev client">&laquo;Client Tests</a><a href="index.html" class="index pager__book-title">Drupal Test</a><a href="manual.html" class="next manual">Add Manual Tests&raquo;</a></div>  
   <div id="footer-legaleeze">
-    <p class="legaleeze center">Version: 0.4.7 &bull; Last Updated: Sun, 07 Apr 2019 18:46:57 -0700</p>
+    <p class="legaleeze center">Version: 0.5.0 &bull; Last Updated: Mon, 08 Apr 2019 17:22:11 -0700</p>
   </div>
 </footer>
 

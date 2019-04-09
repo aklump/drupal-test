@@ -9,10 +9,10 @@ You may want to create your own abstract base test classes for your Drupal websi
             ├── DrupalTest
             │   ├── ...
             └── module_name
-                ├── ClientTestBase.php
-                ├── EndToEndTestBase.php
-                ├── KernelTestBase.php
-                └── UnitTestBase.php
+                ├── ClientTestCase.php
+                ├── EndToEndTestCase.php
+                ├── KernelTestCase.php
+                └── UnitTestCase.php
                 
 1. Make sure your classes do extend the parent:
 
@@ -20,7 +20,7 @@ You may want to create your own abstract base test classes for your Drupal websi
                 
         namespace Drupal\Tests\module_name;
         
-        use \AKlump\DrupalTest\ClientTestBase as Parent;
+        use \AKlump\DrupalTest\ClientTestCase as Parent;
         
         abstract class ClientTest extends Parent { 
           ... 
@@ -32,7 +32,7 @@ You may want to create your own abstract base test classes for your Drupal websi
         
         namespace Drupal\Tests\module_name\Metrics;
         
-        use Drupal\Tests\module_name\ClientTestBase;
+        use Drupal\Tests\module_name\ClientTestCase;
         
         /**
          * Client coverage for Curriculum.
@@ -41,5 +41,5 @@ You may want to create your own abstract base test classes for your Drupal websi
          * @SuppressWarnings(PHPMD.StaticAccess)
          * @SuppressWarnings(PHPMD.TooManyPublicMethods)
          */
-        class CurriculumClientTest extends ClientTestBase { 
+        class CurriculumClientTest extends ClientTestCase { 
           ... 

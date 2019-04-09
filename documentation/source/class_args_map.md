@@ -20,7 +20,7 @@ If an argument is an instance of a class, then do this:
 You can indicate a class instance should be a [partial mock](http://docs.mockery.io/en/latest/reference/partial_mocks.html) by doing like so:
 
     'classArgumentsMap' => [
-      'core' => ['\Drupal\gop\Core', self::PARTIAL_MOCK]
+      'core' => ['\Drupal\gop\Core', EasyMock::PARTIAL]
     ],
 
 `$this->obj->core` will become a partially-mocked instance of _\Drupal\gop\Core_.  Method calls will return the actual methods unless you override them.

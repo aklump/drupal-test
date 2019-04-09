@@ -1,4 +1,15 @@
-## 0.4.0 2019-04-07T13:01, aklump
+## 0.5.0
+
+* This release marks the movement toward making this project compatible with Drupal 8 as well.
+* Replace `AKlump\DrupalTest\UnitTestCase` with `AKlump\DrupalTest\Drupal7\UnitTestBase`; notice `Case` turns to `Base` to match with Drupal 8.
+* Replace `AKlump\DrupalTest\KernelTestCase` with `AKlump\DrupalTest\Drupal7\KernelTestBase`
+* Replace `\AKlump\DrupalTest\ClientTestCase` with `\AKlump\DrupalTest\ClientTestCase`
+* Replace `\AKlump\DrupalTest\EndToEndTestCase` with `\AKlump\DrupalTest\EndToEndTestCase`
+* Replace `self::FULL_MOCK` with `EasyMock::FULL`
+* Replace `self::PARTIAL_MOCK` with `EasyMock::PARTIAL`
+* Replace `self::VALUE` with `EasyMock::VALUE`
+
+## 0.4.0
 
 * Added _drupal_test_config.yml_ to be used instead of modifying _composer.json_.  _composer.json_ should no longer be modified as it will now be overwritten during updates.
 * You must migrate your autoloading and merge-plugin configuration to _drupal_test_config.yml_.  A backup file _composer--original.json_ should have been created on update.  Migrate your values and then delete _composer--original.json_.

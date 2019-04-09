@@ -22,17 +22,17 @@ $reader->excludeFromAll([
 ]);
 
 /**
- * Create the ClientTestBase group.
+ * Create the ClientTestCase group.
  */
 $reader->addClassToScan('\AKlump\DrupalTest\BrowserTestCase', [
   PhpClassMethodReader::EXCLUDE,
   ['/^(getBrowser)$/'],
-], 'ClientTestBase');
+], 'ClientTestCase');
 $reader->addClassToScan('\aik099\PHPUnit\BrowserTestCase', [
   PhpClassMethodReader::INCLUDE,
   ['/^(getSession)$/'],
-], 'ClientTestBase');
-$reader->addClassToScan('\AKlump\DrupalTest\ClientTestBase', [
+], 'ClientTestCase');
+$reader->addClassToScan('\AKlump\DrupalTest\ClientTestCase', [
   PhpClassMethodReader::EXCLUDE,
   [
     '/^setUp/',
@@ -41,17 +41,17 @@ $reader->addClassToScan('\AKlump\DrupalTest\ClientTestBase', [
 ]);
 
 /**
- * Create the EndToEndTestBase group.
+ * Create the EndToEndTestCase group.
  */
 $reader->addClassToScan('\AKlump\DrupalTest\BrowserTestCase', [
   PhpClassMethodReader::EXCLUDE,
   ['/^(getBrowser)$/'],
-], 'EndToEndTestBase');
+], 'EndToEndTestCase');
 $reader->addClassToScan('\aik099\PHPUnit\BrowserTestCase', [
   PhpClassMethodReader::INCLUDE,
   ['/^(getSession)$/'],
-], 'EndToEndTestBase');
-$reader->addClassToScan('\AKlump\DrupalTest\EndToEndTestBase', [
+], 'EndToEndTestCase');
+$reader->addClassToScan('\AKlump\DrupalTest\EndToEndTestCase', [
   PhpClassMethodReader::EXCLUDE,
   ['/^(isBrowserOnline)$/'],
 ]);
@@ -79,7 +79,6 @@ $reader->addClassToScan('\AKlump\DrupalTest\Utilities\WebAssert', [
 ], function () {
   return 'WebAssert';
 });
-
 
 $grouped_methods = $reader->scan();
 

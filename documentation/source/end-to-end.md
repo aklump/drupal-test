@@ -2,9 +2,9 @@
 
 > End-to-end testing is a Software testing methodology to test an application flow from start to end. The purpose of end to end testing is to simulate the real user scenario and validate the system under test and its components for integration and data integrity.
 
-Create these tests by extending `\AKlump\DrupalTest\EndToEndTestBase`.  They should be saved in your _Client_ folders.
+Create these tests by extending `\AKlump\DrupalTest\EndToEndTestCase`.  They should be saved in your _Client_ folders.
 
-These tests are the slowest as they offer a full browser environment, so they facilitate the testing of forms, multi-page workflows, and Javascript interaction.  If you just want to check for elements on a single page, use `\AKlump\DrupalTest\ClientTestBase` instead.
+These tests are the slowest as they offer a full browser environment, so they facilitate the testing of forms, multi-page workflows, and Javascript interaction.  If you just want to check for elements on a single page, use `\AKlump\DrupalTest\ClientTestCase` instead.
 
 These tests use [Mink](http://mink.behat.org/en/latest/index.html) and [Selenium](https://www.seleniumhq.org) to have a fully controllable browser, but **run against a real site in it's active state.**  These should be used when you wish to interact at the Browser level with a website in it's current state, just as you would as a human running manual tests.
 
@@ -57,7 +57,7 @@ This should be as simple as downloading a file, and starting a Java process on t
      *
      * @destructive
      */
-    class UserCanChangePasswordEndToEndTest extends EndToEndTestBase {
+    class UserCanChangePasswordEndToEndTest extends EndToEndTestCase {
     
       public function testLoggedInUserCanAccessUserSettingsPage() {
         ...
@@ -71,7 +71,7 @@ This should be as simple as downloading a file, and starting a Java process on t
         public function testPageTextOnHomepage() {
           $this->loadPageByUrl('/');
           
-          // This is a method from \Behat\Mink\WebAssert that has been made available by \AKlump\DrupalTest\EndToEndTestBase
+          // This is a method from \Behat\Mink\WebAssert that has been made available by \AKlump\DrupalTest\EndToEndTestCase
           $this->assert()->pageTextContains('Welcome to My Website');
         }
 

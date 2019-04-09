@@ -9,7 +9,7 @@ use GuzzleHttp\Client;
 /**
  * A class to interact with the browser for forms and navigation.
  */
-abstract class EndToEndTestBase extends BrowserTestCase {
+abstract class EndToEndTestCase extends BrowserTestCase {
 
   const WAIT_TIMEOUT = 10;
 

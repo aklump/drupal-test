@@ -17,7 +17,7 @@ In some cases, certain tests should not be allowed to run against certain base U
          *
          * @destructive
          */
-        class ModalRegistrationEndToEndTest extends EndToEndTestBase {
+        class ModalRegistrationEndToEndTest extends EndToEndTestCase {
         ...
 
 ## Prevent Single Test Methods
@@ -44,4 +44,4 @@ In some cases, certain tests should not be allowed to run against certain base U
 
 ## How It Works
 
-A test class must `use \AKlump\DrupalTest\Utilities\DestructiveTrait` if you want to use this convention.  The base classes: `\AKlump\DrupalTest\ClientTestBase` and `\AKlump\DrupalTest\EndToEndTestBase` already include this trait so you need only include the annotation as shown above.
+A test class must `use \AKlump\DrupalTest\Utilities\DestructiveTrait` if you want to use this convention.  The base classes: `\AKlump\DrupalTest\ClientTestCase` and `\AKlump\DrupalTest\EndToEndTestCase` already include this trait so you need only include the annotation as shown above.
