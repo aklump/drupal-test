@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>Email Testing</title>
+  <link href="search/tipuesearch.css" rel="stylesheet">
+  <link href="style.css" rel="stylesheet">
+</head>
+
+<body class="page--email_testing">
+<header>
+  <div class="pager"><a href="destructive.html" class="prev destructive">&laquo;Destructive Tests</a><a href="index.html" class="index pager__book-title">Drupal Test</a><a href="extending.html" class="next extending">Extending Classes&raquo;</a></div></header>
+<section class="sub-header">
+  <div class="breadcrumbs"><a href="index.html">Index</a>
+         &raquo
+                        <a href="README.html">Using Drupal Test</a>
+         &raquo
+      </div>      <div class="search__wrapper">
+  <form action="search--results.html">
+    <input type="text" class="search-input" name="q" id="tipue_search_input" autocomplete="off" required>
+  </form>
+</div>
+  </section>
+
+
+<h1>Email Testing</h1>
+
+<section>
+
+<p>Using the <code>\AKlump\DrupalTest\EndToEndTestCase</code> tests, you can:</p>
+
+<ul>
+<li>Assert that email(s) get sent by your application.</li>
+<li>Make assertions against email contents.</li>
+<li>Write test scenarios that bridge across email-related actions, such as when a user must click an email link to continue, e.g., password reset, or email confirmation registrations.</li>
+</ul>
+
+<h2>Requirements</h2>
+
+<ol>
+<li>Using these methods, requires the mailparse PHP extension; <a href="https://github.com/php-mime-mail-parser/php-mime-mail-parser#requirements">learn more</a>.</li>
+</ol>
+
+<h2>Test Implementation</h2>
+
+<ol>
+<li><p>In <code>setUp</code> indicate the email handler to use.  At this time there is only one provided handler, <code>AKlump\DrupalTest\Utilities\UnixMail</code>, but you may write your own by implementing <code>\AKlump\DrupalTest\Utilities\EmailHandlerInterface</code>.</p>
+
+<pre><code>use AKlump\DrupalTest\Utilities\UnixMail;
+...
+public function setUp() {
+  $this-&gt;setEmailHandler(new UnixMail());
+}
+</code></pre></li>
+<li><p>Do something in a test like this example, which waits for a password reset email and then visits the contained URL.</p>
+
+<pre><code>public function testWelcomeEmailContainsPasswordResetUrl() {
+  $email = $this-&gt;waitForEmail();
+
+  // ::waitForEmail always returns an array, we just want the first email.
+  $email = reset($email);
+
+  $body = $email-&gt;getMessageBody('text');
+  $this-&gt;assertSame(1, preg_match('/(http:\/\/.+\/user\/reset.+)\n/', $body, $matches));
+
+  $reset_pass_url = $matches[1];
+  $this-&gt;loadPageByUrl($reset_pass_url);
+}
+</code></pre></li>
+</ol>
+
+<h2>Asserting Emails</h2>
+
+<p><code>waitForEmail</code> will return an array of <code>PhpMimeMailParser\Parser</code>instances, which makes it easy to assert against parts of each email.  To learn more about that class <a href="https://github.com/php-mime-mail-parser/php-mime-mail-parser">click here</a>.</p>
+
+<table>
+<thead>
+<tr>
+  <th>Parser</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><strong>getAddresses</strong> <em>($name)</em></td>
+</tr>
+<tr>
+  <td><strong>getAttachments</strong> <em>($include_inline = true)</em></td>
+</tr>
+<tr>
+  <td><strong>getData</strong> <em>()</em></td>
+</tr>
+<tr>
+  <td><strong>getHeader</strong> <em>($name)</em></td>
+</tr>
+<tr>
+  <td><strong>getHeaders</strong> <em>()</em></td>
+</tr>
+<tr>
+  <td><strong>getHeadersRaw</strong> <em>()</em></td>
+</tr>
+<tr>
+  <td><strong>getInlineParts</strong> <em>($type = 'text')</em></td>
+</tr>
+<tr>
+  <td><strong>getMessageBody</strong> <em>($type = 'text')</em></td>
+</tr>
+<tr>
+  <td><strong>getParts</strong> <em>()</em></td>
+</tr>
+<tr>
+  <td><strong>getRawHeader</strong> <em>($name)</em></td>
+</tr>
+</tbody>
+</table>
+
+<h2>On the Drupal Side of Things</h2>
+
+<ol>
+<li>Install the <a href="https://www.drupal.org/project/reroute_email">reroute email module</a>.</li>
+<li>Route all email so that your <code>EmailHandlerInterface</code> can retrieve it.</li>
+<li><p>You can determine the email address used by your handler with <code>\AKlump\DrupalTest\Utilities\EmailHandlerInterface::getInboxAddress</code>.  For example, you could do this temporarily and then read the console output:</p>
+
+<pre><code>  public function setUp() {
+    $this-&gt;setEmailHandler(new UnixMail());
+    echo $this-&gt;emailHandler-&gt;getInboxAddress(); die;
+  }
+</code></pre></li>
+</ol>
+
+<h2>Sending Test Emails with Bash</h2>
+
+<pre><code>echo "MESSAGE" | mail -s "SUBJECT" "USER@HOST"
+</code></pre>
+</section>
+
+<div class="search__results">
+  <div id="tipue_search_content"></div>
+</div>
+
+<footer>
+  <div class="pager"><a href="destructive.html" class="prev destructive">&laquo;Destructive Tests</a><a href="index.html" class="index pager__book-title">Drupal Test</a><a href="extending.html" class="next extending">Extending Classes&raquo;</a></div>  
+  <div id="footer-legaleeze">
+    <p class="legaleeze center">Version: 0.5.1 &bull; Last Updated: Sun, 14 Apr 2019 10:02:55 -0700</p>
+  </div>
+</footer>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  <script src="search/tipuesearch_content.js"></script>
+  <script src="search/tipuesearch_set.js"></script>
+  <script src="search/tipuesearch.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      $('#tipue_search_input').tipuesearch()
+    })
+  </script>
+<script src="js/core.js"></script>
+</body>
+</html>
+
