@@ -30,13 +30,10 @@
 <table>
 <thead>
 <tr>
-  <th>ClientTestCase</th>
+  <th>ClientTestCase <em>extends BrowserTestCase</em></th>
 </tr>
 </thead>
 <tbody>
-<tr>
-  <td><strong>assert</strong> <em>($fail_message = '')</em></td>
-</tr>
 <tr>
   <td><strong>assertContentType</strong> <em>($expected_type)</em></td>
 </tr>
@@ -44,25 +41,13 @@
   <td><strong>assertElementAttributeNotEmpty</strong> <em>($attribute, $css_selector, $index = 0)</em></td>
 </tr>
 <tr>
-  <td><strong>assertElementExists</strong> <em>($css_selector, $failure_message = '')</em></td>
-</tr>
-<tr>
   <td><strong>assertElementNotEmpty</strong> <em>($css_selector, $index = 0)</em></td>
-</tr>
-<tr>
-  <td><strong>assertElementNotExists</strong> <em>($css_selector, $failure_message = '')</em></td>
-</tr>
-<tr>
-  <td><strong>assertElementNotVisible</strong> <em>($css_selector, $failure_message = '')</em></td>
 </tr>
 <tr>
   <td><strong>assertElementRegExp</strong> <em>($expected, $css_selector, $index = 0)</em></td>
 </tr>
 <tr>
   <td><strong>assertElementSame</strong> <em>($expected, $css_selector, $index = 0)</em></td>
-</tr>
-<tr>
-  <td><strong>assertElementVisible</strong> <em>($css_selector, $failure_message = '')</em></td>
 </tr>
 <tr>
   <td><strong>assertMetaTagSame</strong> <em>($expected, $name, $attribute)</em></td>
@@ -77,19 +62,7 @@
   <td><strong>assertUrlRedirectsTo</strong> <em>($redirected_url, $url)</em></td>
 </tr>
 <tr>
-  <td><strong>el</strong> <em>($css_selector)</em></td>
-</tr>
-<tr>
-  <td><strong>els</strong> <em>($css_selector)</em></td>
-</tr>
-<tr>
   <td><strong>emptyCookieJar</strong> <em>()</em></td>
-</tr>
-<tr>
-  <td><strong>generate</strong> <em>($method)</em></td>
-</tr>
-<tr>
-  <td><strong>getDomElements</strong> <em>(array $css_selectors)</em></td>
 </tr>
 <tr>
   <td><strong>getDrupalCommandsClient</strong> <em>()</em></td>
@@ -104,28 +77,13 @@
   <td><strong>getSession</strong> <em>()</em></td>
 </tr>
 <tr>
-  <td><strong>getStored</strong> <em>($key, $default = NULL)</em></td>
-</tr>
-<tr>
   <td><strong>getXmlClient</strong> <em>()</em></td>
-</tr>
-<tr>
-  <td><strong>handleBaseUrl</strong> <em>()</em></td>
 </tr>
 <tr>
   <td><strong>loadJsonByUrl</strong> <em>($url)</em></td>
 </tr>
 <tr>
-  <td><strong>loadPageByUrl</strong> <em>($url)</em></td>
-</tr>
-<tr>
   <td><strong>loadXmlByUrl</strong> <em>($url)</em></td>
-</tr>
-<tr>
-  <td><strong>resolveUrl</strong> <em>($url, $remove_authentication_credentials = false)</em></td>
-</tr>
-<tr>
-  <td><strong>store</strong> <em>($key, $value)</em></td>
 </tr>
 </tbody>
 </table>
@@ -289,25 +247,10 @@ class Test {
   <td><strong>addressNotEquals</strong> <em>($page)</em></td>
 </tr>
 <tr>
-  <td><strong>assert</strong> <em>($condition, $message)</em></td>
-</tr>
-<tr>
-  <td><strong>assertElement</strong> <em>($condition, $message, Behat\Mink\Element\Element $element)</em></td>
-</tr>
-<tr>
-  <td><strong>assertElementText</strong> <em>($condition, $message, Behat\Mink\Element\Element $element)</em></td>
-</tr>
-<tr>
-  <td><strong>assertResponseText</strong> <em>($condition, $message)</em></td>
-</tr>
-<tr>
   <td><strong>checkboxChecked</strong> <em>($field, Behat\Mink\Element\TraversableElement or NULL $container = NULL)</em></td>
 </tr>
 <tr>
   <td><strong>checkboxNotChecked</strong> <em>($field, Behat\Mink\Element\TraversableElement or NULL $container = NULL)</em></td>
-</tr>
-<tr>
-  <td><strong>cleanUrl</strong> <em>($url)</em></td>
 </tr>
 <tr>
   <td><strong>cookieEquals</strong> <em>($name, $value)</em></td>
@@ -356,12 +299,6 @@ class Test {
 </tr>
 <tr>
   <td><strong>fieldValueNotEquals</strong> <em>($field, $value, Behat\Mink\Element\TraversableElement or NULL $container = NULL)</em></td>
-</tr>
-<tr>
-  <td><strong>getCurrentUrlPath</strong> <em>()</em></td>
-</tr>
-<tr>
-  <td><strong>getMatchingElementRepresentation</strong> <em>($selectorType, $selector, $plural = false)</em></td>
 </tr>
 <tr>
   <td><strong>pageTextContains</strong> <em>($text)</em></td>
@@ -422,7 +359,7 @@ class Test {
 <footer>
   <div class="pager"><a href="extending.html" class="prev extending">&laquo;Extending Classes</a><a href="index.html" class="index pager__book-title">Drupal Test</a><a href="cs--end-to-end.html" class="next cs--end-to-end">Cheatsheet for End to End Tests&raquo;</a></div>  
   <div id="footer-legaleeze">
-    <p class="legaleeze center">Version: 0.5.0 &bull; Last Updated: Mon, 08 Apr 2019 17:22:10 -0700</p>
+    <p class="legaleeze center">Version: 0.5.1 &bull; Last Updated: Sun, 14 Apr 2019 10:02:53 -0700</p>
   </div>
 </footer>
 
