@@ -84,13 +84,12 @@ $reader->addClassToScan('PhpMimeMailParser\Parser', [
     '/^addM/',
     '/^set/',
     '/^save/',
+    '/^getCharset$/',
     '/^getStream/',
     '/^getResource/',
     '/^__destruct/',
   ],
-], function () {
-  return 'EmailInstances';
-});
+]);
 
 /**
  * Create the WebAssert group.

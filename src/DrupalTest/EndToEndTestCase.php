@@ -151,6 +151,10 @@ abstract class EndToEndTestCase extends BrowserTestCase {
   /**
    * Wait for email(s) to be received.
    *
+   * This will mark a test failed if the timeout is reached before the
+   * $expected_count of emails are received, or more emails are received than
+   * $expected_count.
+   *
    * @param int $expected_count
    *   The number of emails expected.  Defaults to 1.  Set this to a higher
    *   number to wait for that many emails to be received in the handler's
@@ -167,11 +171,16 @@ abstract class EndToEndTestCase extends BrowserTestCase {
       throw new \RuntimeException("You must first call ::setEmailHandler() to use this method.");
     }
     $emails = [];
+    $to = $this->emailHandler->getInboxAddress();
     $this->waitFor(function () use (&$emails, $expected_count) {
-      $emails = $this->emailHandler->getNewMail();
+      $emails = array_merge($emails, $this->emailHandler->readMail());
 
-      return count($emails) < $expected_count;
-    }, "$expected_count email(s) received.", $timeout);
+      return count($emails) >= $expected_count;
+    }, "$expected_count email(s) received by $to.", $timeout);
+
+    if ($expected_count !== ($actual = count($emails))) {
+      $this->fail("Expected email count of $expected_count has been exceeded; $actual emails actually received.");
+    }
 
     return $emails;
   }
