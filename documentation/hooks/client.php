@@ -4,6 +4,9 @@
  * @file
  * A hook file to generate cheatsheets partials.
  *
+ * Be aware that if you change a class and composer has been optimized, you may
+ *   have to run composer dump for the change to appear.
+ *
  * Available variables:
  * - $compiler.
  */
@@ -54,6 +57,14 @@ $reader->addClassToScan('\aik099\PHPUnit\BrowserTestCase', [
 $reader->addClassToScan('\AKlump\DrupalTest\EndToEndTestCase', [
   PhpClassMethodReader::EXCLUDE,
   ['/^(isBrowserOnline)$/'],
+]);
+
+/**
+ * Create the Generators group.
+ */
+$reader->addClassToScan('\AKlump\DrupalTest\Utilities\Generators', [
+  PhpClassMethodReader::EXCLUDE,
+  ['/setConfig/'],
 ]);
 
 /**

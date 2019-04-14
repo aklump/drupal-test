@@ -280,11 +280,13 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
    *
    * @param string $method
    *   Any method on \AKlump\DrupalTest\Utilities\Generators.
+   * @param string $as
+   *   Defaults to $method, set the storage name, e.g. "first_name".
    *
    * @return mixed
-   *   The generated value, is also added as $this->stored->{$method}.
+   *   The generated value, is also added as $this->stored->{$as}.
    */
-  protected function generate($method) {
+  protected function generate($method, $as = '') {
     static $generator;
     if (empty($generator)) {
       $generator = new Generators([
@@ -292,7 +294,8 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
       ]);
     }
     $value = $generator->{$method}();
-    $this->store($method, $value);
+    $as = $as ? $as : $method;
+    $this->store($as, $value);
 
     return $value;
   }

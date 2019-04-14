@@ -2,7 +2,7 @@
 
 > End-to-end testing is a Software testing methodology to test an application flow from start to end. The purpose of end to end testing is to simulate the real user scenario and validate the system under test and its components for integration and data integrity.
 
-Create these tests by extending `\AKlump\DrupalTest\EndToEndTestCase`.  They should be saved in your _Client_ folders.
+Create these tests by extending `\AKlump\DrupalTest\EndToEndTestCase`.  They should be saved in your _EndToEnd_ folder.
 
 These tests are the slowest as they offer a full browser environment, so they facilitate the testing of forms, multi-page workflows, and Javascript interaction.  If you just want to check for elements on a single page, use `\AKlump\DrupalTest\ClientTestCase` instead.
 
@@ -47,20 +47,19 @@ This should be as simple as downloading a file, and starting a Java process on t
 1. If the test modifies the database in any way mark the class `@destructive`.
 1. Make test method names very descriptive so they can be parsed: _testLoggedInUserCanAccessUserSettingsPage_
 
-       
-    <?php
-    
-    namespace Drupal\Tests\gop;
-    
-    /**
-     * User is able to login, change password, logout and login with new password.
-     *
-     * @destructive
-     */
-    class UserCanChangePasswordEndToEndTest extends EndToEndTestCase {
-    
-      public function testLoggedInUserCanAccessUserSettingsPage() {
-        ...
+        <?php
+        
+        namespace Drupal\Tests\gop;
+        
+        /**
+         * User is able to login, change password, logout and login with new password.
+         *
+         * @destructive
+         */
+        class UserCanChangePasswordEndToEndTest extends EndToEndTestCase {
+        
+          public function testLoggedInUserCanAccessUserSettingsPage() {
+            ...
 
 #
 
