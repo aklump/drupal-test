@@ -3,6 +3,7 @@
 namespace AKlump\DrupalTest;
 
 use AKlump\DrupalTest\Utilities\DestructiveTrait;
+use AKlump\DrupalTest\Utilities\EmailHandlerInterface;
 use AKlump\DrupalTest\Utilities\WebAssertTrait;
 use GuzzleHttp\Client;
 
@@ -31,6 +32,13 @@ abstract class EndToEndTestCase extends BrowserTestCase {
    * @var \GuzzleHttp\Cookie\CookieJar
    */
   protected static $cookieJar;
+
+  /**
+   * Holds an email handler interface for email testing.
+   *
+   * @var \AKlump\DrupalTest\Utilities\EmailHandlerInterface
+   */
+  protected $emailHandler;
 
   /**
    * Holds the response of the last remote call.
@@ -123,6 +131,49 @@ abstract class EndToEndTestCase extends BrowserTestCase {
         return FALSE;
       }
     }
+  }
+
+  /**
+   * Set the Email Handler for retrieving email.
+   *
+   * @param \AKlump\DrupalTest\Utilities\EmailHandlerInterface $handler
+   *   The handler instance.
+   *
+   * @return \AKlump\DrupalTest\EndToEndTestCase
+   *   Self for chaining.
+   */
+  public function setEmailHandler(EmailHandlerInterface $handler) {
+    $this->emailHandler = $handler;
+
+    return $this;
+  }
+
+  /**
+   * Wait for email(s) to be received.
+   *
+   * @param int $expected_count
+   *   The number of emails expected.  Defaults to 1.  Set this to a higher
+   *   number to wait for that many emails to be received in the handler's
+   *   inbox.
+   * @param int|null $timeout
+   *   Set this to 0 for no timeout.  Leave NULL for the default timeout.  Any
+   *   other number is the number of seconds to timeout.
+   *
+   * @return array
+   *   Each element is an instance of \PhpMimeMailParser\Parser.
+   */
+  public function waitForEmail($expected_count = 1, $timeout = NULL) {
+    if (empty($this->emailHandler)) {
+      throw new \RuntimeException("You must first call ::setEmailHandler() to use this method.");
+    }
+    $emails = [];
+    $this->waitFor(function () use (&$emails, $expected_count) {
+      $emails = $this->emailHandler->getNewMail();
+
+      return count($emails) < $expected_count;
+    }, "$expected_count email(s) received.", $timeout);
+
+    return $emails;
   }
 
   /**
@@ -234,7 +285,6 @@ abstract class EndToEndTestCase extends BrowserTestCase {
       return FALSE;
     }, '', 0);
   }
-
 
   /**
    * Scroll the page to the top.

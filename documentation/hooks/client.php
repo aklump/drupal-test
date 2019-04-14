@@ -65,6 +65,23 @@ $reader->addClassToScan('\Behat\Mink\Element\NodeElement', [
 ]);
 
 /**
+ * Create the Parser.
+ */
+$reader->addClassToScan('PhpMimeMailParser\Parser', [
+  PhpClassMethodReader::EXCLUDE,
+  [
+    '/^addM/',
+    '/^set/',
+    '/^save/',
+    '/^getStream/',
+    '/^getResource/',
+    '/^__destruct/',
+  ],
+], function () {
+  return 'EmailInstances';
+});
+
+/**
  * Create the WebAssert group.
  */
 $reader->addClassToScan('\AKlump\DrupalTest\Utilities\MinkWebAssert', [
