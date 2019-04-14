@@ -27,63 +27,53 @@
 
 <section>
 
+<h2>Generating Data</h2>
+
+<p>When filling out forms you probably want to use the generators:</p>
+
+<pre><code> $el['.t-field_first_name']-&gt;setValue($this-&gt;generate('name', 'first'));
+</code></pre>
+
 <table>
 <thead>
 <tr>
-  <th>EndToEndTestCase</th>
+  <th>Generators</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-  <td><strong>assert</strong> <em>($fail_message = '')</em></td>
+  <td><strong>email</strong> <em>()</em></td>
 </tr>
 <tr>
-  <td><strong>assertElementExists</strong> <em>($css_selector, $failure_message = '')</em></td>
+  <td><strong>name</strong> <em>($length = 5)</em></td>
 </tr>
 <tr>
-  <td><strong>assertElementNotExists</strong> <em>($css_selector, $failure_message = '')</em></td>
+  <td><strong>password</strong> <em>($length = 32)</em></td>
 </tr>
 <tr>
-  <td><strong>assertElementNotVisible</strong> <em>($css_selector, $failure_message = '')</em></td>
+  <td><strong>phone</strong> <em>()</em></td>
 </tr>
 <tr>
-  <td><strong>assertElementVisible</strong> <em>($css_selector, $failure_message = '')</em></td>
+  <td><strong>username</strong> <em>($length = 10)</em></td>
 </tr>
+</tbody>
+</table>
+
+<table>
+<thead>
+<tr>
+  <th>EndToEndTestCase <em>extends BrowserTestCase</em></th>
+</tr>
+</thead>
+<tbody>
 <tr>
   <td><strong>debugger</strong> <em>()</em></td>
-</tr>
-<tr>
-  <td><strong>el</strong> <em>($css_selector)</em></td>
-</tr>
-<tr>
-  <td><strong>els</strong> <em>($css_selector)</em></td>
-</tr>
-<tr>
-  <td><strong>generate</strong> <em>($method)</em></td>
-</tr>
-<tr>
-  <td><strong>getDomElements</strong> <em>(array $css_selectors)</em></td>
 </tr>
 <tr>
   <td><strong>getSession</strong> <em>()</em></td>
 </tr>
 <tr>
-  <td><strong>getStored</strong> <em>($key, $default = NULL)</em></td>
-</tr>
-<tr>
-  <td><strong>handleBaseUrl</strong> <em>()</em></td>
-</tr>
-<tr>
-  <td><strong>loadPageByUrl</strong> <em>($url)</em></td>
-</tr>
-<tr>
-  <td><strong>resolveUrl</strong> <em>($url, $remove_authentication_credentials = false)</em></td>
-</tr>
-<tr>
-  <td><strong>scrollTop</strong> <em>()</em></td>
-</tr>
-<tr>
-  <td><strong>store</strong> <em>($key, $value)</em></td>
+  <td><strong>setEmailHandler</strong> <em>(AKlump\DrupalTest\Utilities\EmailHandlerInterface $handler)</em></td>
 </tr>
 <tr>
   <td><strong>wait</strong> <em>($seconds)</em></td>
@@ -99,6 +89,9 @@
 </tr>
 <tr>
   <td><strong>waitForElementVisible</strong> <em>($css_selector, $timeout = NULL)</em></td>
+</tr>
+<tr>
+  <td><strong>waitForEmail</strong> <em>($expected_count = 1, $timeout = NULL)</em></td>
 </tr>
 <tr>
   <td><strong>waitForPageContains</strong> <em>($substring, $timeout = NULL)</em></td>
@@ -265,25 +258,10 @@ class Test {
   <td><strong>addressNotEquals</strong> <em>($page)</em></td>
 </tr>
 <tr>
-  <td><strong>assert</strong> <em>($condition, $message)</em></td>
-</tr>
-<tr>
-  <td><strong>assertElement</strong> <em>($condition, $message, Behat\Mink\Element\Element $element)</em></td>
-</tr>
-<tr>
-  <td><strong>assertElementText</strong> <em>($condition, $message, Behat\Mink\Element\Element $element)</em></td>
-</tr>
-<tr>
-  <td><strong>assertResponseText</strong> <em>($condition, $message)</em></td>
-</tr>
-<tr>
   <td><strong>checkboxChecked</strong> <em>($field, Behat\Mink\Element\TraversableElement or NULL $container = NULL)</em></td>
 </tr>
 <tr>
   <td><strong>checkboxNotChecked</strong> <em>($field, Behat\Mink\Element\TraversableElement or NULL $container = NULL)</em></td>
-</tr>
-<tr>
-  <td><strong>cleanUrl</strong> <em>($url)</em></td>
 </tr>
 <tr>
   <td><strong>cookieEquals</strong> <em>($name, $value)</em></td>
@@ -332,12 +310,6 @@ class Test {
 </tr>
 <tr>
   <td><strong>fieldValueNotEquals</strong> <em>($field, $value, Behat\Mink\Element\TraversableElement or NULL $container = NULL)</em></td>
-</tr>
-<tr>
-  <td><strong>getCurrentUrlPath</strong> <em>()</em></td>
-</tr>
-<tr>
-  <td><strong>getMatchingElementRepresentation</strong> <em>($selectorType, $selector, $plural = false)</em></td>
 </tr>
 <tr>
   <td><strong>pageTextContains</strong> <em>($text)</em></td>
@@ -398,7 +370,7 @@ class Test {
 <footer>
   <div class="pager"><a href="cs--client.html" class="prev cs--client">&laquo;Cheatsheet for Client Tests</a><a href="index.html" class="index pager__book-title">Drupal Test</a><a href="ex--end-to-end.html" class="next ex--end-to-end">An Example End To End Test&raquo;</a></div>  
   <div id="footer-legaleeze">
-    <p class="legaleeze center">Version: 0.5.0 &bull; Last Updated: Mon, 08 Apr 2019 17:22:11 -0700</p>
+    <p class="legaleeze center">Version: 0.5.1 &bull; Last Updated: Sun, 14 Apr 2019 10:02:54 -0700</p>
   </div>
 </footer>
 

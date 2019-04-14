@@ -78,6 +78,16 @@ class Generators {
   }
 
   /**
+   * Generate a phone number.
+   *
+   * @return string
+   *   The phone e.g. 555-555-5555
+   */
+  public function phone() {
+    return rand(100, 999) . '-' . rand(100, 999) . '-' . rand(1000, 9999);
+  }
+
+  /**
    * Generate an email address.
    *
    * If you generate a username first, that will be used as the basis of the

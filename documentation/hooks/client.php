@@ -4,6 +4,9 @@
  * @file
  * A hook file to generate cheatsheets partials.
  *
+ * Be aware that if you change a class and composer has been optimized, you may
+ *   have to run composer dump for the change to appear.
+ *
  * Available variables:
  * - $compiler.
  */
@@ -57,11 +60,35 @@ $reader->addClassToScan('\AKlump\DrupalTest\EndToEndTestCase', [
 ]);
 
 /**
+ * Create the Generators group.
+ */
+$reader->addClassToScan('\AKlump\DrupalTest\Utilities\Generators', [
+  PhpClassMethodReader::EXCLUDE,
+  ['/setConfig/'],
+]);
+
+/**
  * Create the NodeElement group.
  */
 $reader->addClassToScan('\Behat\Mink\Element\NodeElement', [
   PhpClassMethodReader::EXCLUDE,
   ['/^()$/'],
+]);
+
+/**
+ * Create the Parser.
+ */
+$reader->addClassToScan('PhpMimeMailParser\Parser', [
+  PhpClassMethodReader::EXCLUDE,
+  [
+    '/^addM/',
+    '/^set/',
+    '/^save/',
+    '/^getCharset$/',
+    '/^getStream/',
+    '/^getResource/',
+    '/^__destruct/',
+  ],
 ]);
 
 /**

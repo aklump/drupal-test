@@ -31,7 +31,7 @@
   <p>End-to-end testing is a Software testing methodology to test an application flow from start to end. The purpose of end to end testing is to simulate the real user scenario and validate the system under test and its components for integration and data integrity.</p>
 </blockquote>
 
-<p>Create these tests by extending <code>\AKlump\DrupalTest\EndToEndTestCase</code>.  They should be saved in your <em>Client</em> folders.</p>
+<p>Create these tests by extending <code>\AKlump\DrupalTest\EndToEndTestCase</code>.  They should be saved in your <em>EndToEnd</em> folder.</p>
 
 <p>These tests are the slowest as they offer a full browser environment, so they facilitate the testing of forms, multi-page workflows, and Javascript interaction.  If you just want to check for elements on a single page, use <code>\AKlump\DrupalTest\ClientTestCase</code> instead.</p>
 
@@ -85,22 +85,20 @@ java -jar /Users/aklump/selenium/selenium-server-standalone-3.141.59.jar  -host 
 <li>If the test modifies the database in any way mark the class <code>@destructive</code>.</li>
 <li><p>Make test method names very descriptive so they can be parsed: <em>testLoggedInUserCanAccessUserSettingsPage</em></p>
 
-<p>&lt;?php</p>
+<pre><code>&lt;?php
 
-<p>namespace Drupal\Tests\gop;</p>
+namespace Drupal\Tests\gop;
 
-<p>/**</p>
+/**
+ * User is able to login, change password, logout and login with new password.
+ *
+ * @destructive
+ */
+class UserCanChangePasswordEndToEndTest extends EndToEndTestCase {
 
-<ul>
-<li>User is able to login, change password, logout and login with new password.</li>
-<li></li>
-<li><p>@destructive
-*/
-class UserCanChangePasswordEndToEndTest extends EndToEndTestCase {</p>
-
-<p>public function testLoggedInUserCanAccessUserSettingsPage() {
-...</p></li>
-</ul></li>
+  public function testLoggedInUserCanAccessUserSettingsPage() {
+    ...
+</code></pre></li>
 </ol>
 
 <p>#</p>
@@ -133,7 +131,7 @@ $this-&gt;assert()-&gt;elementExists('css', '.t-trigger-account-dropdown');
 <footer>
   <div class="pager"><a href="client.html" class="prev client">&laquo;Client Tests</a><a href="index.html" class="index pager__book-title">Drupal Test</a><a href="manual.html" class="next manual">Add Manual Tests&raquo;</a></div>  
   <div id="footer-legaleeze">
-    <p class="legaleeze center">Version: 0.5.0 &bull; Last Updated: Mon, 08 Apr 2019 17:22:11 -0700</p>
+    <p class="legaleeze center">Version: 0.5.1 &bull; Last Updated: Sun, 14 Apr 2019 10:02:56 -0700</p>
   </div>
 </footer>
 
