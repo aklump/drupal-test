@@ -14,7 +14,7 @@ At the very least you must call `::beginObservation`.  How you implement this is
 * In this implementation, we use the environment variable to be able to toggle the observation mode on or off, in this way you can run this as a test or a demo.  We do it in `::setUp` as a means of running observation mode throughout the entire test.
 
         public function setUp() {
-          if (getenv('DEMO')) {
+          if (getenv('TEST_DEMO')) {
           
             // The argument defines the button text.
             $this->beginObservation('Continue demo');
