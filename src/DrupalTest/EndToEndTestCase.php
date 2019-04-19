@@ -325,7 +325,7 @@ abstract class EndToEndTestCase extends BrowserTestCase {
   /**
    * Scroll the page to the top.
    */
-  protected function scrollTop() {
+  public function scrollTop() {
     $this->getSession()->executeScript('window.scrollTo(0,0);');
   }
 
@@ -391,7 +391,7 @@ abstract class EndToEndTestCase extends BrowserTestCase {
    * @return \Behat\Mink\Element\Element|null
    *   The element or null if not found in the DOM.
    */
-  protected function requireElement($css_selector) {
+  public function requireElement($css_selector) {
     if (!($element = $this->el($css_selector))) {
       $this->fail('Missing element .' . $css_selector);
     }
@@ -400,7 +400,7 @@ abstract class EndToEndTestCase extends BrowserTestCase {
   }
 
   /**
-   * Get the title of the oberserver continue button to use.
+   * Get the title of the observer continue button to use.
    *
    * @return string
    *   The overridden or default title.
@@ -649,7 +649,7 @@ CSS;
    * @throws \Behat\Mink\Exception\DriverException
    * @throws \Behat\Mink\Exception\UnsupportedDriverActionException
    */
-  protected function assertManual($assertion, array $prerequisite_steps = []) {
+  public function assertManual($assertion, array $prerequisite_steps = []) {
     $manualTestMarkup = [];
     $markdown = new \Parsedown();
     if ($prerequisite_steps) {

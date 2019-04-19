@@ -1,3 +1,6 @@
+---
+id: manual
+---
 # Add Manual Tests
 
 This project uses [aklump/manual-test](https://github.com/aklump/manual-test) for manual tests.  This page shows how to integrate manual tests into your Drupal project.

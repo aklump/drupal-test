@@ -1,3 +1,6 @@
+---
+id: destructive
+---
 # Destructive Tests
 
 **Prevent certain test(s) from running against production.**

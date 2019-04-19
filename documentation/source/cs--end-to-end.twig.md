@@ -2,9 +2,9 @@
 
 ## Generating Data
 
-When filling out forms you probably want to use the generators:
+When filling out forms you probably want to use the generators.
 
-     $el['.t-field_first_name']->setValue($this->generate('name', 'first'));
+     $el['.t-field_first_name']->setValue($this->generate('name:first'));
 
 {% include('_Generators.md') %}
 

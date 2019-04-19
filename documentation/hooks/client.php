@@ -56,7 +56,7 @@ $reader->addClassToScan('\aik099\PHPUnit\BrowserTestCase', [
 ], 'EndToEndTestCase');
 $reader->addClassToScan('\AKlump\DrupalTest\EndToEndTestCase', [
   PhpClassMethodReader::EXCLUDE,
-  ['/^(isBrowserOnline)$/'],
+  ['/^(isBrowserOnline|injectCssStyles)$/'],
 ]);
 
 /**

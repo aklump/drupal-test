@@ -1,3 +1,6 @@
+---
+id: end-to-end
+---
 # End to End Testing
 
 > End-to-end testing is a Software testing methodology to test an application flow from start to end. The purpose of end to end testing is to simulate the real user scenario and validate the system under test and its components for integration and data integrity.
@@ -45,6 +48,7 @@ This should be as simple as downloading a file, and starting a Java process on t
 
 1. Give the test class a summary such as _User is able to login..._
 1. If the test modifies the database in any way mark the class `@destructive`.
+1. If the test uses [assertManual](@end-to-end:interactive) mark the class as `@interactive`.
 1. Make test method names very descriptive so they can be parsed: _testLoggedInUserCanAccessUserSettingsPage_
 
         <?php
@@ -82,6 +86,8 @@ This should be as simple as downloading a file, and starting a Java process on t
 
 It can be handy to pause a test during exception to study the page or DOM.  Call `::debugger` at the point in your test class method that you want to pause execution.  When the test reaches that point you will see a play button appear in the upper right of the screen.  The test runner is waiting for you to click that button.  Click it and the test will continue.
 
+![Debugger](images/debugger.jpg)
+
 This `::debugger` method is intended for use during development of a test and to be discarded once the test is complete.  Here is an example:
     
       public function testShowingUseOfDebugger() {
@@ -94,7 +100,11 @@ This `::debugger` method is intended for use during development of a test and to
         ...
       }
 
-## Interactive Tests
+## Observation or Demo Mode
+
+See [Observation Mode](@observation-mode).
+
+##:interactive Interactive Tests
 
 Imagine you're testing a system that calls your user with an access code.  How do you assert such a thing?  You can use the `assertManual` method, which will display a manual assertion to be affirmed by the test observer by clicking either pass or fail.  The code for this is incredibly simple:
 
@@ -128,4 +138,5 @@ And it will render like so.
 
 ![Interactive Popup with Steps](images/interactive-test-2.jpg)  
 
-* In the same way that you should mark methods or classes `@destructive`, likewise do so with `@interactive`.  There is currently no implementation but that will come in time. 
+* Be aware that markdown is supported for the arguments passed to _::assertManual_.  This is very much related to [manual tests](@manual), in fact it's a hybridization of end to end and manual tests.
+* In the same way that you should mark methods or classes [destructive](@destructive), likewise do so with `@interactive`.  There is currently no implementation but that will come in time. 
