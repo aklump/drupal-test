@@ -1,3 +1,7 @@
+## 0.5.3
+
+* Signature changed for `\AKlump\DrupalTest\BrowserTestCase::el()`.  You must pass `false` as the second argument to avoid an exception when `$css_selector` finds more than one node.
+
 ## 0.5.0
 
 * This release marks the movement toward making this project compatible with Drupal 8 as well.

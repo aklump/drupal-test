@@ -116,8 +116,7 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
    * @param array $css_selectors
    *   An array of css selectors that are expected to be on the page.  Each
    *   selector must locate exactly one DOM node.  If you need the first
-   *   element by class and it's okay there are more than one, you can use:
-   *   ::el instead, or use ::els and find by index.
+   *   element by class and you should use ::els and find by index.
    *
    * @return array
    *   Keyed by the $css_selectors.
@@ -141,10 +140,33 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
   }
 
   /**
-   * {@inheritdoc}
+   * Get an element by CSS selector.
+   *
+   * @param string $css_selector
+   *   If this points to more than one DOM node an exception will be thrown
+   *   unless you set $limit_to_one to false.
+   * @param bool $limit_to_one
+   *   Set this to FALSE if it's okay that $css_selector points to more than
+   *   one node in the DOM.  In such a case the exception will not be thrown
+   *   and the first node in the result set will be returned.  See also
+   *   ::els().
+   *
+   * @return \Behat\Mink\Element\NodeElement
+   *   The node located by $css_selector.
+   *
+   * @throws \RuntimeException
+   *   If $css_selector locates more than one element and $limit_to_one ===
+   *   true.
+   *
+   * @see ::els()
    */
-  public function el($css_selector) {
-    return $this->getSession()->getPage()->find('css', $css_selector);
+  public function el($css_selector, $limit_to_one = TRUE) {
+    $el = $this->getSession()->getPage()->findAll('css', $css_selector);
+    if ($limit_to_one && count($el) > 1) {
+      throw new \RuntimeException("Expecting a single element for ::el($css_selector); for multiple elements use ::els() or set \$limit_to_one to false.");
+    }
+
+    return reset($el);
   }
 
   /**
@@ -152,7 +174,10 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
    *
    * Use this when you want more than the first matched node.
    *
-   * @return array
+   * @param string $css_selector
+   *   The CSS selector string.
+   *
+   * @return \Behat\Mink\Element\NodeElement[]
    *   All located node elements.
    */
   public function els($css_selector) {
@@ -168,6 +193,7 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
    *   An absolute or relative URL.
    *
    * @return \AKlump\DrupalTest\BrowserTestCase
+   *   Self for chaining.
    */
   public function loadPageByUrl($url) {
     $url = $this->resolveUrl($url);
@@ -203,7 +229,7 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
    * @param string $failure_message
    *   An optional message to be displayed on failure.
    *
-   * @return \AKlump\DrupalTest\EndToEndTestCase
+   * @return \AKlump\DrupalTest\BrowserTestCase
    *   Self for chaining.
    */
   public function assertElementExists($css_selector, $failure_message = '') {
@@ -220,7 +246,7 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
    * @param string $failure_message
    *   An optional message to be displayed on failure.
    *
-   * @return \AKlump\DrupalTest\EndToEndTestCase
+   * @return \AKlump\DrupalTest\BrowserTestCase
    *   Self for chaining.
    */
   public function assertElementNotExists($css_selector, $failure_message = '') {
@@ -238,7 +264,7 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
    * @param string $failure_message
    *   An optional message to be displayed on failure.
    *
-   * @return \AKlump\DrupalTest\EndToEndTestCase
+   * @return \AKlump\DrupalTest\BrowserTestCase
    *   Self for chaining.
    */
   public function assertElementVisible($css_selector, $failure_message = '') {
@@ -261,7 +287,8 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
    * @param string $failure_message
    *   An optional message to be displayed on failure.
    *
-   * @return \AKlump\DrupalTest\EndToEndTestCase
+   * @return \AKlump\DrupalTest\BrowserTestCase
+   *   Self for chaining.
    */
   public function assertElementNotVisible($css_selector, $failure_message = '') {
     if (empty($failure_message)) {

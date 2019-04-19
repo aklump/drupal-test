@@ -2,7 +2,7 @@
 
 ## Working with `NodeElement` objects
 
-Learn [more here].(http://mink.behat.org/en/latest/guides/traversing-pages.html#documentelement-and-nodeelement)
+Learn [more here](http://mink.behat.org/en/latest/guides/traversing-pages.html#documentelement-and-nodeelement).
 
     <?php
     
