@@ -43,8 +43,8 @@ abstract class KernelTestCase extends \PHPUnit_Framework_TestCase {
    * @throws \Drupal\Driver\Exception\BootstrapException
    */
   public static function setUpBeforeClass() {
-    if (!($url = getenv('TEST_BASE_URL'))) {
-      throw new \RuntimeException("Missing environment variable: TEST_BASE_URL");
+    if (!($url = getenv('TEST_BASE_URL')) && !($url = getenv('SIMPLETEST_BASE_URL'))) {
+      throw new \RuntimeException("Missing environment variable: TEST_BASE_URL or SIMPLETEST_BASE_URL");
     }
     if (!static::$isBootstrapped) {
       $driver = new DrupalDriver(WEB_ROOT, $url);
