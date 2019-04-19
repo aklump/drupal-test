@@ -591,11 +591,26 @@ EOD;
 
 .manual-test__steps {
     margin-bottom: 1.5em;
+    list-style-position: inside;
+    padding-left: 0;
 }
 
 .manual-test__assertion {
     font-size: 1.1em;
     margin-bottom: 2.5em;
+    list-style: none;
+    padding: 0;
+}
+
+.manual-test__assertion li {
+    padding-left: 1.4em;
+    position: relative;
+}
+
+.manual-test__assertion li:before {
+    position: absolute;
+    left: 0;
+    content: "✔ ";
 }
 
 .manual-test__buttons {
@@ -664,10 +679,15 @@ CSS;
     $manualTestMarkup = [];
     $markdown = new \Parsedown();
     if ($prerequisite_steps) {
-      $prerequisite_steps = array_map([$markdown, 'text'], $prerequisite_steps);
+      $prerequisite_steps = array_map([$markdown, 'line'], $prerequisite_steps);
       $manualTestMarkup[] = '<ol class="manual-test__steps"><li>' . implode('</li><li>', $prerequisite_steps) . '</ol>';
     }
-    $manualTestMarkup[] = '<div class="manual-test__assertion">' . $markdown->text($assertion) . '</div>';
+    if (!is_array($assertion)) {
+      $assertion = [$assertion];
+    }
+    $assertion = array_map([$markdown, 'line'], $assertion);
+    $manualTestMarkup[] = '<ul class="manual-test__assertion"><li>' . implode('</li><li>', $assertion) . '</ul>';
+
     $manualTestMarkup = implode('', $manualTestMarkup);
 
     $this->injectCssStyles($this->getManualAssertUICssStyles());
