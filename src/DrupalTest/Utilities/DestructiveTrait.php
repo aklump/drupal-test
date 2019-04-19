@@ -26,7 +26,7 @@ trait DestructiveTrait {
   public function assertPreConditions() {
     $annotations = $this->getAnnotations();
     $class = isset($annotations['class']['destructive']);
-    $method = isset($annotations['test']['destructive']);
+    $method = isset($annotations['method']['destructive']);
 
     if ($class || $method) {
       if (empty(static::$allowDestructiveTestsUrls)) {
@@ -35,7 +35,8 @@ trait DestructiveTrait {
         static::$allowDestructiveTestsUrls = (array) $config->allowDestructiveTests->url;
       }
       if (!in_array(static::$baseUrl, static::$allowDestructiveTestsUrls)) {
-        $noun = $class ? 'class:' . get_class($this) : 'method:' . $this->getName();
+        $classname = get_class($this);
+        $noun = $class ? $classname : '::' . $this->getName() . ' in ' . $classname;
         $this->markTestSkipped("Skipping @destructive $noun while testing against " . static::$baseUrl . '. To allow this test you must add ' . static::$baseUrl . ' to phpunit.xml::allowDestructiveTests and re-run.');
       }
     }

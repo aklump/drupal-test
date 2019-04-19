@@ -4,6 +4,7 @@ namespace AKlump\DrupalTest;
 
 use AKlump\DrupalTest\Utilities\DestructiveTrait;
 use AKlump\DrupalTest\Utilities\EmailHandlerInterface;
+use AKlump\DrupalTest\Utilities\InteractiveTrait;
 use AKlump\DrupalTest\Utilities\WebAssertTrait;
 use GuzzleHttp\Client;
 
@@ -14,7 +15,12 @@ abstract class EndToEndTestCase extends BrowserTestCase {
 
   const WAIT_TIMEOUT = 10;
 
-  use DestructiveTrait;
+  use DestructiveTrait {
+    DestructiveTrait::assertPreConditions as destructiveAssertPreConditions;
+  }
+  use InteractiveTrait {
+    InteractiveTrait::assertPreConditions as interactiveAssertPreConditions;
+  }
 
   public static $browsers = array(
     array(
@@ -77,6 +83,11 @@ abstract class EndToEndTestCase extends BrowserTestCase {
    * @var array
    */
   private $observerButtonClasses = [];
+
+  public function assertPreConditions() {
+    $this->destructiveAssertPreConditions();
+    $this->interactiveAssertPreConditions();
+  }
 
   /**
    * {@inheritdoc}
