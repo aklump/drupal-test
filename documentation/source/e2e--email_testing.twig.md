@@ -1,3 +1,6 @@
+---
+id: testing-email
+---
 # Email Testing
 
 Using the `\AKlump\DrupalTest\EndToEndTestCase` tests, you can:

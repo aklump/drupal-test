@@ -1,6 +1,9 @@
+---
+id: client
+---
 # Client Tests
 
-Client tests use [Mink](http://mink.behat.org/en/latest/) for the most part, sometimes just [Guzzle](http://docs.guzzlephp.org/en/stable/).  These tests are headless.  If you need a full browser, take a look at End to End.
+Client tests use [Mink](http://mink.behat.org/en/latest/) for the most part, sometimes just [Guzzle](http://docs.guzzlephp.org/en/stable/).  These tests are headless.  If you need a full browser, take a look at [End to End](@end-to-end).
 
 If you can achieve your test with a Client test instead of an End to End test, it will be faster.
 
@@ -13,15 +16,30 @@ This is a type of tests where you will be testing endpoints of an API or URLs.  
       
 ## Configuration
 
-The base URL must be set in an environment variable in order for client tests to work, e.g., 
+The base URL must be set in an environment variable (`TEST_BASE_URL` or `SIMPLETEST_BASE_URL`) in order for client tests to work, e.g., 
 
     $ cd tests/phpunit
     $ export TEST_BASE_URL=http://my-website.loft; phpunit -c phpunit.xml --testsuite Client
+    
+Or to match with Drupal 8 core you can do like this:
+    
+    $ export SIMPLETEST_BASE_URL=http://my-website.loft; phpunit -c phpunit.xml --testsuite Client
 
 If the site under test is behind http authorization you must also provide that, e.g.
     
     $ export TEST_BASE_URL=http://user:pass@my-website.loft; phpunit -c phpunit.xml --testsuite Client
 
+### Setting Environment Variables in _phpunit.xml_
+
+Alternately you can [set them like so](https://phpunit.readthedocs.io/en/8.0/configuration.html#setting-php-ini-settings-constants-and-global-variables):
+
+    <phpunit ... >
+      <php>
+        <env name="SIMPLETEST_BASE_URL" value="http://my-website.loft"/>
+      </php>
+      ...
+    </phpunit>
+    
 ## Cookies
 
 * By default a single cookie jar is shared across all client tests.

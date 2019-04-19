@@ -1,3 +1,6 @@
+---
+id: modules
+---
 # How to Setup Testing of Modules and Themes
 
 The term _extension_ will be used to refer to themes and modules interchangeably.

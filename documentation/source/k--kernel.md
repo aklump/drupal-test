@@ -1,3 +1,6 @@
+---
+id: kernel
+---
 # Kernel Tests
 
 * Test classnames should follow: _\*KernelTest_
