@@ -4,7 +4,7 @@
 
 ## Summary
 
-This is a complete testing solution for using PhpUnit with Drupal 7 websites.  It provides Unit, Kernel, and Client abstract test classes to use in writing your tests, a single test runner, testing for modules and themes, support for JsonSchema validation, as well as a set of guidelines and processes for better testing of Drupal 7 modules and websites.  All of this using a single test runner that can be divided by test suite or filtered by test class using normal PhpUnit options.
+This is a complete testing solution for using PhpUnit with Drupal websites.  It provides Unit, Kernel, Client and End to End abstract test classes to use in writing your tests, a single test runner, testing for modules and themes, support for JsonSchema validation, as well as a set of guidelines and processes for better testing of Drupal modules and websites.  All of this using a single test runner that can be divided by test suite or filtered by test class using normal PhpUnit options.
 
 Finally, [manual functional tests](https://github.com/aklump/manual-test) are supported as well.  
 
@@ -13,6 +13,41 @@ Finally, [manual functional tests](https://github.com/aklump/manual-test) are su
 ## Quick Start
 
 After installation (see below), follow instructions in the documentation (_docs/index.html_) to write and run tests.
+
+### Run All Tests
+
+    $ cd tests
+    $ export SIMPLETEST_BASE_URL=http://mysite.com; phpunit -c phpunit.xml
+
+### Run All Unit Tests
+
+    $ cd tests
+    $ phpunit -c phpunit.xml --testsuite Unit
+    
+### Run All Kernel Tests
+
+    $ cd tests
+    $ phpunit -c phpunit.xml --testsuite Kernel
+    
+### Run All Client Tests
+
+    $ cd tests
+    $ export SIMPLETEST_BASE_URL=http://mysite.com; phpunit -c phpunit.xml --testsuite Client
+    
+### Run All End To End Tests
+
+    $ cd tests
+    $ export SIMPLETEST_BASE_URL=http://mysite.com; phpunit -c phpunit.xml --testsuite EndToEnd
+    
+Refer to the documentation for more info.
+
+## Configuration
+
+See documentation for more information about configuration.
+
+1. Open _tests/drupal_test_config.yml_ and setup [autoloading](@autoload).
+1. From _tests_ run `composer update --lock`.
+1. Open _tests/phpunit.xml_ and add any JSON schema directories.
 
 ## Requirements
 
@@ -54,36 +89,3 @@ From inside the _tests_ directory, run:
     
 This will copy over the core files from the latest repository, but leave the non-core files alone, namely _phpunit.xml_, which you most-likely will have modified.
 
-## Configuration
-
-See documentation for more information about configuration.
-
-1. Open _tests/drupal_test_config.yml_ and setup [autoloading](@autoload).
-1. From _tests_ run `composer update --lock`.
-1. Open _tests/phpunit.xml_ and add any JSON schema directories.
-
-## Usage
-
-### Run All Tests
-
-    $ cd tests
-    $ phpunit -c phpunit.xml
-
-### Run All Unit Tests
-
-    $ cd tests
-    $ phpunit -c phpunit.xml --testsuite Unit
-    
-
-### Run All Kernel Tests
-
-    $ cd tests
-    $ phpunit -c phpunit.xml --testsuite Kernel
-    
-
-### Run All Client Tests
-
-    $ cd tests
-    $ phpunit -c phpunit.xml --testsuite Client
-    
-Refer to the documentation for more info.

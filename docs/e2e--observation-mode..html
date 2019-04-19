@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title></title>
+  <link href="search/tipuesearch.css" rel="stylesheet">
+  <link href="style.css" rel="stylesheet">
+</head>
+
+<body class="">
+<header>
+  <div class="pager"><a href="javascript:void(0)" class="prev ">&laquo;</a><a href="index.html" class="index pager__book-title">Drupal Test</a><a href="javascript:void(0)" class="next ">&raquo;</a></div></header>
+<section class="sub-header">
+  <div class="breadcrumbs"><a href="index.html">Index</a>
+         &raquo
+      </div>      <div class="search__wrapper">
+  <form action="search--results.html">
+    <input type="text" class="search-input" name="q" id="tipue_search_input" autocomplete="off" required>
+  </form>
+</div>
+  </section>
+
+
+<h1></h1>
+
+<section>
+
+<p>The idea here is that you can build a client demo using an end to end test.  Then you may run the test in front of your client pausing as necessary to explain or discuss.  You must define the "breakpoints" in your test code using <code>::waitForObserver</code>.  You have the ability to run the test either in demonstration mode or not.  The following code illuminates this feature.</p>
+
+<h2>Enable Observation Mode</h2>
+
+<p>At the very least you must call <code>::beginObservation</code>.  How you implement this is up to you.  At some point after that in the test class you should call <code>::waitForObserver</code> one or more times.</p>
+
+<h3>Toggle observation mode with ENV</h3>
+
+<ul>
+<li><p>In this implementation, we use the environment variable to be able to toggle the observation mode on or off, in this way you can run this as a test or a demo.  We do it in <code>::setUp</code> as a means of running observation mode throughout the entire test.</p>
+
+<pre><code>public function setUp() {
+  if (getenv('TEST_DEMO')) {
+
+    // The argument defines the button text.
+    $this-&gt;beginObservation('Continue demo');
+  }
+}
+</code></pre></li>
+<li><p>Read the docblocs for <code>::beginObservation</code> and <code>::endObservation</code> for more info.</p></li>
+</ul>
+
+<h2>Adding a Demo "Breakpoint"</h2>
+
+<p>To pause the demo at the point just before a field has a value set on it, you would use something like the following:</p>
+
+<pre><code>    public function testSelectingMemberExposesMemberFields() {
+      $el = $this-&gt;getDomElements([
+       '.t-field_account_type',
+      ]);
+
+      // A button will be appended next to the element indicated by the argument
+      // while in observation mode, otherwise this line of code does nothing.
+      $this-&gt;waitForObserver('.t-field_account_type');
+
+      $el['.t-field_account_type']-&gt;setValue('member');
+    }
+</code></pre>
+
+<p>This is what is shown to the observer during the test run.</p>
+
+<p><img src="images/observation-mode.jpg" alt="Observation Mode" /></p>
+</section>
+
+<div class="search__results">
+  <div id="tipue_search_content"></div>
+</div>
+
+<footer>
+  <div class="pager"><a href="javascript:void(0)" class="prev ">&laquo;</a><a href="index.html" class="index pager__book-title">Drupal Test</a><a href="javascript:void(0)" class="next ">&raquo;</a></div>  
+  <div id="footer-legaleeze">
+    <p class="legaleeze center">Version: 0.5.2 &bull; Last Updated: Fri, 19 Apr 2019 13:10:00 -0700</p>
+  </div>
+</footer>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  <script src="search/tipuesearch_content.js"></script>
+  <script src="search/tipuesearch_set.js"></script>
+  <script src="search/tipuesearch.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      $('#tipue_search_input').tipuesearch()
+    })
+  </script>
+<script src="js/core.js"></script>
+</body>
+</html>
+

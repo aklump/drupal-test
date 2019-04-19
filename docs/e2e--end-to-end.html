@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>End to End Testing</title>
+  <link href="search/tipuesearch.css" rel="stylesheet">
+  <link href="style.css" rel="stylesheet">
+</head>
+
+<body class="page--end-to-end">
+<header>
+  <div class="pager"><a href="cl--example.html" class="prev cl--example">&laquo;Client Test Examples</a><a href="index.html" class="index pager__book-title">Drupal Test</a><a href="e2e--destructive.html" class="next destructive">Destructive Tests&raquo;</a></div></header>
+<section class="sub-header">
+  <div class="breadcrumbs"><a href="index.html">Index</a>
+         &raquo
+                        <a href="e2e--end-to-end.html">End to End Testing</a>
+         &raquo
+      </div>      <div class="search__wrapper">
+  <form action="search--results.html">
+    <input type="text" class="search-input" name="q" id="tipue_search_input" autocomplete="off" required>
+  </form>
+</div>
+  </section>
+
+
+<h1>End to End Testing</h1>
+
+<section>
+
+<p><strong>End-to-end testing is a Software testing methodology to test an application flow from start to end.</strong> The purpose of end to end testing is to simulate the real user scenario and validate the system under test and its components for integration and data integrity.</p>
+
+<p>These tests use <a href="http://mink.behat.org/en/latest/index.html">Mink</a> and <a href="https://www.seleniumhq.org">Selenium</a> to have a fully controllable browser, but <strong>run against a real site in it's active state.</strong>  These should be used when you wish to interact at the browser level with a website in it's current state, just as you would as a human running manual tests.</p>
+
+<p>Create these tests by extending <code>\AKlump\DrupalTest\EndToEndTestCase</code>.  They should be saved in your <em>EndToEnd</em> folder.</p>
+
+<p>These tests are the slowest as they offer a full browser environment, so they facilitate the testing of forms, multi-page workflows, and Javascript interaction.  If you just want to check for elements on a single page, use <code>\AKlump\DrupalTest\ClientTestCase</code> instead.</p>
+
+<p>Note: These are not the same as <a href="https://www.drupal.org/docs/8/phpunit/phpunit-browser-test-tutorial">Drupal 8's Browser Tests</a> because: "Browser tests create a complete Drupal installation and a virtual web browser and then use the virtual web browser to walk the Drupal install through a series of tests, just like you would do if you were doing it by hand."  <strong>These tests DO NOT create a complete Drupal installation.</strong></p>
+
+<h2>Organizing Tests</h2>
+
+<ol>
+<li>Think of a single test class as one end-to-end scenario.</li>
+<li>Have lots of shorter test classes.</li>
+<li>Break each scenario (class) into small units, as test methods.</li>
+<li>Keep test methods small and named very discriptively.</li>
+</ol>
+
+<h2>Using Mink's <code>WebAssert</code></h2>
+
+<ol>
+<li><p>All of the methods of <code>\Behat\Mink\WebAssert</code> are available in your test methods through the use of <code>::assert()</code>, e.g.</p>
+
+<pre><code>public function testPageTextOnHomepage() {
+  $this-&gt;loadPageByUrl('/');
+
+  // This is a method from \Behat\Mink\WebAssert that has been made available by \AKlump\DrupalTest\EndToEndTestCase
+  $this-&gt;assert()-&gt;pageTextContains('Welcome to My Website');
+}
+</code></pre></li>
+<li><p><code>::assert()</code> returns you a wrapper around \Behat\Mink\WebAssert that handles assertion tallies and failure exceptions normally throw by \Behat\Mink\WebAssert in a way native to PhpUnit.</p></li>
+<li><p>There is some duplication with certain shorthand and common assertions, for example take these two examples of the same assertion.  The first one has an opinion that all elements should be searched using a CSS selector, so there's less typing, however the second is more powerful, and in fact necessary if you want to assert using XPath.</p>
+
+<pre><code>$this-&gt;assertElementExists('.t-trigger-account-dropdown');
+$this-&gt;assert()-&gt;elementExists('css', '.t-trigger-account-dropdown');
+</code></pre></li>
+</ol>
+
+<h2>Annotations</h2>
+
+<ol>
+<li>Give the test class a summary such as <em>User is able to login...</em></li>
+<li>If the <a href="e2e--destructive.html">test modifies the database</a> in any way mark the class <code>@destructive</code>.</li>
+<li>If <a href="e2e--interactive.html">the test uses <code>assertManual</code></a>, mark the class/method as <code>@interactive</code>.</li>
+<li><p>Make test method names very descriptive so they can be parsed: <em>testLoggedInUserCanAccessUserSettingsPage</em></p>
+
+<pre><code>&lt;?php
+
+namespace Drupal\Tests\gop;
+
+/**
+ * User is able to login, change password, logout and login with new password.
+ *
+ * @destructive
+ */
+class UserCanChangePasswordEndToEndTest extends EndToEndTestCase {
+
+  public function testLoggedInUserCanAccessUserSettingsPage() {
+    ...
+</code></pre></li>
+</ol>
+
+<h2>Pausing a Test for Inspection</h2>
+
+<p>While developing a test, it can be handy to pause a test during execution to study the page or DOM.  Call <code>::debugger</code> at the breakpoint in your test.  When the test runner reaches that point you will see a play button appear in the upper right of the screen.  The test runner is waiting for you to click that button.  Click it and the test will continue. <code>::debugger</code> should not be present in completed tests since they cause automation to hang.</p>
+
+<p><img src="images/debugger.jpg" alt="Debugger" /></p>
+
+<p>This <code>::debugger</code> method is intended for use during development of a test and to be discarded once the test is complete.  Here is an example:</p>
+
+<pre><code>  public function testShowingUseOfDebugger() {
+    $el = $this-&gt;loadPageByUrl('/user/register')
+      -&gt;getDomElements([
+        '.t-field_account_type',
+      ]);
+    $this-&gt;assertTrue($el['.t-field_account_type']-&gt;isVisible());
+    $this-&gt;debugger();
+    ...
+  }
+</code></pre>
+
+<h2>Advanced End to End Testing</h2>
+
+<ul>
+<li>See also <a href="e2e--observation-mode..html">Observation Mode</a>.</li>
+<li>See also <a href="e2e--interactive.html">Interactive End to End Tests</a>.</li>
+</ul>
+
+<h2>Installing Selenium</h2>
+
+<ol>
+<li>You must have a running selenium server to use these tests.</li>
+</ol>
+
+<p>This should be as simple as downloading a file, and starting a Java process on that file.  Follow these steps:</p>
+
+<ol>
+<li>Download from <a href="https://www.seleniumhq.org/download/">this page</a>; the link should be at the top.  This needs to happen just once.  Place it in a logical location on your system, maybe your home folder.</li>
+<li><p>Create a shortcut script <em>./bin/selenium.sh</em> to launch your Selenium server with contents like this, adjusted for your situation.</p>
+
+<pre><code>#!/usr/bin/env bash
+java -jar /Users/aklump/selenium/selenium-server-standalone-3.141.59.jar  -host 127.0.0.1 -port 4444
+</code></pre></li>
+<li><p>Make that script executable <code>chmod u+x ./bin/selenium.sh</code></p></li>
+<li><p>Start your server in a new terminal window:</p>
+
+<pre><code>cd {path to this lib}
+./bin/selenium.sh
+</code></pre></li>
+<li><p>Verify it's running by visiting: <a href="http://127.0.0.1:4444/wd/hub/static/resource/hub.html">http://127.0.0.1:4444/wd/hub/static/resource/hub.html</a></p></li>
+</ol>
+</section>
+
+<div class="search__results">
+  <div id="tipue_search_content"></div>
+</div>
+
+<footer>
+  <div class="pager"><a href="cl--example.html" class="prev cl--example">&laquo;Client Test Examples</a><a href="index.html" class="index pager__book-title">Drupal Test</a><a href="e2e--destructive.html" class="next destructive">Destructive Tests&raquo;</a></div>  
+  <div id="footer-legaleeze">
+    <p class="legaleeze center">Version: 0.5.2 &bull; Last Updated: Fri, 19 Apr 2019 13:09:59 -0700</p>
+  </div>
+</footer>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  <script src="search/tipuesearch_content.js"></script>
+  <script src="search/tipuesearch_set.js"></script>
+  <script src="search/tipuesearch.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      $('#tipue_search_input').tipuesearch()
+    })
+  </script>
+<script src="js/core.js"></script>
+</body>
+</html>
+

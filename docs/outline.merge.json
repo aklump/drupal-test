@@ -6,12 +6,24 @@
             "title": "Using Drupal Test"
         },
         {
-            "id": "cs",
-            "title": "Cheatsheets"
+            "id": "u",
+            "title": "Unit Testing"
         },
         {
-            "id": "ex",
-            "title": "Examples"
+            "id": "k",
+            "title": "Kernel Testing"
+        },
+        {
+            "id": "cl",
+            "title": "Client Testing"
+        },
+        {
+            "id": "e2e",
+            "title": "End to End Testing"
+        },
+        {
+            "id": "m",
+            "title": "Manual Testing"
         }
     ],
     "sections": [
@@ -32,6 +44,15 @@
         },
         {
             "id": "end-to-end"
+        },
+        {
+            "id": "destructive"
+        },
+        {
+            "id": "interactive"
+        },
+        {
+            "id": "testing-email"
         },
         {
             "id": "manual"

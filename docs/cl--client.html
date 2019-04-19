@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>Client Tests</title>
+  <link href="search/tipuesearch.css" rel="stylesheet">
+  <link href="style.css" rel="stylesheet">
+</head>
+
+<body class="page--client">
+<header>
+  <div class="pager"><a href="k--kernel.html" class="prev k--kernel">&laquo;Kernel Tests</a><a href="index.html" class="index pager__book-title">Drupal Test</a><a href="cl--client-cs.html" class="next cl--client-cs">Cheatsheet for Client Tests&raquo;</a></div></header>
+<section class="sub-header">
+  <div class="breadcrumbs"><a href="index.html">Index</a>
+         &raquo
+                        <a href="cl--client.html">Client Testing</a>
+         &raquo
+      </div>      <div class="search__wrapper">
+  <form action="search--results.html">
+    <input type="text" class="search-input" name="q" id="tipue_search_input" autocomplete="off" required>
+  </form>
+</div>
+  </section>
+
+
+<h1>Client Tests</h1>
+
+<section>
+
+<p>Client tests use <a href="http://mink.behat.org/en/latest/">Mink</a> for the most part, sometimes just <a href="http://docs.guzzlephp.org/en/stable/">Guzzle</a>.  These tests are headless.  If you need a full browser, take a look at <a href="e2e--end-to-end.html">End to End</a>.</p>
+
+<p>If you can achieve your test with a Client test instead of an End to End test, it will be faster.</p>
+
+<p>This is a type of tests where you will be testing endpoints of an API or URLs.  Use this to check for URL statuses and headers for example.  This has the same scope as unit tests, which means you can access class constants, but no Drupal bootstrap.  Tests act as an API consumer or client of the website.  There are custom assert methods on this class to help with such testing.  These types can test for:</p>
+
+<ul>
+<li>Redirects</li>
+<li>Page contents</li>
+<li>HTTP status codes</li>
+<li>REST responses</li>
+</ul>
+
+<h2>Configuration</h2>
+
+<p>The base URL must be set in an environment variable (<code>TEST_BASE_URL</code> or <code>SIMPLETEST_BASE_URL</code>) in order for client tests to work, e.g.,</p>
+
+<pre><code>$ cd tests/phpunit
+$ export TEST_BASE_URL=http://my-website.loft; phpunit -c phpunit.xml --testsuite Client
+</code></pre>
+
+<p>Or to match with Drupal 8 core you can do like this:</p>
+
+<pre><code>$ export SIMPLETEST_BASE_URL=http://my-website.loft; phpunit -c phpunit.xml --testsuite Client
+</code></pre>
+
+<p>If the site under test is behind http authorization you must also provide that, e.g.</p>
+
+<pre><code>$ export TEST_BASE_URL=http://user:pass@my-website.loft; phpunit -c phpunit.xml --testsuite Client
+</code></pre>
+
+<h3>Setting Environment Variables in <em>phpunit.xml</em></h3>
+
+<p>Alternately you can <a href="https://phpunit.readthedocs.io/en/8.0/configuration.html#setting-php-ini-settings-constants-and-global-variables">set them like so</a>:</p>
+
+<pre><code>&lt;phpunit ... &gt;
+  &lt;php&gt;
+    &lt;env name="SIMPLETEST_BASE_URL" value="http://my-website.loft"/&gt;
+  &lt;/php&gt;
+  ...
+&lt;/phpunit&gt;
+</code></pre>
+
+<h2>Cookies</h2>
+
+<ul>
+<li>By default a single cookie jar is shared across all client tests.</li>
+<li>To reset the cookie jar for a given class use <code>static::emptyCookieJar();</code> inside of <code>::setUp()</code> on your test class.</li>
+<li>To reset the cookie jar for a given test use <code>static::emptyCookieJar();</code> inside the test method.</li>
+</ul>
+
+<h2>Assertions</h2>
+
+<p>In addition to the usual assertions, you will find some new <code>assert*</code> methods on the class, see the code for more information.  Also be aware that you have access to all of Mink's <a href="https://github.com/Behat/Mink/blob/master/src/Behat/Mink/WebAssert.php">WebAssert</a> methods when you use <code>assert()</code>.  See examples to follow.</p>
+
+<h2>Assert Page Content</h2>
+
+<p>Using a string search:</p>
+
+<pre><code>$this-&gt;loadPageByUrl('/collections')
+  -&gt;assert()-&gt;responseContains('logo.jpg')
+
+$this-&gt;loadPageByUrl('/collections')
+  -&gt;assert()-&gt;pageTextContains('Welcome home!')
+</code></pre>
+
+<p>Using CSS selectors:</p>
+
+<pre><code>$this-&gt;loadPageByUrl('/search')
+  -&gt;assertElementExists('.views-widget-filter-id')
+</code></pre>
+
+<h2>Assert HTTP Status</h2>
+
+<pre><code>public function testBlogPage() {
+  $this-&gt;loadPageByUrl('/blog')-&gt;assert()-&gt;statusCodeEquals(200);
+}
+</code></pre>
+
+<h2>Response validation with JSON Schema</h2>
+
+<p><a href="https://json-schema.org/latest/json-schema-validation.html#rfc.section.6.3.3">https://json-schema.org/latest/json-schema-validation.html#rfc.section.6.3.3</a></p>
+
+<p>The client tests provide the means of validation using JSON Schema.  You indicate where your schema files are located in <em>phpunit.xml</em> using the custom key <code>jsonschema</code>.  Child nodes of <code>directory</code> are relative to <em>phpunit.xml</em>; you may use globs; you may have more than one <code>directory</code> node.</p>
+
+<pre><code>&lt;phpunit&gt;
+    &lt;jsonschema&gt;
+        &lt;directory&gt;../web/sites/all/modules/custom/*/tests/schema&lt;/directory&gt;
+    &lt;/jsonschema&gt;
+&lt;/phpunit&gt;
+</code></pre>
+
+<p>Then to validate an URL do something like the following:</p>
+
+<h3>Validating XML Responses</h3>
+
+<p>This example shows how load an endpoint that returns XML and validate that using a JSON Schema; then it checks for specific values in the XML.</p>
+
+<pre><code>public function testXMLEndpoint() {
+  $this-&gt;loadXmlByUrl('api/1/some/endpoint')
+    -&gt;assertResponseMatchesSchema('resource.json');
+
+  $this-&gt;assertSame(123, (int) $this-&gt;xml-&gt;id);
+  $this-&gt;assertSame('name', (string) $this-&gt;xml-&gt;name);
+}  
+</code></pre>
+</section>
+
+<div class="search__results">
+  <div id="tipue_search_content"></div>
+</div>
+
+<footer>
+  <div class="pager"><a href="k--kernel.html" class="prev k--kernel">&laquo;Kernel Tests</a><a href="index.html" class="index pager__book-title">Drupal Test</a><a href="cl--client-cs.html" class="next cl--client-cs">Cheatsheet for Client Tests&raquo;</a></div>  
+  <div id="footer-legaleeze">
+    <p class="legaleeze center">Version: 0.5.2 &bull; Last Updated: Fri, 19 Apr 2019 13:09:58 -0700</p>
+  </div>
+</footer>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  <script src="search/tipuesearch_content.js"></script>
+  <script src="search/tipuesearch_set.js"></script>
+  <script src="search/tipuesearch.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      $('#tipue_search_input').tipuesearch()
+    })
+  </script>
+<script src="js/core.js"></script>
+</body>
+</html>
+

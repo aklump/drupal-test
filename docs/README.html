@@ -9,7 +9,7 @@
 
 <body class="page--readme">
 <header>
-  <div class="pager"><a href="index.html" class="prev index">&laquo;Drupal Test</a><a href="index.html" class="index pager__book-title">Drupal Test</a><a href="unit.html" class="next unit">Unit Tests        &raquo;</a></div></header>
+  <div class="pager"><a href="index.html" class="prev index">&laquo;Drupal Test</a><a href="index.html" class="index pager__book-title">Drupal Test</a><a href="CHANGELOG.html" class="next changelog">CHANGELOG&raquo;</a></div></header>
 <section class="sub-header">
   <div class="breadcrumbs"><a href="index.html">Index</a>
          &raquo
@@ -31,7 +31,7 @@
 
 <h2>Summary</h2>
 
-<p>This is a complete testing solution for using PhpUnit with Drupal 7 websites.  It provides Unit, Kernel, and Client abstract test classes to use in writing your tests, a single test runner, testing for modules and themes, support for JsonSchema validation, as well as a set of guidelines and processes for better testing of Drupal 7 modules and websites.  All of this using a single test runner that can be divided by test suite or filtered by test class using normal PhpUnit options.</p>
+<p>This is a complete testing solution for using PhpUnit with Drupal websites.  It provides Unit, Kernel, Client and End to End abstract test classes to use in writing your tests, a single test runner, testing for modules and themes, support for JsonSchema validation, as well as a set of guidelines and processes for better testing of Drupal modules and websites.  All of this using a single test runner that can be divided by test suite or filtered by test class using normal PhpUnit options.</p>
 
 <p>Finally, <a href="https://github.com/aklump/manual-test">manual functional tests</a> are supported as well.</p>
 
@@ -40,6 +40,48 @@
 <h2>Quick Start</h2>
 
 <p>After installation (see below), follow instructions in the documentation (<em>docs/index.html</em>) to write and run tests.</p>
+
+<h3>Run All Tests</h3>
+
+<pre><code>$ cd tests
+$ export SIMPLETEST_BASE_URL=http://mysite.com; phpunit -c phpunit.xml
+</code></pre>
+
+<h3>Run All Unit Tests</h3>
+
+<pre><code>$ cd tests
+$ phpunit -c phpunit.xml --testsuite Unit
+</code></pre>
+
+<h3>Run All Kernel Tests</h3>
+
+<pre><code>$ cd tests
+$ phpunit -c phpunit.xml --testsuite Kernel
+</code></pre>
+
+<h3>Run All Client Tests</h3>
+
+<pre><code>$ cd tests
+$ export SIMPLETEST_BASE_URL=http://mysite.com; phpunit -c phpunit.xml --testsuite Client
+</code></pre>
+
+<h3>Run All End To End Tests</h3>
+
+<pre><code>$ cd tests
+$ export SIMPLETEST_BASE_URL=http://mysite.com; phpunit -c phpunit.xml --testsuite EndToEnd
+</code></pre>
+
+<p>Refer to the documentation for more info.</p>
+
+<h2>Configuration</h2>
+
+<p>See documentation for more information about configuration.</p>
+
+<ol>
+<li>Open <em>tests/drupal_test_config.yml</em> and setup <a href="u--autoloading.html">autoloading</a>.</li>
+<li>From <em>tests</em> run <code>composer update --lock</code>.</li>
+<li>Open <em>tests/phpunit.xml</em> and add any JSON schema directories.</li>
+</ol>
 
 <h2>Requirements</h2>
 
@@ -86,44 +128,6 @@ src/DrupalTest
 </code></pre>
 
 <p>This will copy over the core files from the latest repository, but leave the non-core files alone, namely <em>phpunit.xml</em>, which you most-likely will have modified.</p>
-
-<h2>Configuration</h2>
-
-<p>See documentation for more information about configuration.</p>
-
-<ol>
-<li>Open <em>tests/drupal_test_config.yml</em> and setup <a href="autoloading.html">autoloading</a>.</li>
-<li>From <em>tests</em> run <code>composer update --lock</code>.</li>
-<li>Open <em>tests/phpunit.xml</em> and add any JSON schema directories.</li>
-</ol>
-
-<h2>Usage</h2>
-
-<h3>Run All Tests</h3>
-
-<pre><code>$ cd tests
-$ phpunit -c phpunit.xml
-</code></pre>
-
-<h3>Run All Unit Tests</h3>
-
-<pre><code>$ cd tests
-$ phpunit -c phpunit.xml --testsuite Unit
-</code></pre>
-
-<h3>Run All Kernel Tests</h3>
-
-<pre><code>$ cd tests
-$ phpunit -c phpunit.xml --testsuite Kernel
-</code></pre>
-
-<h3>Run All Client Tests</h3>
-
-<pre><code>$ cd tests
-$ phpunit -c phpunit.xml --testsuite Client
-</code></pre>
-
-<p>Refer to the documentation for more info.</p>
 </section>
 
 <div class="search__results">
@@ -131,9 +135,9 @@ $ phpunit -c phpunit.xml --testsuite Client
 </div>
 
 <footer>
-  <div class="pager"><a href="index.html" class="prev index">&laquo;Drupal Test</a><a href="index.html" class="index pager__book-title">Drupal Test</a><a href="unit.html" class="next unit">Unit Tests        &raquo;</a></div>  
+  <div class="pager"><a href="index.html" class="prev index">&laquo;Drupal Test</a><a href="index.html" class="index pager__book-title">Drupal Test</a><a href="CHANGELOG.html" class="next changelog">CHANGELOG&raquo;</a></div>  
   <div id="footer-legaleeze">
-    <p class="legaleeze center">Version: 0.5.1 &bull; Last Updated: Sun, 14 Apr 2019 10:02:50 -0700</p>
+    <p class="legaleeze center">Version: 0.5.2 &bull; Last Updated: Fri, 19 Apr 2019 13:09:58 -0700</p>
   </div>
 </footer>
 

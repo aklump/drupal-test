@@ -2,18 +2,18 @@
 
 <html>
 <head>
-  <title>Cheatsheet for End to End Tests</title>
+  <title>Cheatsheet for Client Tests</title>
   <link href="search/tipuesearch.css" rel="stylesheet">
   <link href="style.css" rel="stylesheet">
 </head>
 
-<body class="page--cs--end-to-end">
+<body class="page--cl--client-cs">
 <header>
-  <div class="pager"><a href="cs--client.html" class="prev cs--client">&laquo;Cheatsheet for Client Tests</a><a href="index.html" class="index pager__book-title">Drupal Test</a><a href="ex--end-to-end.html" class="next ex--end-to-end">An Example End To End Test&raquo;</a></div></header>
+  <div class="pager"><a href="cl--client.html" class="prev cl--client">&laquo;Client Tests</a><a href="index.html" class="index pager__book-title">Drupal Test</a><a href="cl--example.html" class="next cl--example">Client Test Examples&raquo;</a></div></header>
 <section class="sub-header">
   <div class="breadcrumbs"><a href="index.html">Index</a>
          &raquo
-                        <a href="cs--client.html">Cheatsheets</a>
+                        <a href="cl--client.html">Client Testing</a>
          &raquo
       </div>      <div class="search__wrapper">
   <form action="search--results.html">
@@ -23,78 +23,103 @@
   </section>
 
 
-<h1>Cheatsheet for End to End Tests</h1>
+<h1>Cheatsheet for Client Tests</h1>
 
 <section>
 
-<h2>Generating Data</h2>
-
-<p>When filling out forms you probably want to use the generators:</p>
-
-<pre><code> $el['.t-field_first_name']-&gt;setValue($this-&gt;generate('name', 'first'));
-</code></pre>
-
 <table>
 <thead>
 <tr>
-  <th>Generators</th>
+  <th>ClientTestCase</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-  <td><strong>email</strong> <em>()</em></td>
+  <td><strong>assert</strong> <em>($fail_message = '')</em></td>
 </tr>
 <tr>
-  <td><strong>name</strong> <em>($length = 5)</em></td>
+  <td><strong>assertContentType</strong> <em>($expected_type)</em></td>
 </tr>
 <tr>
-  <td><strong>password</strong> <em>($length = 32)</em></td>
+  <td><strong>assertElementAttributeNotEmpty</strong> <em>($attribute, $css_selector, $index = 0)</em></td>
 </tr>
 <tr>
-  <td><strong>phone</strong> <em>()</em></td>
+  <td><strong>assertElementExists</strong> <em>($css_selector, $failure_message = '')</em></td>
 </tr>
 <tr>
-  <td><strong>username</strong> <em>($length = 10)</em></td>
+  <td><strong>assertElementNotEmpty</strong> <em>($css_selector, $index = 0)</em></td>
 </tr>
-</tbody>
-</table>
-
-<table>
-<thead>
 <tr>
-  <th>EndToEndTestCase <em>extends BrowserTestCase</em></th>
+  <td><strong>assertElementNotExists</strong> <em>($css_selector, $failure_message = '')</em></td>
 </tr>
-</thead>
-<tbody>
 <tr>
-  <td><strong>debugger</strong> <em>()</em></td>
+  <td><strong>assertElementNotVisible</strong> <em>($css_selector, $failure_message = '')</em></td>
+</tr>
+<tr>
+  <td><strong>assertElementRegExp</strong> <em>($expected, $css_selector, $index = 0)</em></td>
+</tr>
+<tr>
+  <td><strong>assertElementSame</strong> <em>($expected, $css_selector, $index = 0)</em></td>
+</tr>
+<tr>
+  <td><strong>assertElementVisible</strong> <em>($css_selector, $failure_message = '')</em></td>
+</tr>
+<tr>
+  <td><strong>assertMetaTagSame</strong> <em>($expected, $name, $attribute)</em></td>
+</tr>
+<tr>
+  <td><strong>assertResponseIsAjaxCommands</strong> <em>(GuzzleHttp\Psr7\Response or NULL $response = NULL)</em></td>
+</tr>
+<tr>
+  <td><strong>assertResponseMatchesSchema</strong> <em>($schema_filename, GuzzleHttp\Psr7\Response or NULL $response = NULL)</em></td>
+</tr>
+<tr>
+  <td><strong>assertUrlRedirectsTo</strong> <em>($redirected_url, $url)</em></td>
+</tr>
+<tr>
+  <td><strong>el</strong> <em>($css_selector)</em></td>
+</tr>
+<tr>
+  <td><strong>els</strong> <em>($css_selector)</em></td>
+</tr>
+<tr>
+  <td><strong>emptyCookieJar</strong> <em>()</em></td>
+</tr>
+<tr>
+  <td><strong>generate</strong> <em>($method)</em></td>
+</tr>
+<tr>
+  <td><strong>getDomElements</strong> <em>(array $css_selectors)</em></td>
+</tr>
+<tr>
+  <td><strong>getDrupalCommandsClient</strong> <em>()</em></td>
+</tr>
+<tr>
+  <td><strong>getHtmlClient</strong> <em>()</em></td>
+</tr>
+<tr>
+  <td><strong>getJsonClient</strong> <em>()</em></td>
 </tr>
 <tr>
   <td><strong>getSession</strong> <em>()</em></td>
 </tr>
 <tr>
-  <td><strong>setEmailHandler</strong> <em>(AKlump\DrupalTest\Utilities\EmailHandlerInterface $handler)</em></td>
+  <td><strong>getStored</strong> <em>($key, $default = NULL)</em></td>
 </tr>
 <tr>
-  <td><strong>wait</strong> <em>($seconds)</em></td>
+  <td><strong>getXmlClient</strong> <em>()</em></td>
 </tr>
 <tr>
-  <td><strong>waitFor</strong> <em>(callable $test, $description = NULL, $timeout = NULL)</em></td>
+  <td><strong>loadJsonByUrl</strong> <em>($url)</em></td>
 </tr>
 <tr>
-  <td><strong>waitForElement</strong> <em>($css_selector, $timeout = NULL)</em></td>
+  <td><strong>loadPageByUrl</strong> <em>($url)</em></td>
 </tr>
 <tr>
-  <td><strong>waitForElementNotVisible</strong> <em>($css_selector, $timeout = NULL)</em></td>
+  <td><strong>loadXmlByUrl</strong> <em>($url)</em></td>
 </tr>
 <tr>
-  <td><strong>waitForElementVisible</strong> <em>($css_selector, $timeout = NULL)</em></td>
-</tr>
-<tr>
-  <td><strong>waitForEmail</strong> <em>($expected_count = 1, $timeout = NULL)</em></td>
-</tr>
-<tr>
-  <td><strong>waitForPageContains</strong> <em>($substring, $timeout = NULL)</em></td>
+  <td><strong>store</strong> <em>($key, $value)</em></td>
 </tr>
 </tbody>
 </table>
@@ -368,9 +393,9 @@ class Test {
 </div>
 
 <footer>
-  <div class="pager"><a href="cs--client.html" class="prev cs--client">&laquo;Cheatsheet for Client Tests</a><a href="index.html" class="index pager__book-title">Drupal Test</a><a href="ex--end-to-end.html" class="next ex--end-to-end">An Example End To End Test&raquo;</a></div>  
+  <div class="pager"><a href="cl--client.html" class="prev cl--client">&laquo;Client Tests</a><a href="index.html" class="index pager__book-title">Drupal Test</a><a href="cl--example.html" class="next cl--example">Client Test Examples&raquo;</a></div>  
   <div id="footer-legaleeze">
-    <p class="legaleeze center">Version: 0.5.1 &bull; Last Updated: Sun, 14 Apr 2019 10:02:54 -0700</p>
+    <p class="legaleeze center">Version: 0.5.2 &bull; Last Updated: Fri, 19 Apr 2019 13:09:58 -0700</p>
   </div>
 </footer>
 
