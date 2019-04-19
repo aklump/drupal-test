@@ -286,13 +286,14 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
    * @return mixed
    *   The generated value, is also added as $this->stored->{$as}.
    */
-  protected function generate($method, $as = '') {
+  public function generate($method) {
     static $generator;
     if (empty($generator)) {
       $generator = new Generators([
         'baseUrl' => static::$baseUrl,
       ]);
     }
+    list($method, $as) = explode(':', $method) + [NULL, NULL];
     $value = $generator->{$method}();
     $as = $as ? $as : $method;
     $this->store($as, $value);
