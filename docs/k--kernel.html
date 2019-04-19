@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>Kernel Tests</title>
+  <link href="search/tipuesearch.css" rel="stylesheet">
+  <link href="style.css" rel="stylesheet">
+</head>
+
+<body class="page--kernel">
+<header>
+  <div class="pager"><a href="u--coverage.html" class="prev u--coverage">&laquo;Code Coverage Reports</a><a href="index.html" class="index pager__book-title">Drupal Test</a><a href="cl--client.html" class="next client">Client Tests&raquo;</a></div></header>
+<section class="sub-header">
+  <div class="breadcrumbs"><a href="index.html">Index</a>
+         &raquo
+                        <a href="k--kernel.html">Kernel Testing</a>
+         &raquo
+      </div>      <div class="search__wrapper">
+  <form action="search--results.html">
+    <input type="text" class="search-input" name="q" id="tipue_search_input" autocomplete="off" required>
+  </form>
+</div>
+  </section>
+
+
+<h1>Kernel Tests</h1>
+
+<section>
+
+<ul>
+<li>Test classnames should follow: <em>&#42;KernelTest</em></li>
+<li>Kernel tests have a full Drupal bootstrap and access to the database, global functions and constants.</li>
+</ul>
+
+<h2>Data Providers and Kernel Tests</h2>
+
+<ul>
+<li>Bootstrapped Drupal elements, e.g. constants are not available in the data provider methods of a test class.</li>
+<li>Class constants are available, however.</li>
+</ul>
+</section>
+
+<div class="search__results">
+  <div id="tipue_search_content"></div>
+</div>
+
+<footer>
+  <div class="pager"><a href="u--coverage.html" class="prev u--coverage">&laquo;Code Coverage Reports</a><a href="index.html" class="index pager__book-title">Drupal Test</a><a href="cl--client.html" class="next client">Client Tests&raquo;</a></div>  
+  <div id="footer-legaleeze">
+    <p class="legaleeze center">Version: 0.5.2 &bull; Last Updated: Fri, 19 Apr 2019 13:10:01 -0700</p>
+  </div>
+</footer>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  <script src="search/tipuesearch_content.js"></script>
+  <script src="search/tipuesearch_set.js"></script>
+  <script src="search/tipuesearch.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      $('#tipue_search_input').tipuesearch()
+    })
+  </script>
+<script src="js/core.js"></script>
+</body>
+</html>
+

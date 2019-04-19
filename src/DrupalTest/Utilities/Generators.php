@@ -38,6 +38,58 @@ class Generators {
   }
 
   /**
+   * Return a string of random words.
+   *
+   * @param int $wordcount
+   *   The number of words.
+   *
+   * @return string
+   *   A string of words.
+   */
+  public function words($wordcount = 5) {
+    $words = [];
+    while (count($words) < $wordcount) {
+      $words[] = $this->name(rand(3, 9));
+    }
+
+    return strtolower(implode(' ', $words));
+  }
+
+  /**
+   * Generate a sentence.
+   *
+   * @param int $wordcount
+   *   The number of words in the sentence.
+   *
+   * @return string
+   *   A sentence string, with capital first letter, ending in '.'.
+   */
+  public function sentence($wordcount = 5) {
+    return ucfirst($this->words($wordcount)) . '.';
+  }
+
+  /**
+   * Generate a title-cased title of N words.
+   *
+   * @param int $wordcount
+   *   The number of words in title.
+   *
+   * @return string
+   *   A title-cased string.
+   */
+  public function title($wordcount = 5) {
+    return ucwords($this->words($wordcount));
+  }
+
+  /**
+   * @return string
+   *   A random url.
+   */
+  public function url() {
+    return 'https://www.' . $this->words(1) . '.com';
+  }
+
+  /**
    * Generate a username.
    *
    * @param int $length

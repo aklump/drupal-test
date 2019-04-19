@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>Add Manual Tests</title>
+  <link href="search/tipuesearch.css" rel="stylesheet">
+  <link href="style.css" rel="stylesheet">
+</head>
+
+<body class="page--manual">
+<header>
+  <div class="pager"><a href="e2e--observation-mode.html" class="prev e2e--observation-mode">&laquo;Observation Mode</a><a href="index.html" class="index pager__book-title">Drupal Test</a><a href="index.html" class="next index">Index&raquo;</a></div></header>
+<section class="sub-header">
+  <div class="breadcrumbs"><a href="index.html">Index</a>
+         &raquo
+                        <a href="m--manual.html">Manual Testing</a>
+         &raquo
+      </div>      <div class="search__wrapper">
+  <form action="search--results.html">
+    <input type="text" class="search-input" name="q" id="tipue_search_input" autocomplete="off" required>
+  </form>
+</div>
+  </section>
+
+
+<h1>Add Manual Tests</h1>
+
+<section>
+
+<p>This project uses <a href="https://github.com/aklump/manual-test">aklump/manual-test</a> for manual tests.  This page shows how to integrate manual tests into your Drupal project.</p>
+
+<h2>Configuration</h2>
+
+<ol>
+<li><p>Add configuration like the following (replacing tokens) to <em>phpunit.xml</em>:</p>
+
+<pre><code>&lt;phpunit ...&gt;
+  ...
+  &lt;manualtests&gt;
+      &lt;title&gt;{{ website or domain}}&lt;/title&gt;
+      &lt;tester&gt;{{ default tester name }}&lt;/tester&gt;
+      &lt;output&gt;{{ path to pdf output file }}&lt;/output&gt;
+      &lt;testsuite name="Custom"&gt;
+          &lt;directory&gt;../web/sites/all/modules/custom/*/tests/src/Manual&lt;/directory&gt;
+          &lt;directory&gt;../web/sites/all/modules/custom/*/tests/src/Manual/*&lt;/directory&gt;
+      &lt;/testsuite&gt;
+  &lt;/manualtests&gt;
+&lt;/phpunit&gt;
+</code></pre></li>
+<li><p>Here is an example for a Drupal 8 site.</p>
+
+<pre><code>&lt;phpunit ...&gt;
+  ...
+  &lt;manualtests&gt;
+      &lt;title&gt;www.mysite.org&lt;/title&gt;
+      &lt;tester&gt;Aaron Klump&lt;/tester&gt;
+      &lt;output&gt;../private/default/mysite-manual-tests.pdf&lt;/output&gt;
+      &lt;testsuite name="Contrib"&gt;
+          &lt;directory&gt;../web/modules/contrib/*/tests/src/Manual&lt;/directory&gt;
+          &lt;directory&gt;../web/modules/contrib/*/tests/src/Manual/*&lt;/directory&gt;
+      &lt;/testsuite&gt;
+      &lt;testsuite name="Custom"&gt;
+          &lt;directory&gt;../web/modules/custom/*/tests/src/Manual&lt;/directory&gt;
+          &lt;directory&gt;../web/modules/custom/*/tests/src/Manual/*&lt;/directory&gt;
+      &lt;/testsuite&gt;              
+  &lt;/manualtests&gt;
+&lt;/phpunit&gt;
+</code></pre></li>
+</ol>
+
+<h3>Using Website Perms</h3>
+
+<p>Add the following to the perms config:</p>
+
+<pre><code>executable_paths:
+  - tests/bin/*.sh
+  - tests/vendor/aklump/manual-test/generate
+</code></pre>
+
+<h2>Generate tests</h2>
+
+<p>To create the PDF file for manual test running... See the <a href="https://github.com/aklump/manual-test">documentation</a> for more info.</p>
+
+<pre><code>cd tests
+export TEST_BASE_URL="http://www.mysite.com"; ./vendor/bin/generate --configuration=phpunit.xml --output=mysite-manual-tests.com.pdf --tester="Aaron Klump"
+</code></pre>
+
+<h3>Hint, create a shortcut file, something like: <em>manual.sh</em></h3>
+
+<pre><code>#!/usr/bin/env bash
+source="${BASH_SOURCE[0]}"
+while [ -h "$source" ]; do # resolve $source until the file is no longer a symlink
+  dir="$( cd -P "$( dirname "$source" )" &amp;&amp; pwd )"
+  source="$(readlink "$source")"
+  [[ $source != /* ]] &amp;&amp; source="$dir/$source" # if $source was a relative symlink, we need to resolve it relative to the path where the symlink file was located
+done
+root="$( cd -P "$( dirname "$source" )" &amp;&amp; pwd )"
+cd "$root/.."
+export TEST_BASE_URL="http://www.mysite.com"; ./vendor/bin/generate --configuration=phpunit.xml --output=mysite-manual-tests.loft.pdf --tester="Aaron Klump" "$@"
+</code></pre>
+</section>
+
+<div class="search__results">
+  <div id="tipue_search_content"></div>
+</div>
+
+<footer>
+  <div class="pager"><a href="e2e--observation-mode.html" class="prev e2e--observation-mode">&laquo;Observation Mode</a><a href="index.html" class="index pager__book-title">Drupal Test</a><a href="index.html" class="next index">Index&raquo;</a></div>  
+  <div id="footer-legaleeze">
+    <p class="legaleeze center">Version: 0.5.2 &bull; Last Updated: Fri, 19 Apr 2019 13:10:01 -0700</p>
+  </div>
+</footer>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  <script src="search/tipuesearch_content.js"></script>
+  <script src="search/tipuesearch_set.js"></script>
+  <script src="search/tipuesearch.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      $('#tipue_search_input').tipuesearch()
+    })
+  </script>
+<script src="js/core.js"></script>
+</body>
+</html>
+

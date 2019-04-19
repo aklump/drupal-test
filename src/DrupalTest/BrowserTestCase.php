@@ -64,8 +64,8 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
    * This should be called in ::setUpBeforeClass.
    */
   protected static function handleBaseUrl() {
-    if (!($url = getenv('TEST_BASE_URL'))) {
-      static::markTestSkipped('Missing environment variable: TEST_BASE_URL');
+    if (!($url = getenv('TEST_BASE_URL')) && !($url = getenv('SIMPLETEST_BASE_URL'))) {
+      static::markTestSkipped("Missing environment variable: TEST_BASE_URL or SIMPLETEST_BASE_URL");
     }
     static::$baseUrl = rtrim($url, '/');
   }
@@ -125,7 +125,7 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
    *
    * @see ::el
    */
-  protected function getDomElements(array $css_selectors) {
+  public function getDomElements(array $css_selectors) {
     $page = $this->getSession()->getPage();
     if (!$page) {
       throw new \RuntimeException("::getElements() must come after starting a Mink session.");
@@ -143,7 +143,7 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
   /**
    * {@inheritdoc}
    */
-  protected function el($css_selector) {
+  public function el($css_selector) {
     return $this->getSession()->getPage()->find('css', $css_selector);
   }
 
@@ -155,7 +155,7 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
    * @return array
    *   All located node elements.
    */
-  protected function els($css_selector) {
+  public function els($css_selector) {
     return $this->getSession()->getPage()->findAll('css', $css_selector);
   }
 
@@ -169,7 +169,7 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
    *
    * @return \AKlump\DrupalTest\BrowserTestCase
    */
-  protected function loadPageByUrl($url) {
+  public function loadPageByUrl($url) {
     $url = $this->resolveUrl($url);
     $this->getSession()->visit($url);
     $this->content = $this->getSession()->getPage()->getContent();
@@ -186,7 +186,7 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
    * @return \AKlump\DrupalTest\Utilities\WebAssert
    *   An instance to use for asserting.
    */
-  protected function assert($fail_message = '') {
+  public function assert($fail_message = '') {
     if (empty($this->webAssert)) {
       $this->webAssert = new WebAssert($this, $this->getSession());
     }
@@ -206,7 +206,7 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
    * @return \AKlump\DrupalTest\EndToEndTestCase
    *   Self for chaining.
    */
-  protected function assertElementExists($css_selector, $failure_message = '') {
+  public function assertElementExists($css_selector, $failure_message = '') {
     $this->assert($failure_message)->elementExists('css', $css_selector);
 
     return $this;
@@ -223,7 +223,7 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
    * @return \AKlump\DrupalTest\EndToEndTestCase
    *   Self for chaining.
    */
-  protected function assertElementNotExists($css_selector, $failure_message = '') {
+  public function assertElementNotExists($css_selector, $failure_message = '') {
     $this->assert($failure_message)
       ->elementNotExists('css', $css_selector);
 
@@ -241,7 +241,7 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
    * @return \AKlump\DrupalTest\EndToEndTestCase
    *   Self for chaining.
    */
-  protected function assertElementVisible($css_selector, $failure_message = '') {
+  public function assertElementVisible($css_selector, $failure_message = '') {
     if (empty($failure_message)) {
       $failure_message = 'Expecting "' . $css_selector . '" to be visible.';
     }
@@ -263,7 +263,7 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
    *
    * @return \AKlump\DrupalTest\EndToEndTestCase
    */
-  protected function assertElementNotVisible($css_selector, $failure_message = '') {
+  public function assertElementNotVisible($css_selector, $failure_message = '') {
     if (empty($failure_message)) {
       $failure_message = 'Expecting "' . $css_selector . '" to be hidden.';
     }
@@ -279,20 +279,23 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
    * Generate and store a value.
    *
    * @param string $method
-   *   Any method on \AKlump\DrupalTest\Utilities\Generators.
-   * @param string $as
-   *   Defaults to $method, set the storage name, e.g. "first_name".
+   *   Any method on \AKlump\DrupalTest\Utilities\Generators.  If you pass a
+   *   string with a colon, e.g. 'title:my_title', the latter will be used as
+   *   the storage key.
+   * @param ...
+   *   Any additional params will be sent to generator function.
    *
    * @return mixed
    *   The generated value, is also added as $this->stored->{$as}.
    */
-  protected function generate($method, $as = '') {
+  public function generate($method) {
     static $generator;
     if (empty($generator)) {
       $generator = new Generators([
         'baseUrl' => static::$baseUrl,
       ]);
     }
+    list($method, $as) = explode(':', $method) + [NULL, NULL];
     $value = $generator->{$method}();
     $as = $as ? $as : $method;
     $this->store($as, $value);
@@ -312,7 +315,7 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
    *
    * @see ::generate()
    */
-  protected function store($key, $value) {
+  public function store($key, $value) {
     if (is_null(static::$stored)) {
       static::$stored = new \stdClass();
     }
@@ -332,7 +335,7 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
    * @return mixed
    *   The stored or default value.
    */
-  protected function getStored($key, $default = NULL) {
+  public function getStored($key, $default = NULL) {
     if (!isset(static::$stored->{$key})) {
       return $default;
     }

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>Destructive Tests</title>
+  <link href="search/tipuesearch.css" rel="stylesheet">
+  <link href="style.css" rel="stylesheet">
+</head>
+
+<body class="page--destructive">
+<header>
+  <div class="pager"><a href="e2e--end-to-end.html" class="prev e2e--end-to-end">&laquo;End to End Testing</a><a href="index.html" class="index pager__book-title">Drupal Test</a><a href="e2e--interactive.html" class="next interactive">Interactive Tests&raquo;</a></div></header>
+<section class="sub-header">
+  <div class="breadcrumbs"><a href="index.html">Index</a>
+         &raquo
+                        <a href="e2e--end-to-end.html">End to End Testing</a>
+         &raquo
+      </div>      <div class="search__wrapper">
+  <form action="search--results.html">
+    <input type="text" class="search-input" name="q" id="tipue_search_input" autocomplete="off" required>
+  </form>
+</div>
+  </section>
+
+
+<h1>Destructive Tests</h1>
+
+<section>
+
+<p><strong>Prevent certain test(s) from running against production.</strong></p>
+
+<p>In some cases, certain tests should not be allowed to run against certain base URLs.  For example, you should not let end to end tests that modify the database run against production.  These types of tests are called here as <em>destructive</em>.</p>
+
+<h2>Prevent Entire Test Class</h2>
+
+<ul>
+<li><p>You may mark entire classes <code>@destructive</code>, in which case all tests in the class will be skipped if the <code>TEST_BASE_URL</code> is not in the defined list.</p>
+
+<pre><code>&lt;?php
+
+namespace Drupal\Tests\my_module;
+
+/**
+ * Ensures we can create a new user via registration modal.
+ *
+ * @destructive
+ */
+class ModalRegistrationEndToEndTest extends EndToEndTestCase {
+...
+</code></pre></li>
+</ul>
+
+<h2>Prevent Single Test Methods</h2>
+
+<ul>
+<li><p>You may mark individual test methods <code>@destructive</code></p>
+
+<pre><code>/**
+ * @destructive
+ */
+public function testCanDeleteAUser() {
+...
+</code></pre></li>
+</ul>
+
+<h2>Define Which URLs Are "Production"</h2>
+
+<ul>
+<li>Anything marked with <code>@destructive</code> will be skipped unless <code>TEST_BASE_URL</code> is listed as shown next.</li>
+<li><p>Create the whitelist in <em>phpunit.xml</em> like this:</p>
+
+<pre><code>&lt;phpunit ... &gt;
+    &lt;allowDestructiveTests&gt;
+        &lt;url&gt;http://mysite.local&lt;/url&gt;
+        &lt;url&gt;https://stage.mysite.com&lt;/url&gt;
+    &lt;/allowDestructiveTests&gt;
+    ...
+</code></pre></li>
+</ul>
+
+<h2>How It Works</h2>
+
+<p>A test class must <code>use \AKlump\DrupalTest\Utilities\DestructiveTrait</code> if you want to use this convention.  The base classes: <code>\AKlump\DrupalTest\ClientTestCase</code> and <code>\AKlump\DrupalTest\EndToEndTestCase</code> already include this trait so you need only include the annotation as shown above.</p>
+</section>
+
+<div class="search__results">
+  <div id="tipue_search_content"></div>
+</div>
+
+<footer>
+  <div class="pager"><a href="e2e--end-to-end.html" class="prev e2e--end-to-end">&laquo;End to End Testing</a><a href="index.html" class="index pager__book-title">Drupal Test</a><a href="e2e--interactive.html" class="next interactive">Interactive Tests&raquo;</a></div>  
+  <div id="footer-legaleeze">
+    <p class="legaleeze center">Version: 0.5.2 &bull; Last Updated: Fri, 19 Apr 2019 13:09:59 -0700</p>
+  </div>
+</footer>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  <script src="search/tipuesearch_content.js"></script>
+  <script src="search/tipuesearch_set.js"></script>
+  <script src="search/tipuesearch.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      $('#tipue_search_input').tipuesearch()
+    })
+  </script>
+<script src="js/core.js"></script>
+</body>
+</html>
+
