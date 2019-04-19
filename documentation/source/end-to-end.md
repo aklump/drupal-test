@@ -61,8 +61,6 @@ This should be as simple as downloading a file, and starting a Java process on t
           public function testLoggedInUserCanAccessUserSettingsPage() {
             ...
 
-#
-
 ## Using Mink's `WebAssert`
 
 1. All of the methods of `\Behat\Mink\WebAssert` are available in your test methods through the use of `::assert()`, e.g.
@@ -79,3 +77,55 @@ This should be as simple as downloading a file, and starting a Java process on t
 
         $this->assertElementExists('.t-trigger-account-dropdown');
         $this->assert()->elementExists('css', '.t-trigger-account-dropdown');
+
+## Pausing a Test for Inspection
+
+It can be handy to pause a test during exception to study the page or DOM.  Call `::debugger` at the point in your test class method that you want to pause execution.  When the test reaches that point you will see a play button appear in the upper right of the screen.  The test runner is waiting for you to click that button.  Click it and the test will continue.
+
+This `::debugger` method is intended for use during development of a test and to be discarded once the test is complete.  Here is an example:
+    
+      public function testShowingUseOfDebugger() {
+        $el = $this->loadPageByUrl('/user/register')
+          ->getDomElements([
+            '.t-field_account_type',
+          ]);
+        $this->assertTrue($el['.t-field_account_type']->isVisible());
+        $this->debugger();
+        ...
+      }
+
+## Interactive Tests
+
+Imagine you're testing a system that calls your user with an access code.  How do you assert such a thing?  You can use the `assertManual` method, which will display a manual assertion to be affirmed by the test observer by clicking either pass or fail.  The code for this is incredibly simple:
+
+      /**
+       * @interactive
+       */
+      public function testPhoneReceivedAccessCode() {
+        $this->assertManual("Assert the website calls your phone with the access code: 66347.");
+      }
+      
+When this method is called here's what the test observer will see in their browser, for the test to continue they will have to click one of the two buttons.
+
+![Interactive Popup](images/interactive-test-1.jpg)      
+
+## Adding Instructions
+
+You could rewrite the above code with some instructions to the user like this:
+
+      /**
+       * @interactive
+       */
+      public function testPhoneReceivedAccessCode() {
+        $this->assertManual("Assert the website calls your phone with the access code: 66347.", [
+          "Turn on your phone.",
+          "When it rings, answer it.",
+          "Write down the access code you hear.",
+        ]);
+      }
+
+And it will render like so.
+
+![Interactive Popup with Steps](images/interactive-test-2.jpg)  
+
+* In the same way that you should mark methods or classes `@destructive`, likewise do so with `@interactive`.  There is currently no implementation but that will come in time. 
