@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>Interactive Tests</title>
+  <link href="search/tipuesearch.css" rel="stylesheet">
+  <link href="style.css" rel="stylesheet">
+</head>
+
+<body class="page--interactive">
+<header>
+  <div class="pager"><a href="e2e--destructive.html" class="prev e2e--destructive">&laquo;Destructive Tests</a><a href="index.html" class="index pager__book-title">Drupal Test</a><a href="e2e--email_testing.html" class="next testing-email">Email Testing&raquo;</a></div></header>
+<section class="sub-header">
+  <div class="breadcrumbs"><a href="index.html">Index</a>
+         &raquo
+                        <a href="e2e--end-to-end.html">End to End Testing</a>
+         &raquo
+      </div>      <div class="search__wrapper">
+  <form action="search--results.html">
+    <input type="text" class="search-input" name="q" id="tipue_search_input" autocomplete="off" required>
+  </form>
+</div>
+  </section>
+
+
+<h1>Interactive Tests</h1>
+
+<section>
+
+<p>Imagine you're testing a system that calls your user with an access code.  How do you assert such a thing?  You can use the <code>assertManual</code> method, which will display a manual assertion to be affirmed by the test observer by clicking either pass or fail.  The code for this is incredibly simple:</p>
+
+<pre><code>  /**
+   * @interactive
+   */
+  public function testPhoneReceivedAccessCode() {
+    $this-&gt;assertManual("Assert the website calls your phone with the access code: 66347.");
+  }
+</code></pre>
+
+<p>When this method is called here's what the test observer will see in their browser, for the test to continue they will have to click one of the two buttons.</p>
+
+<p><img src="images/interactive-test-1.jpg" alt="Interactive Popup" /></p>
+
+<h2>Adding Instructions</h2>
+
+<p>You could rewrite the above code with some instructions to the user like the following. Be aware that <strong>markdown is supported</strong> for the arguments passed to <em>::assertManual</em>.  This is very much related to <a href="m--manual.html">manual tests</a>, in fact it's a hybridization of end to end and manual tests.</p>
+
+<pre><code>  /**
+   * @interactive
+   */
+  public function testPhoneReceivedAccessCode() {
+    $this-&gt;assertManual("Assert the website calls your phone with the access code: 66347.", [
+      "Turn on your phone.",
+      "When it rings, answer it.",
+      "Write down the access code you hear.",
+    ]);
+  }
+</code></pre>
+
+<p>And it will render like so.</p>
+
+<p><img src="images/interactive-test-2.jpg" alt="Interactive Popup with Steps" /></p>
+
+<h2>Test Configuration</h2>
+
+<ul>
+<li>Mark these classes or methods with <code>@interactive</code></li>
+<li>To run these tests, the environment variable <code>TEST_INTERACTIVE=1</code> must be set.</li>
+</ul>
+</section>
+
+<div class="search__results">
+  <div id="tipue_search_content"></div>
+</div>
+
+<footer>
+  <div class="pager"><a href="e2e--destructive.html" class="prev e2e--destructive">&laquo;Destructive Tests</a><a href="index.html" class="index pager__book-title">Drupal Test</a><a href="e2e--email_testing.html" class="next testing-email">Email Testing&raquo;</a></div>  
+  <div id="footer-legaleeze">
+    <p class="legaleeze center">Version: 0.5.2 &bull; Last Updated: Fri, 19 Apr 2019 13:10:00 -0700</p>
+  </div>
+</footer>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  <script src="search/tipuesearch_content.js"></script>
+  <script src="search/tipuesearch_set.js"></script>
+  <script src="search/tipuesearch.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      $('#tipue_search_input').tipuesearch()
+    })
+  </script>
+<script src="js/core.js"></script>
+</body>
+</html>
+
