@@ -41,9 +41,27 @@
 
 <p><img src="images/interactive-test-1.jpg" alt="Interactive Popup" /></p>
 
+<h2>Multiple Assertions</h2>
+
+<p>If you want you may have more than one assertion by sending an array instead:</p>
+
+<pre><code>  /**
+   * @interactive
+   */
+  public function testPhoneReceivedAccessCode2() {
+    $this-&gt;assertManual([
+      'Assert the website calls your phone',
+      'Assert the phone reads the access code: 66347.',
+      'Assert robot repeats the number',
+    ]);
+  }
+</code></pre>
+
+<p><img src="images/interactive-test-2.jpg" alt="Interactive Popup with Steps" /></p>
+
 <h2>Adding Instructions</h2>
 
-<p>You could rewrite the above code with some instructions to the user like the following. Be aware that <strong>markdown is supported</strong> for the arguments passed to <em>::assertManual</em>.  This is very much related to <a href="m--manual.html">manual tests</a>, in fact it's a hybridization of end to end and manual tests.</p>
+<p>You could rewrite the above code with some instructions to the user like the following. Take note that <strong>markdown is supported</strong> for the arguments passed to <em>::assertManual</em>.  This is very much related to <a href="m--manual.html">manual tests</a>, in fact it's a hybridization of end to end and manual tests.</p>
 
 <pre><code>  /**
    * @interactive
@@ -59,7 +77,7 @@
 
 <p>And it will render like so.</p>
 
-<p><img src="images/interactive-test-2.jpg" alt="Interactive Popup with Steps" /></p>
+<p><img src="images/interactive-test-3.jpg" alt="Interactive Popup with Steps" /></p>
 
 <h2>Test Configuration</h2>
 
@@ -76,7 +94,7 @@
 <footer>
   <div class="pager"><a href="e2e--destructive.html" class="prev e2e--destructive">&laquo;Destructive Tests</a><a href="index.html" class="index pager__book-title">Drupal Test</a><a href="e2e--email_testing.html" class="next testing-email">Email Testing&raquo;</a></div>  
   <div id="footer-legaleeze">
-    <p class="legaleeze center">Version: 0.5.2 &bull; Last Updated: Fri, 19 Apr 2019 13:10:00 -0700</p>
+    <p class="legaleeze center">Version: 0.5.3 &bull; Last Updated: Fri, 19 Apr 2019 17:17:56 -0700</p>
   </div>
 </footer>
 

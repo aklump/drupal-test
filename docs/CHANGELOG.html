@@ -25,7 +25,13 @@
 
 <h1>CHANGELOG</h1>
 
-<section><h2>0.5.0</h2>
+<section><h2>0.5.3</h2>
+
+<ul>
+<li>Signature changed for <code>\AKlump\DrupalTest\BrowserTestCase::el()</code>.  You must pass <code>false</code> as the second argument to avoid an exception when <code>$css_selector</code> finds more than one node.</li>
+</ul>
+
+<h2>0.5.0</h2>
 
 <ul>
 <li>This release marks the movement toward making this project compatible with Drupal 8 as well.</li>
@@ -96,7 +102,7 @@ $el = $this-&gt;getDomElements([
 <footer>
   <div class="pager"><a href="README.html" class="prev README">&laquo;Drupal Test</a><a href="index.html" class="index pager__book-title">Drupal Test</a><a href="extending.html" class="next extending">Extending Classes&raquo;</a></div>  
   <div id="footer-legaleeze">
-    <p class="legaleeze center">Version: 0.5.2 &bull; Last Updated: Fri, 19 Apr 2019 13:09:57 -0700</p>
+    <p class="legaleeze center">Version: 0.5.3 &bull; Last Updated: Fri, 19 Apr 2019 17:17:53 -0700</p>
   </div>
 </footer>
 
