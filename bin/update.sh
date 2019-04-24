@@ -19,6 +19,9 @@ if [[ "$(basename $app)" != "tests" ]] || [[ ! -f "$app/composer.json" ]]; then
   echo && echo "You must run the update from inside the \"tests\" folder" && exit 1
 fi
 
+# Abort if src/DrupalTest has been symlinked, this is because of my development workflow.
+[[ -L src/DrupalTest ]] && echo "" && echo "!!! src/DrupalTest may not be a symlink" && echo "" && exit 1
+
 # Clone the latest version.
 cd $tempdir
 git clone https://github.com/aklump/drupal-test.git tests
