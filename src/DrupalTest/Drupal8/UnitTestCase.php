@@ -15,11 +15,4 @@ abstract class UnitTestCase extends DrupalUnitTestCase {
 
   use EasyMockTrait;
 
-  /**
-   * {@inheritdoc}
-   */
-  public function setUp() {
-    $this->easyMockSetUp();
-  }
-
 }
