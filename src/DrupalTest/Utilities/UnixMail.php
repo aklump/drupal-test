@@ -80,4 +80,26 @@ final class UnixMail implements EmailHandlerInterface {
     return $unread_mail;
   }
 
+  /**
+   * {@inheritdoc}
+   *
+   * @link https://www.question-defense.com/2009/06/03/delete-all-mail-using-the-mail-command-from-the-cli-of-a-linux-server
+   */
+  public function markAllRead() {
+    try {
+      // First check if we have mail.
+      Bash::exec("mail -H");
+      $has_mail = TRUE;
+    }
+    catch (\Exception $exception) {
+      $has_mail = FALSE;
+    }
+    if ($has_mail) {
+      // Then mark it all as read.
+      Bash::exec("echo 'p *' | mail -N");
+    }
+
+    return $this;
+  }
+
 }

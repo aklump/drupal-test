@@ -34,4 +34,15 @@ interface EmailHandlerInterface {
    */
   public function getInboxAddress();
 
+  /**
+   * Mark all messages in the inbox as read.
+   *
+   * Use this, say at the beginning of a test class, to make sure you begin
+   * with a clean inbox, so that ::readMail will only return new emails.
+   *
+   * @return \AKlump\DrupalTest\Utilities\EmailHandlerInterface
+   *   Self for chaining.
+   */
+  public function markAllRead();
+
 }

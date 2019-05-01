@@ -44,7 +44,7 @@ abstract class EndToEndTestCase extends BrowserTestCase {
    *
    * @var \AKlump\DrupalTest\Utilities\EmailHandlerInterface
    */
-  protected $emailHandler;
+  private static $emailHandler;
 
   /**
    * Holds the response of the last remote call.
@@ -84,6 +84,9 @@ abstract class EndToEndTestCase extends BrowserTestCase {
    */
   private $observerButtonClasses = [];
 
+  /**
+   * {@inheritdoc}
+   */
   public function assertPreConditions() {
     $this->destructiveAssertPreConditions();
     $this->interactiveAssertPreConditions();
@@ -171,16 +174,28 @@ abstract class EndToEndTestCase extends BrowserTestCase {
   /**
    * Set the Email Handler for retrieving email.
    *
+   * This method automatically calls clearAllNew() and should be called from
+   * ::setUpBeforeClass() on classes that will test for email.
+   *
    * @param \AKlump\DrupalTest\Utilities\EmailHandlerInterface $handler
    *   The handler instance.
-   *
-   * @return \AKlump\DrupalTest\EndToEndTestCase
-   *   Self for chaining.
    */
-  public function setEmailHandler(EmailHandlerInterface $handler) {
-    $this->emailHandler = $handler;
+  public static function setEmailHandler(EmailHandlerInterface $handler) {
+    self::$emailHandler = $handler->markAllRead();
+  }
 
-    return $this;
+  /**
+   * Return the current email handler.
+   *
+   * @return \AKlump\DrupalTest\Utilities\EmailHandlerInterface
+   *   The current handler.
+   */
+  public static function getEmailHandler() {
+    if (!self::$emailHandler) {
+      throw new \RuntimeException("You must call ::setEmailHandler() first.");
+    }
+
+    return self::$emailHandler;
   }
 
   /**
@@ -202,13 +217,10 @@ abstract class EndToEndTestCase extends BrowserTestCase {
    *   Each element is an instance of \PhpMimeMailParser\Parser.
    */
   public function waitForEmail($expected_count = 1, $timeout = NULL) {
-    if (empty($this->emailHandler)) {
-      throw new \RuntimeException("You must first call ::setEmailHandler() to use this method.");
-    }
     $emails = [];
-    $to = $this->emailHandler->getInboxAddress();
+    $to = $this->getEmailHandler()->getInboxAddress();
     $this->waitFor(function () use (&$emails, $expected_count) {
-      $emails = array_merge($emails, $this->emailHandler->readMail());
+      $emails = array_merge($emails, $this->getEmailHandler()->readMail());
 
       return count($emails) >= $expected_count;
     }, "$expected_count email(s) received by $to.", $timeout);
