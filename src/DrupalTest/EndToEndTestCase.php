@@ -361,9 +361,10 @@ abstract class EndToEndTestCase extends BrowserTestCase {
    *   clicked, at which time the test will continue.
    *
    * @param string $css_selector
-   *   The CSS selector of the exiting DOM element to attach our UI button to.
+   *   The CSS selector of the existing DOM element to attach our UI button to.
    *
-   * @return ObserverTrait
+   * @return \AKlump\DrupalTest\EndToEndTestCase
+   *   Self for chaining.
    */
   public function waitForObserver($css_selector) {
     if ($element = $this->requireElement($css_selector)) {
@@ -433,36 +434,42 @@ abstract class EndToEndTestCase extends BrowserTestCase {
   }
 
   /**
+   * Given a CSS selector return the JS snippet to get that item.
+   *
+   * @param string $css_selector
+   *   The CSS selector, e.g. '.arrow'.
+   *
+   * @return string
+   *   The JS snippet to use.
+   */
+  protected function getJavascriptSelectorCode($css_selector) {
+    $selector = substr($css_selector, 1);
+    $type = substr($css_selector, 0, 1);
+    if ($type === '.') {
+      return "document.getElementsByClassName('$selector')[0]";
+    }
+    elseif ($type === '#') {
+      return "document.getElementsById('$selector')";
+    }
+
+    return "document.getElementsByTagName('$css_selector')[0]";
+
+  }
+
+  /**
    * Inject our UI element into the DOM relative to $css_selector.
    *
    * @param string $css_selector
    *   The element to attach our observation UI to.
    */
   protected function injectObserverUiIntoDom($css_selector) {
-    $type = substr($css_selector, 0, 1);
-    $selector = substr($css_selector, 1);
     $button_title = $this->getObserverButtonTitle();
-    switch ($type) {
-      case '.':
-        $selector = "document.getElementsByClassName('$selector')[0]";
-        break;
-
-      case '#':
-        $selector = "document.getElementsById('$selector')";
-        break;
-
-      default:
-        $selector = "document.getElementsByTagName('$css_selector')[0]";
-        break;
-
-    }
-
     $this->injectCssStyles($this->getObserverUiCssStyles());
-
     $class_name = $this->observerButtonClasses;
     array_unshift($class_name, 'observe__next');
     $class_name = implode(' ', $class_name);
-
+    $selector = $this->getJavascriptSelectorCode($css_selector);
+    $next_selector = $this->getJavascriptSelectorCode('.observe__next');
 
     // Create a "continue" button and then wait for it to be removed from the DOM.
     $js = "(function(){ 
@@ -474,12 +481,22 @@ abstract class EndToEndTestCase extends BrowserTestCase {
     this.remove();
   }, false);
   el.after(pointer);
-})();";
+  
+  function getOffsetTop(element) {
+    // Starting value is the offset from the top edge the button will appear.
+    var offsetTop = -20;
+    while(element) {
+      offsetTop += element.offsetTop;
+      element = element.offsetParent;
+    }
+    return offsetTop;
+  }
 
-    $this
-      ->getSession()
-      ->getDriver()
-      ->evaluateScript(trim($js));
+  // Scroll to make sure the button is visible.
+  var y = getOffsetTop(${next_selector});
+  document.documentElement.scrollTop = document.body.scrollTop = y;
+})();";
+    $this->getSession()->executeScript($js);
   }
 
   /**
