@@ -323,7 +323,9 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
       ]);
     }
     list($method, $as) = explode(':', $method) + [NULL, NULL];
-    $value = $generator->{$method}();
+    $args = func_get_args();
+    array_shift($args);
+    $value = call_user_func_array([$generator, $method], $args);
     $as = $as ? $as : $method;
     $this->store($as, $value);
 
