@@ -374,12 +374,51 @@ abstract class EndToEndTestCase extends BrowserTestCase {
       if ($this->observerIsObserving) {
         $this->injectObserverUiIntoDom($css_selector);
 
-        // When the button is clicked it is removed and the waitFor will continue.
+        // When button is clicked it is removed and the waitFor will continue.
         $this->waitFor(function () {
           return !$this->el('.observe__next');
         }, 'Pause while demo is explained', 0);
       }
     }
+
+    return $this;
+  }
+
+  public function waitForObserverPopup($markup) {
+    if (!$this->observerIsObserving) {
+      return;
+    }
+    $this->injectCssStyles($this->getPopupCssStyles());
+    $js = "(function(){ 
+  var popup = document.createElement('div');
+  popup.className = 'popup';
+  
+  var inner = document.createElement('div');
+  inner.className = 'popup__inner';
+  popup.appendChild(inner);
+  
+  var assertion = document.createElement('div');
+  assertion.innerHTML = '{$markup}';
+  inner.appendChild(assertion);
+  
+  var popupClose = document.createElement('div');
+  popupClose.innerHTML = '&times;';
+  popupClose.className = 'popup__close';
+  popupClose.addEventListener('click', function() {
+    popup.remove();
+  }, false);
+  inner.appendChild(popupClose);
+  
+  document.getElementsByTagName('body')[0].appendChild(popup);
+})();";
+    $this
+      ->getSession()
+      ->executeScript(trim($js));
+
+    $result = NULL;
+    $this->waitFor(function () use (&$result) {
+      return !$this->el('.popup__close');
+    }, 'Wait for popup to close.', 0);
 
     return $this;
   }
@@ -499,7 +538,9 @@ abstract class EndToEndTestCase extends BrowserTestCase {
   var y = getOffsetTop(${next_selector});
   document.documentElement.scrollTop = document.body.scrollTop = y;
 })();";
-    $this->getSession()->executeScript($js);
+    $this
+      ->getSession()
+      ->executeScript(trim($js));
   }
 
   /**
@@ -579,19 +620,18 @@ CSS;
 EOD;
     $this
       ->getSession()
-      ->getDriver()
-      ->evaluateScript($js);
+      ->executeScript(trim($js));
   }
 
   /**
-   * Get manual assertion CSS.
+   * Get popup CSS.
    *
    * @return string
-   *   The CSS to use for manual assertions.
+   *   The CSS to use for popup overlays.
    */
-  protected function getManualAssertUICssStyles() {
+  protected function getPopupCssStyles() {
     return /** @lang CSS */ <<<CSS
-.manual-test {
+.popup {
     z-index: 10000;
     position: absolute;
     display: flex;
@@ -606,11 +646,10 @@ EOD;
     background: rgba(0, 20, 70, .75)
 }
 
-.manual-test a {
-    text-decoration: underline;
-}
-
-.manual-test > div {
+.popup__inner {
+    font-size: 1.25rem;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    position: relative;
     width: 65%;
     height: auto;
     background: #fff;
@@ -619,6 +658,47 @@ EOD;
     -webkit-box-shadow: 0px 0px 12px -1px rgba(10,10,10,0.65);
     -moz-box-shadow: 0px 0px 12px -1px rgba(10,10,10,0.65);
     box-shadow: 0px 0px 12px -1px rgba(10,10,10,0.65);
+}
+
+.popup__inner h1 {
+    font-size: 1.8em;
+}
+
+.popup__inner h2 {
+    font-size: 1.4em;
+}
+
+.popup__inner :first-child {
+  margin-top: 0;
+}
+.popup__innner :last-child {
+  margin-bottom: 0;
+}
+
+.popup__close {
+    text-align: center;
+    line-height: 48px;
+    width: 48px;
+    height: 48px;
+    font-size: 32px;
+    cursor: pointer;
+    top: 0;
+    right: 0;
+    position: absolute;
+}
+CSS;
+  }
+
+  /**
+   * Get manual assertion CSS.
+   *
+   * @return string
+   *   The CSS to use for manual assertions.
+   */
+  protected function getManualAssertUICssStyles() {
+    return /** @lang CSS */ <<<CSS
+.manual-test a {
+    text-decoration: underline;
 }
 
 .manual-test__steps {
@@ -692,7 +772,7 @@ CSS;
   /**
    * Make a manual assertion.
    *
-   * A manual assertion is a modal that will appear and ask the observer to
+   * A manual assertion is a popup that will appear and ask the observer to
    * click pass or fail based on certain criteria.  You may ask the observer to
    * take steps by using $prerequisite_steps, or you may just ask them to
    * evaluate $assertion.  The test will hang until the user makes a choice.
@@ -722,13 +802,15 @@ CSS;
 
     $manualTestMarkup = implode('', $manualTestMarkup);
 
+    $this->injectCssStyles($this->getPopupCssStyles());
     $this->injectCssStyles($this->getManualAssertUICssStyles());
 
     $js = "(function(){ 
   var manualTest = document.createElement('div');
-  manualTest.className = 'manual-test';
+  manualTest.className = 'popup manual-test';
   
   var inner = document.createElement('div');
+  inner.className = 'popup__inner';
   manualTest.appendChild(inner);
   
   var assertion = document.createElement('div');
@@ -760,8 +842,7 @@ CSS;
 
     $this
       ->getSession()
-      ->getDriver()
-      ->evaluateScript(trim($js));
+      ->executeScript(trim($js));
 
     // When the user clicks a button it will be removed from the DOM by JS, here
     // we wait for that and recognize which button is removed as the answer to
@@ -775,7 +856,7 @@ CSS;
         $result = TRUE;
       }
 
-      // Once a choice has been made, then remove the modal overlay.
+      // Once a choice has been made, then remove the popup overlay.
       if ($result !== NULL) {
         $js = "(function(){
   var test = document.getElementsByClassName('manual-test');
@@ -784,15 +865,14 @@ CSS;
 
         $this
           ->getSession()
-          ->getDriver()
-          ->evaluateScript(trim($js));
+          ->executeScript(trim($js));
       }
 
       return is_null($result) ? FALSE : TRUE;
 
     }, 'Wait for manual assertion.', 0);
 
-    $this->assertTrue($result, $assertion);
+    $this->assertTrue($result, strip_tags(implode('; ', $assertion)));
   }
 
 }
