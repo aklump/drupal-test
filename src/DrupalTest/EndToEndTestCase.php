@@ -338,11 +338,14 @@ abstract class EndToEndTestCase extends BrowserTestCase {
    * the previous state.  It also changes the button title to Debugger.
    */
   public function debugger() {
-    $stash = [$this->observerButton, $this->observerIsObserving];
+    $stash = [
+      $this->observerButton,
+      $this->observerButtonClasses,
+    ];
     // https://unicode.org/emoji/charts/full-emoji-list.html#25b6.
     $this->beginObservation('▶', ['is-debug-breakpoint']);
     $this->waitForObserver('body');
-    list($this->observerButton, $this->observerIsObserving) = $stash;
+    $this->beginObservation($stash[0], $stash[1]);
   }
 
   /**
