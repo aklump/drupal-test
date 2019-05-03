@@ -59,3 +59,7 @@ Using the `\AKlump\DrupalTest\EndToEndTestCase` tests, you can:
 ## Sending Test Emails with Bash
 
     echo "MESSAGE" | mail -s "SUBJECT" "USER@HOST"
+
+## Observation Mode: View Email Contents
+
+When implementing `waitForEmail` if observation mode is enabled you will see the emails as `observerPopups`.

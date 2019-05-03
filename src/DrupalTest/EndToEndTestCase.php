@@ -5,6 +5,7 @@ namespace AKlump\DrupalTest;
 use AKlump\DrupalTest\Utilities\DestructiveTrait;
 use AKlump\DrupalTest\Utilities\EmailHandlerInterface;
 use AKlump\DrupalTest\Utilities\InteractiveTrait;
+use AKlump\DrupalTest\Utilities\Popup;
 use AKlump\DrupalTest\Utilities\WebAssertTrait;
 use GuzzleHttp\Client;
 
@@ -205,6 +206,10 @@ abstract class EndToEndTestCase extends BrowserTestCase {
    * $expected_count of emails are received, or more emails are received than
    * $expected_count.
    *
+   * When running in observation mode, the emails will appear as popups.
+   *
+   * Illustration credit: Vecteezy!
+   *
    * @param int $expected_count
    *   The number of emails expected.  Defaults to 1.  Set this to a higher
    *   number to wait for that many emails to be received in the handler's
@@ -220,7 +225,19 @@ abstract class EndToEndTestCase extends BrowserTestCase {
     $emails = [];
     $to = $this->getEmailHandler()->getInboxAddress();
     $this->waitFor(function () use (&$emails, $expected_count) {
-      $emails = array_merge($emails, $this->getEmailHandler()->readMail());
+      $new = $this->getEmailHandler()->readMail();
+      if ($this->observerIsObserving) {
+        foreach ($new as $email) {
+          $body = $email->getMessageBody('text');
+          $this->waitForObserverPopup(Popup::create($body)
+            ->setTitle('Received by: ' . $email->getHeader('to'))
+            ->setSubTitle('Subject: ' . $email->getHeader('subject'))
+            // https://www.vecteezy.com/vector-art/166803-contact-me-icon-vector-pack
+            ->setIcon('<svg width="203" height="219" viewBox="0 0 203 219" xmlns="http://www.w3.org/2000/svg"><title>Slice 1</title><g fill="none" fill-rule="evenodd"><path d="M183.7 218.7H18.4C8.3 218.7.1 210.5.1 200.4v-107c0-7.9 6.4-14.3 14.3-14.3h173.4c7.9 0 14.3 6.4 14.3 14.3v107c-.1 10.1-8.3 18.3-18.4 18.3z" fill="#383754" fill-rule="nonzero"/><path d="M7 73.4L88 4.8c7.5-6.4 18.6-6.4 26.1 0l81 68.6c4.3 3.7 6.8 9.1 6.8 14.8L101 166.7.1 88.2C.1 82.4 2.6 77 7 73.4z" fill="#FCB341" fill-rule="nonzero"/><path d="M3.9 211.6l85.5-71c6.8-5.6 16.6-5.6 23.3 0l85.5 71s-4.6 7.1-14.5 7.1H18.4s-9.6.8-14.5-7.1z" fill="#45466D" fill-rule="nonzero"/><text fill="#FFF" font-family="Helvetica" font-size="63.665"><tspan x="67.787" y="96.33">@</tspan></text></g></svg>')
+          );
+        }
+      }
+      $emails = array_merge($emails, $new);
 
       return count($emails) >= $expected_count;
     }, "$expected_count email(s) received by $to.", $timeout);
@@ -384,22 +401,36 @@ abstract class EndToEndTestCase extends BrowserTestCase {
     return $this;
   }
 
-  public function waitForObserverPopup($markup) {
+  /**
+   * Display a popup and wait for user to close it.
+   *
+   * @param string|\AKlump\DrupalTest\Utilities\Popup $popup
+   *   The contents of the popup.
+   *
+   * @return \AKlump\DrupalTest\EndToEndTestCase
+   *   Self for chaining.
+   *
+   * @throws \Behat\Mink\Exception\DriverException
+   * @throws \Behat\Mink\Exception\UnsupportedDriverActionException
+   */
+  public function waitForObserverPopup($popup) {
     if (!$this->observerIsObserving) {
-      return;
+      return $this;
+    }
+    if (is_string($popup)) {
+      $popup = Popup::create($popup);
     }
     $this->injectCssStyles($this->getPopupCssStyles());
-    $js = "(function(){ 
+    $container_markup = str_replace('"', '\"', $popup->getContainerInnerHtml());
+    $js = <<<JS
+(function(){ 
   var popup = document.createElement('div');
   popup.className = 'popup';
   
-  var inner = document.createElement('div');
-  inner.className = 'popup__inner';
-  popup.appendChild(inner);
-  
-  var assertion = document.createElement('div');
-  assertion.innerHTML = '{$markup}';
-  inner.appendChild(assertion);
+  var container = document.createElement('div');
+  container.className = 'popup__container';
+  container.innerHTML = "${container_markup}";
+  popup.appendChild(container);
   
   var popupClose = document.createElement('div');
   popupClose.innerHTML = '&times;';
@@ -407,10 +438,11 @@ abstract class EndToEndTestCase extends BrowserTestCase {
   popupClose.addEventListener('click', function() {
     popup.remove();
   }, false);
-  inner.appendChild(popupClose);
+  container.appendChild(popupClose);
   
   document.getElementsByTagName('body')[0].appendChild(popup);
-})();";
+})();
+JS;
     $this
       ->getSession()
       ->executeScript(trim($js));
@@ -646,8 +678,8 @@ EOD;
     background: rgba(0, 20, 70, .75)
 }
 
-.popup__inner {
-    font-size: 1.25rem;
+.popup__container {
+    font-size: 1.125rem;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", Helvetica, Arial, sans-serif;
     position: relative;
     width: 65%;
@@ -658,20 +690,30 @@ EOD;
     -webkit-box-shadow: 0px 0px 12px -1px rgba(10,10,10,0.65);
     -moz-box-shadow: 0px 0px 12px -1px rgba(10,10,10,0.65);
     box-shadow: 0px 0px 12px -1px rgba(10,10,10,0.65);
+    height: 50%;
+    overflow: visible;
+    position: relative;
 }
 
-.popup__inner h1 {
-    font-size: 1.8em;
+.popup__inner {
+    height: 100%;
+    overflow: auto;
 }
 
-.popup__inner h2 {
-    font-size: 1.4em;
+.popup__title {
+    font-size: 1.6em;
+    margin-top: 0;
 }
 
-.popup__inner :first-child {
+.popup__subtitle {
+    font-size: 1.2em;
+    margin-top: 0;
+}
+
+.popup__container :first-child {
   margin-top: 0;
 }
-.popup__innner :last-child {
+.popup__container :last-child {
   margin-bottom: 0;
 }
 
@@ -685,6 +727,19 @@ EOD;
     top: 0;
     right: 0;
     position: absolute;
+}
+
+.popup__icon {
+    position: absolute;
+    top: 0;
+    width: 100px;
+    left: 50%;
+    transform: translate(-50%, -70%);
+}
+
+.popup__icon > svg {
+    width: 100%;
+    height: auto;
 }
 CSS;
   }
