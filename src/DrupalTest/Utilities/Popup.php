@@ -15,6 +15,8 @@ final class Popup {
 
   private $icon;
 
+  private $columns = 1;
+
   /**
    * Factory method to create a new instance.
    *
@@ -30,6 +32,12 @@ final class Popup {
     return $popup->setBody($body);
   }
 
+  public function setTwoCol() {
+    $this->columns = 2;
+
+    return $this;
+  }
+
   /**
    * Get the inner HTML for .popup__container.
    *
@@ -38,7 +46,13 @@ final class Popup {
    */
   public function getContainerInnerHtml() {
     $inner_html = [];
-    $inner_html[] = '<div class="popup__inner">';
+    $class = '';
+
+    // Make a smart layout for some configurations.
+    if ($this->title && !$this->subtitle && strlen($this->body) < 1000) {
+      $class = ' layout-two-col';
+    }
+    $inner_html[] = '<div class="popup__inner' . $class . '">';
     if ($this->title) {
       $inner_html[] = '<h1 class="popup__title">' . $this->title . '</h1>';
     }

@@ -404,7 +404,7 @@ abstract class EndToEndTestCase extends BrowserTestCase {
   /**
    * Display a popup and wait for user to close it.
    *
-   * @param string|\AKlump\DrupalTest\Utilities\Popup $popup
+   * @param \AKlump\DrupalTest\Utilities\Popup $popup
    *   The contents of the popup.
    *
    * @return \AKlump\DrupalTest\EndToEndTestCase
@@ -413,12 +413,9 @@ abstract class EndToEndTestCase extends BrowserTestCase {
    * @throws \Behat\Mink\Exception\DriverException
    * @throws \Behat\Mink\Exception\UnsupportedDriverActionException
    */
-  public function waitForObserverPopup($popup) {
+  public function waitForObserverPopup(Popup $popup) {
     if (!$this->observerIsObserving) {
       return $this;
-    }
-    if (is_string($popup)) {
-      $popup = Popup::create($popup);
     }
     $this->injectCssStyles($this->getPopupCssStyles());
     $container_markup = str_replace('"', '\"', $popup->getContainerInnerHtml());
@@ -684,7 +681,7 @@ EOD;
     position: relative;
     width: 65%;
     height: auto;
-    background: #fff;
+    background: #fffffa;
     color: #333;
     padding: 2em;
     -webkit-box-shadow: 0px 0px 12px -1px rgba(10,10,10,0.65);
@@ -700,12 +697,24 @@ EOD;
     overflow: auto;
 }
 
+.layout-two-col {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.layout-two-col .popup__body {
+    margin-left: 2em;
+}
+
 .popup__title {
+    font-weight: bold;
     font-size: 1.6em;
     margin-top: 0;
 }
 
 .popup__subtitle {
+    font-weight: bold;
     font-size: 1.2em;
     margin-top: 0;
 }
