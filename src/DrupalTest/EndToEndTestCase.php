@@ -233,7 +233,7 @@ abstract class EndToEndTestCase extends BrowserTestCase {
             ->setTitle('Received by: ' . $email->getHeader('to'))
             ->setSubTitle('Subject: ' . $email->getHeader('subject'))
             // https://www.vecteezy.com/vector-art/166803-contact-me-icon-vector-pack
-            ->setIcon('<svg width="203" height="219" viewBox="0 0 203 219" xmlns="http://www.w3.org/2000/svg"><title>Slice 1</title><g fill="none" fill-rule="evenodd"><path d="M183.7 218.7H18.4C8.3 218.7.1 210.5.1 200.4v-107c0-7.9 6.4-14.3 14.3-14.3h173.4c7.9 0 14.3 6.4 14.3 14.3v107c-.1 10.1-8.3 18.3-18.4 18.3z" fill="#383754" fill-rule="nonzero"/><path d="M7 73.4L88 4.8c7.5-6.4 18.6-6.4 26.1 0l81 68.6c4.3 3.7 6.8 9.1 6.8 14.8L101 166.7.1 88.2C.1 82.4 2.6 77 7 73.4z" fill="#FCB341" fill-rule="nonzero"/><path d="M3.9 211.6l85.5-71c6.8-5.6 16.6-5.6 23.3 0l85.5 71s-4.6 7.1-14.5 7.1H18.4s-9.6.8-14.5-7.1z" fill="#45466D" fill-rule="nonzero"/><text fill="#FFF" font-family="Helvetica" font-size="63.665"><tspan x="67.787" y="96.33">@</tspan></text></g></svg>')
+            ->setIcon('<svg width="110" height="119" viewBox="0 0 110 119" xmlns="http://www.w3.org/2000/svg"><title>envelope</title><g fill="none" fill-rule="evenodd"><path d="M99.98 119H9.965C4.465 119 0 114.536 0 109.037V50.785C0 46.485 3.485 43 7.787 43h94.426A7.784 7.784 0 0 1 110 50.785v58.252c-.054 5.499-4.52 9.963-10.02 9.963z" fill="#383754" fill-rule="nonzero"/><path d="M3.761 40.068L47.914 2.62c4.088-3.493 10.139-3.493 14.227 0l44.152 37.448a10.67 10.67 0 0 1 3.707 8.08L55 91 0 48.148c0-3.167 1.363-6.114 3.761-8.08z" fill="#FCB341" fill-rule="nonzero"/><path d="M2 115.107l46.644-38.811c3.71-3.061 9.056-3.061 12.712 0L108 115.106s-2.51 3.882-7.91 3.882H9.91s-5.237.437-7.91-3.881z" fill="#45466D" fill-rule="nonzero"/><text fill="#FFF" font-family="Helvetica" font-size="40"><tspan x="34" y="58">@</tspan></text></g></svg>')
           );
         }
       }
@@ -672,7 +672,7 @@ EOD;
     bottom: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 20, 70, .75)
+    background: rgba(30, 30, 40, .75)
 }
 
 .popup__container {
@@ -741,14 +741,8 @@ EOD;
 .popup__icon {
     position: absolute;
     top: 0;
-    width: 100px;
     left: 50%;
     transform: translate(-50%, -70%);
-}
-
-.popup__icon > svg {
-    width: 100%;
-    height: auto;
 }
 CSS;
   }
