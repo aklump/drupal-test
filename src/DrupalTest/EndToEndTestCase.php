@@ -5,6 +5,7 @@ namespace AKlump\DrupalTest;
 use AKlump\DrupalTest\Utilities\DestructiveTrait;
 use AKlump\DrupalTest\Utilities\EmailHandlerInterface;
 use AKlump\DrupalTest\Utilities\InteractiveTrait;
+use AKlump\DrupalTest\Utilities\Popup;
 use AKlump\DrupalTest\Utilities\WebAssertTrait;
 use GuzzleHttp\Client;
 
@@ -44,7 +45,7 @@ abstract class EndToEndTestCase extends BrowserTestCase {
    *
    * @var \AKlump\DrupalTest\Utilities\EmailHandlerInterface
    */
-  protected $emailHandler;
+  private static $emailHandler;
 
   /**
    * Holds the response of the last remote call.
@@ -84,6 +85,9 @@ abstract class EndToEndTestCase extends BrowserTestCase {
    */
   private $observerButtonClasses = [];
 
+  /**
+   * {@inheritdoc}
+   */
   public function assertPreConditions() {
     $this->destructiveAssertPreConditions();
     $this->interactiveAssertPreConditions();
@@ -171,16 +175,28 @@ abstract class EndToEndTestCase extends BrowserTestCase {
   /**
    * Set the Email Handler for retrieving email.
    *
+   * This method automatically calls clearAllNew() and should be called from
+   * ::setUpBeforeClass() on classes that will test for email.
+   *
    * @param \AKlump\DrupalTest\Utilities\EmailHandlerInterface $handler
    *   The handler instance.
-   *
-   * @return \AKlump\DrupalTest\EndToEndTestCase
-   *   Self for chaining.
    */
-  public function setEmailHandler(EmailHandlerInterface $handler) {
-    $this->emailHandler = $handler;
+  public static function setEmailHandler(EmailHandlerInterface $handler) {
+    self::$emailHandler = $handler->markAllRead();
+  }
 
-    return $this;
+  /**
+   * Return the current email handler.
+   *
+   * @return \AKlump\DrupalTest\Utilities\EmailHandlerInterface
+   *   The current handler.
+   */
+  public static function getEmailHandler() {
+    if (!self::$emailHandler) {
+      throw new \RuntimeException("You must call ::setEmailHandler() first.");
+    }
+
+    return self::$emailHandler;
   }
 
   /**
@@ -189,6 +205,10 @@ abstract class EndToEndTestCase extends BrowserTestCase {
    * This will mark a test failed if the timeout is reached before the
    * $expected_count of emails are received, or more emails are received than
    * $expected_count.
+   *
+   * When running in observation mode, the emails will appear as popups.
+   *
+   * Illustration credit: Vecteezy!
    *
    * @param int $expected_count
    *   The number of emails expected.  Defaults to 1.  Set this to a higher
@@ -202,13 +222,22 @@ abstract class EndToEndTestCase extends BrowserTestCase {
    *   Each element is an instance of \PhpMimeMailParser\Parser.
    */
   public function waitForEmail($expected_count = 1, $timeout = NULL) {
-    if (empty($this->emailHandler)) {
-      throw new \RuntimeException("You must first call ::setEmailHandler() to use this method.");
-    }
     $emails = [];
-    $to = $this->emailHandler->getInboxAddress();
+    $to = $this->getEmailHandler()->getInboxAddress();
     $this->waitFor(function () use (&$emails, $expected_count) {
-      $emails = array_merge($emails, $this->emailHandler->readMail());
+      $new = $this->getEmailHandler()->readMail();
+      if ($this->observerIsObserving) {
+        foreach ($new as $email) {
+          $body = $email->getMessageBody('text');
+          $this->waitForObserverPopup(Popup::create($body)
+            ->setTitle('Received by: ' . $email->getHeader('to'))
+            ->setSubTitle('Subject: ' . $email->getHeader('subject'))
+            // https://www.vecteezy.com/vector-art/166803-contact-me-icon-vector-pack
+            ->setIcon('<svg width="110" height="119" viewBox="0 0 110 119" xmlns="http://www.w3.org/2000/svg"><title>envelope</title><g fill="none" fill-rule="evenodd"><path d="M99.98 119H9.965C4.465 119 0 114.536 0 109.037V50.785C0 46.485 3.485 43 7.787 43h94.426A7.784 7.784 0 0 1 110 50.785v58.252c-.054 5.499-4.52 9.963-10.02 9.963z" fill="#383754" fill-rule="nonzero"/><path d="M3.761 40.068L47.914 2.62c4.088-3.493 10.139-3.493 14.227 0l44.152 37.448a10.67 10.67 0 0 1 3.707 8.08L55 91 0 48.148c0-3.167 1.363-6.114 3.761-8.08z" fill="#FCB341" fill-rule="nonzero"/><path d="M2 115.107l46.644-38.811c3.71-3.061 9.056-3.061 12.712 0L108 115.106s-2.51 3.882-7.91 3.882H9.91s-5.237.437-7.91-3.881z" fill="#45466D" fill-rule="nonzero"/><text fill="#FFF" font-family="Helvetica" font-size="40"><tspan x="34" y="58">@</tspan></text></g></svg>')
+          );
+        }
+      }
+      $emails = array_merge($emails, $new);
 
       return count($emails) >= $expected_count;
     }, "$expected_count email(s) received by $to.", $timeout);
@@ -326,11 +355,14 @@ abstract class EndToEndTestCase extends BrowserTestCase {
    * the previous state.  It also changes the button title to Debugger.
    */
   public function debugger() {
-    $stash = [$this->observerButton, $this->observerIsObserving];
+    $stash = [
+      $this->observerButton,
+      $this->observerButtonClasses,
+    ];
     // https://unicode.org/emoji/charts/full-emoji-list.html#25b6.
     $this->beginObservation('▶', ['is-debug-breakpoint']);
     $this->waitForObserver('body');
-    list($this->observerButton, $this->observerIsObserving) = $stash;
+    $this->beginObservation($stash[0], $stash[1]);
   }
 
   /**
@@ -349,21 +381,73 @@ abstract class EndToEndTestCase extends BrowserTestCase {
    *   clicked, at which time the test will continue.
    *
    * @param string $css_selector
-   *   The CSS selector of the exiting DOM element to attach our UI button to.
+   *   The CSS selector of the existing DOM element to attach our UI button to.
    *
-   * @return ObserverTrait
+   * @return \AKlump\DrupalTest\EndToEndTestCase
+   *   Self for chaining.
    */
   public function waitForObserver($css_selector) {
     if ($element = $this->requireElement($css_selector)) {
       if ($this->observerIsObserving) {
         $this->injectObserverUiIntoDom($css_selector);
 
-        // When the button is clicked it is removed and the waitFor will continue.
+        // When button is clicked it is removed and the waitFor will continue.
         $this->waitFor(function () {
           return !$this->el('.observe__next');
         }, 'Pause while demo is explained', 0);
       }
     }
+
+    return $this;
+  }
+
+  /**
+   * Display a popup and wait for user to close it.
+   *
+   * @param \AKlump\DrupalTest\Utilities\Popup $popup
+   *   The contents of the popup.
+   *
+   * @return \AKlump\DrupalTest\EndToEndTestCase
+   *   Self for chaining.
+   *
+   * @throws \Behat\Mink\Exception\DriverException
+   * @throws \Behat\Mink\Exception\UnsupportedDriverActionException
+   */
+  public function waitForObserverPopup(Popup $popup) {
+    if (!$this->observerIsObserving) {
+      return $this;
+    }
+    $this->injectCssStyles($this->getPopupCssStyles());
+    $container_markup = str_replace('"', '\"', $popup->getContainerInnerHtml());
+    $js = <<<JS
+(function(){ 
+  var popup = document.createElement('div');
+  popup.className = 'popup';
+  
+  var container = document.createElement('div');
+  container.className = 'popup__container';
+  container.innerHTML = "${container_markup}";
+  popup.appendChild(container);
+  
+  var popupClose = document.createElement('div');
+  popupClose.innerHTML = '&times;';
+  popupClose.className = 'popup__close';
+  popupClose.addEventListener('click', function() {
+    popup.remove();
+  }, false);
+  container.appendChild(popupClose);
+  
+  document.getElementsByTagName('body')[0].appendChild(popup);
+})();
+JS;
+    $this
+      ->getSession()
+      ->executeScript(trim($js));
+
+    $result = NULL;
+    $this->waitFor(function () use (&$result) {
+      return !$this->el('.popup__close');
+    }, 'Wait for popup to close.', 0);
 
     return $this;
   }
@@ -421,36 +505,42 @@ abstract class EndToEndTestCase extends BrowserTestCase {
   }
 
   /**
+   * Given a CSS selector return the JS snippet to get that item.
+   *
+   * @param string $css_selector
+   *   The CSS selector, e.g. '.arrow'.
+   *
+   * @return string
+   *   The JS snippet to use.
+   */
+  protected function getJavascriptSelectorCode($css_selector) {
+    $selector = substr($css_selector, 1);
+    $type = substr($css_selector, 0, 1);
+    if ($type === '.') {
+      return "document.getElementsByClassName('$selector')[0]";
+    }
+    elseif ($type === '#') {
+      return "document.getElementsById('$selector')";
+    }
+
+    return "document.getElementsByTagName('$css_selector')[0]";
+
+  }
+
+  /**
    * Inject our UI element into the DOM relative to $css_selector.
    *
    * @param string $css_selector
    *   The element to attach our observation UI to.
    */
   protected function injectObserverUiIntoDom($css_selector) {
-    $type = substr($css_selector, 0, 1);
-    $selector = substr($css_selector, 1);
     $button_title = $this->getObserverButtonTitle();
-    switch ($type) {
-      case '.':
-        $selector = "document.getElementsByClassName('$selector')[0]";
-        break;
-
-      case '#':
-        $selector = "document.getElementsById('$selector')";
-        break;
-
-      default:
-        $selector = "document.getElementsByTagName('$css_selector')[0]";
-        break;
-
-    }
-
     $this->injectCssStyles($this->getObserverUiCssStyles());
-
     $class_name = $this->observerButtonClasses;
     array_unshift($class_name, 'observe__next');
     $class_name = implode(' ', $class_name);
-
+    $selector = $this->getJavascriptSelectorCode($css_selector);
+    $next_selector = $this->getJavascriptSelectorCode('.observe__next');
 
     // Create a "continue" button and then wait for it to be removed from the DOM.
     $js = "(function(){ 
@@ -462,12 +552,24 @@ abstract class EndToEndTestCase extends BrowserTestCase {
     this.remove();
   }, false);
   el.after(pointer);
-})();";
+  
+  function getOffsetTop(element) {
+    // Starting value is the offset from the top edge the button will appear.
+    var offsetTop = -20;
+    while(element) {
+      offsetTop += element.offsetTop;
+      element = element.offsetParent;
+    }
+    return offsetTop;
+  }
 
+  // Scroll to make sure the button is visible.
+  var y = getOffsetTop(${next_selector});
+  document.documentElement.scrollTop = document.body.scrollTop = y;
+})();";
     $this
       ->getSession()
-      ->getDriver()
-      ->evaluateScript(trim($js));
+      ->executeScript(trim($js));
   }
 
   /**
@@ -547,19 +649,18 @@ CSS;
 EOD;
     $this
       ->getSession()
-      ->getDriver()
-      ->evaluateScript($js);
+      ->executeScript(trim($js));
   }
 
   /**
-   * Get manual assertion CSS.
+   * Get popup CSS.
    *
    * @return string
-   *   The CSS to use for manual assertions.
+   *   The CSS to use for popup overlays.
    */
-  protected function getManualAssertUICssStyles() {
+  protected function getPopupCssStyles() {
     return /** @lang CSS */ <<<CSS
-.manual-test {
+.popup {
     z-index: 10000;
     position: absolute;
     display: flex;
@@ -571,22 +672,91 @@ EOD;
     bottom: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 20, 70, .75)
+    background: rgba(30, 30, 40, .75)
 }
 
-.manual-test a {
-    text-decoration: underline;
-}
-
-.manual-test > div {
+.popup__container {
+    font-size: 1.125rem;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    position: relative;
     width: 65%;
     height: auto;
-    background: #fff;
+    background: #fffffa;
     color: #333;
     padding: 2em;
     -webkit-box-shadow: 0px 0px 12px -1px rgba(10,10,10,0.65);
     -moz-box-shadow: 0px 0px 12px -1px rgba(10,10,10,0.65);
     box-shadow: 0px 0px 12px -1px rgba(10,10,10,0.65);
+    height: 50%;
+    overflow: visible;
+    position: relative;
+}
+
+.popup__inner {
+    height: 100%;
+    overflow: auto;
+}
+
+.layout-two-col {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.layout-two-col .popup__body {
+    margin-left: 2em;
+}
+
+.popup__title {
+    font-weight: bold;
+    font-size: 1.6em;
+    margin-top: 0;
+}
+
+.popup__subtitle {
+    font-weight: bold;
+    font-size: 1.2em;
+    margin-top: 0;
+}
+
+.popup__container :first-child {
+  margin-top: 0;
+}
+.popup__container :last-child {
+  margin-bottom: 0;
+}
+
+.popup__close {
+    text-align: center;
+    line-height: 48px;
+    width: 48px;
+    height: 48px;
+    font-size: 32px;
+    cursor: pointer;
+    top: 0;
+    right: 0;
+    position: absolute;
+}
+
+.popup__icon {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -70%);
+}
+CSS;
+  }
+
+  /**
+   * Get manual assertion CSS.
+   *
+   * @return string
+   *   The CSS to use for manual assertions.
+   */
+  protected function getManualAssertUICssStyles() {
+    return /** @lang CSS */ <<<CSS
+.manual-test a {
+    text-decoration: underline;
 }
 
 .manual-test__steps {
@@ -660,7 +830,7 @@ CSS;
   /**
    * Make a manual assertion.
    *
-   * A manual assertion is a modal that will appear and ask the observer to
+   * A manual assertion is a popup that will appear and ask the observer to
    * click pass or fail based on certain criteria.  You may ask the observer to
    * take steps by using $prerequisite_steps, or you may just ask them to
    * evaluate $assertion.  The test will hang until the user makes a choice.
@@ -690,13 +860,15 @@ CSS;
 
     $manualTestMarkup = implode('', $manualTestMarkup);
 
+    $this->injectCssStyles($this->getPopupCssStyles());
     $this->injectCssStyles($this->getManualAssertUICssStyles());
 
     $js = "(function(){ 
   var manualTest = document.createElement('div');
-  manualTest.className = 'manual-test';
+  manualTest.className = 'popup manual-test';
   
   var inner = document.createElement('div');
+  inner.className = 'popup__inner';
   manualTest.appendChild(inner);
   
   var assertion = document.createElement('div');
@@ -728,8 +900,7 @@ CSS;
 
     $this
       ->getSession()
-      ->getDriver()
-      ->evaluateScript(trim($js));
+      ->executeScript(trim($js));
 
     // When the user clicks a button it will be removed from the DOM by JS, here
     // we wait for that and recognize which button is removed as the answer to
@@ -743,7 +914,7 @@ CSS;
         $result = TRUE;
       }
 
-      // Once a choice has been made, then remove the modal overlay.
+      // Once a choice has been made, then remove the popup overlay.
       if ($result !== NULL) {
         $js = "(function(){
   var test = document.getElementsByClassName('manual-test');
@@ -752,15 +923,14 @@ CSS;
 
         $this
           ->getSession()
-          ->getDriver()
-          ->evaluateScript(trim($js));
+          ->executeScript(trim($js));
       }
 
       return is_null($result) ? FALSE : TRUE;
 
     }, 'Wait for manual assertion.', 0);
 
-    $this->assertTrue($result, $assertion);
+    $this->assertTrue($result, strip_tags(implode('; ', $assertion)));
   }
 
 }

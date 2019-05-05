@@ -15,12 +15,12 @@ Using the `\AKlump\DrupalTest\EndToEndTestCase` tests, you can:
 
 ## Test Implementation
 
-1. In `setUp` indicate the email handler to use.  At this time there is only one provided handler, `AKlump\DrupalTest\Utilities\UnixMail`, but you may write your own by implementing `\AKlump\DrupalTest\Utilities\EmailHandlerInterface`.
+1. In `setUpBeforeClass` indicate the email handler to use.  At this time there is only one provided handler, `AKlump\DrupalTest\Utilities\UnixMail`, but you may write your own by implementing `\AKlump\DrupalTest\Utilities\EmailHandlerInterface`.
         
         use AKlump\DrupalTest\Utilities\UnixMail;
         ...
-        public function setUp() {
-          $this->setEmailHandler(new UnixMail());
+        public static function setUpBeforeClass() {
+          static::setEmailHandler(new UnixMail());
         }
 
 1. Do something in a test like this example, which waits for a password reset email and then visits the contained URL.
@@ -59,3 +59,7 @@ Using the `\AKlump\DrupalTest\EndToEndTestCase` tests, you can:
 ## Sending Test Emails with Bash
 
     echo "MESSAGE" | mail -s "SUBJECT" "USER@HOST"
+
+## Observation Mode: View Email Contents
+
+When implementing `waitForEmail` if observation mode is enabled you will see the emails as `observerPopups`.
