@@ -44,12 +44,12 @@
 <h2>Test Implementation</h2>
 
 <ol>
-<li><p>In <code>setUp</code> indicate the email handler to use.  At this time there is only one provided handler, <code>AKlump\DrupalTest\Utilities\UnixMail</code>, but you may write your own by implementing <code>\AKlump\DrupalTest\Utilities\EmailHandlerInterface</code>.</p>
+<li><p>In <code>setUpBeforeClass</code> indicate the email handler to use.  At this time there is only one provided handler, <code>AKlump\DrupalTest\Utilities\UnixMail</code>, but you may write your own by implementing <code>\AKlump\DrupalTest\Utilities\EmailHandlerInterface</code>.</p>
 
 <pre><code>use AKlump\DrupalTest\Utilities\UnixMail;
 ...
-public function setUp() {
-  $this-&gt;setEmailHandler(new UnixMail());
+public static function setUpBeforeClass() {
+  static::setEmailHandler(new UnixMail());
 }
 </code></pre></li>
 <li><p>Do something in a test like this example, which waits for a password reset email and then visits the contained URL.</p>
@@ -131,6 +131,10 @@ public function setUp() {
 
 <pre><code>echo "MESSAGE" | mail -s "SUBJECT" "USER@HOST"
 </code></pre>
+
+<h2>Observation Mode: View Email Contents</h2>
+
+<p>When implementing <code>waitForEmail</code> if observation mode is enabled you will see the emails as <code>observerPopups</code>.</p>
 </section>
 
 <div class="search__results">
@@ -140,7 +144,7 @@ public function setUp() {
 <footer>
   <div class="pager"><a href="e2e--interactive.html" class="prev e2e--interactive">&laquo;Interactive Tests</a><a href="index.html" class="index pager__book-title">Drupal Test</a><a href="e2e--example.html" class="next e2e--example">An Example End To End Test&raquo;</a></div>  
   <div id="footer-legaleeze">
-    <p class="legaleeze center">Version: 0.5.6 &bull; Last Updated: Wed, 24 Apr 2019 14:51:58 -0700</p>
+    <p class="legaleeze center">Version: 0.5.7 &bull; Last Updated: Sat, 04 May 2019 17:13:41 -0700</p>
   </div>
 </footer>
 
