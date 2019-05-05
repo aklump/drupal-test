@@ -294,7 +294,7 @@ abstract class EndToEndTestCase extends BrowserTestCase {
    */
   public function waitForElementVisible($css_selector, $timeout = NULL) {
     $el = NULL;
-    $this->waitFor(function () use ($css_selector, $el) {
+    $this->waitFor(function () use ($css_selector, &$el) {
       $el = $this->el($css_selector);
 
       return !empty($el) && $el->isVisible();
