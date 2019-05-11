@@ -108,7 +108,6 @@ abstract class ClientTestCase extends BrowserTestCase {
    *   Self for chaining.
    */
   public function loadXmlByUrl($url) {
-    $url = $this->resolveUrl($url);
     try {
       $this->response = $this->getXmlClient()->get($url);
       $this->xml = simplexml_load_string($this->response
@@ -140,7 +139,6 @@ abstract class ClientTestCase extends BrowserTestCase {
    *   Self for chaining.
    */
   public function loadJsonByUrl($url) {
-    $url = $this->resolveUrl($url);
     try {
       $this->response = $this->getJsonClient()->get($url);
       $this->json = json_decode($this->response
@@ -305,6 +303,7 @@ abstract class ClientTestCase extends BrowserTestCase {
   public static function getXmlClient() {
     return new Client([
       'cookies' => static::$cookieJar,
+      'base_uri' => static::$baseUrl,
       'headers' => static::getSharedRequestHeaders() + [
           'Accept' => 'application/xml',
         ],
@@ -360,6 +359,7 @@ abstract class ClientTestCase extends BrowserTestCase {
   public static function getJsonClient() {
     return new Client([
       'cookies' => static::$cookieJar,
+      'base_uri' => static::$baseUrl,
       'headers' => static::getSharedRequestHeaders() + [
           'Accept' => 'application/json',
         ],
