@@ -10,7 +10,7 @@ use Behat\Mink\Session;
  *
  * Could not extend \Behat\Mink\WebAssert because the assert method is private.
  */
-class WebAssert extends MinkWebAssert {
+class WebAssert extends MinkWebAssert implements AssertInterface {
 
   /**
    * A value here will override the assert message.

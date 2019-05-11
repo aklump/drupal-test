@@ -91,7 +91,8 @@ This example shows how load an endpoint that returns XML and validate that using
 
     public function testXMLEndpoint() {
       $this->loadXmlByUrl('api/1/some/endpoint')
-        ->assertResponseMatchesSchema('resource.json');
+        ->assertResponseMatchesSchema('resource.json')
+        ->assert()->statusCodeEquals(200);
   
       $this->assertSame(123, (int) $this->xml->id);
       $this->assertSame('name', (string) $this->xml->name);

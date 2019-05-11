@@ -4,6 +4,7 @@ namespace AKlump\DrupalTest;
 
 use aik099\PHPUnit\BrowserTestCase as ParentBrowserTestCase;
 use AKlump\DrupalTest\Utilities\Generators;
+use AKlump\DrupalTest\Utilities\GuzzleWebAssert;
 use AKlump\DrupalTest\Utilities\WebAssert;
 
 /**
@@ -209,14 +210,19 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
    * @param string $fail_message
    *   An optional message to be displayed on failure.
    *
-   * @return \AKlump\DrupalTest\Utilities\WebAssert
+   * @return \AKlump\DrupalTest\Utilities\AssertInterface
    *   An instance to use for asserting.
    */
   public function assert($fail_message = '') {
-    if (empty($this->webAssert)) {
-      $this->webAssert = new WebAssert($this, $this->getSession());
+    if (get_class($this->response) === 'GuzzleHttp\Psr7\Response') {
+      $this->webAssert = new GuzzleWebAssert($this);
     }
-    $this->webAssert->message = $fail_message;
+    else {
+      if (empty($this->webAssert)) {
+        $this->webAssert = new WebAssert($this, $this->getSession());
+      }
+      $this->webAssert->message = $fail_message;
+    }
 
     return $this->webAssert;
   }
