@@ -5,6 +5,7 @@ namespace AKlump\DrupalTest;
 use AKlump\DrupalTest\Utilities\DestructiveTrait;
 use GuzzleHttp\Client;
 use GuzzleHttp\Cookie\CookieJar;
+use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Psr7\Response;
 use JsonSchema\Validator;
@@ -76,6 +77,15 @@ abstract class ClientTestCase extends BrowserTestCase {
     }
   }
 
+  /**
+   * Return the current response object.
+   *
+   * @return mixed
+   *   A response object.
+   */
+  public function getResponse() {
+    return $this->response;
+  }
 
   /**
    * Empty the cookie jar to create a new browsing session.
@@ -83,7 +93,6 @@ abstract class ClientTestCase extends BrowserTestCase {
   public static function emptyCookieJar() {
     static::$cookieJar = new CookieJar();
   }
-
 
   /**
    * Load a remote URL's response XML.
@@ -99,9 +108,19 @@ abstract class ClientTestCase extends BrowserTestCase {
    *   Self for chaining.
    */
   public function loadXmlByUrl($url) {
-    $this->response = $this->getXmlClient()->get($url);
-    $this->xml = simplexml_load_string($this->response->getBody()
-      ->__toString());
+    try {
+      $this->response = $this->getXmlClient()->get($url);
+      $this->xml = simplexml_load_string($this->response
+        ->getBody()
+        ->getContents());
+    }
+    catch (BadResponseException $exception) {
+      $this->response = $exception->getResponse();
+      // TODO Handle this based on Content-Type header.
+      $this->xml = simplexml_load_string($exception->getResponse()
+        ->getBody()
+        ->getContents());
+    }
 
     return $this;
   }
@@ -120,9 +139,19 @@ abstract class ClientTestCase extends BrowserTestCase {
    *   Self for chaining.
    */
   public function loadJsonByUrl($url) {
-    $this->response = $this->getJsonClient()->get($url);
-    $this->json = json_decode($this->response->getBody()
-      ->__toString());
+    try {
+      $this->response = $this->getJsonClient()->get($url);
+      $this->json = json_decode($this->response
+        ->getBody()
+        ->getContents());
+    }
+    catch (BadResponseException $exception) {
+      $this->response = $exception->getResponse();
+      // TODO Handle this based on Content-Type header.
+      $this->json = json_decode($exception->getResponse()
+        ->getBody()
+        ->getContents());
+    }
 
     return $this;
   }
@@ -415,6 +444,8 @@ abstract class ClientTestCase extends BrowserTestCase {
     $validator->validate($data, (object) ['$ref' => 'file://' . $filepath]);
 
     $this->assertSame([], $validator->getErrors());
+
+    return $this;
   }
 
   /**
