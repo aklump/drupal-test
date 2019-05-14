@@ -68,6 +68,7 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
     if (!($url = getenv('TEST_BASE_URL')) && !($url = getenv('SIMPLETEST_BASE_URL'))) {
       static::markTestSkipped("Missing environment variable: TEST_BASE_URL or SIMPLETEST_BASE_URL");
     }
+    echo "Testing against: " . $url;
     static::$baseUrl = rtrim($url, '/');
   }
 
