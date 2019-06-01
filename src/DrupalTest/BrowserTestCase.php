@@ -6,6 +6,8 @@ use aik099\PHPUnit\BrowserTestCase as ParentBrowserTestCase;
 use AKlump\DrupalTest\Utilities\Generators;
 use AKlump\DrupalTest\Utilities\GuzzleWebAssert;
 use AKlump\DrupalTest\Utilities\WebAssert;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\BadResponseException;
 
 /**
  * A base class for Browser Tests.
@@ -281,6 +283,38 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
       ->getPage()
       ->find('css', $css_selector)
       ->isVisible(), static::isTrue(), $failure_message);
+
+    return $this;
+  }
+
+  /**
+   * Assert the response code at a given URL.
+   *
+   * @param int $expected_http_status_code
+   *   The expected status code.
+   * @param string $url
+   *   The URL to check for a respnose code.
+   *
+   * @return \AKlump\DrupalTest\BrowserTestCase
+   *   Self for chaining.
+   */
+  public function assertHttpStatusCodeAtUrl($expected_http_status_code, $url) {
+    $options = [
+      'cookies' => static::$cookieJar,
+      'allow_redirects' => TRUE,
+    ];
+    $url = $this->resolveUrl($url);
+    $client = new Client($options);
+    if (empty($url)) {
+      throw new \RuntimeException("\$url cannot be empty");
+    }
+    try {
+      $response = $client->head($url);
+      $this->assertEquals($expected_http_status_code, $response->getStatusCode());
+    }
+    catch (BadResponseException $exception) {
+      $this->response = $exception->getResponse();
+    }
 
     return $this;
   }

@@ -160,4 +160,16 @@ class Generators {
     return $user . '@' . $parsed['host'];
   }
 
+  /**
+   * Generate a random integer from a range.
+   *
+   * @param int $min
+   *   The minimum value.
+   * @param int $max
+   *   The maximum value.
+   */
+  public function integer($min, $max) {
+    return rand($min, $max);
+  }
+
 }
