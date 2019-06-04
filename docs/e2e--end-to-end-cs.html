@@ -97,10 +97,19 @@
   <td><strong>assertElementVisible</strong> <em>($css_selector, $failure_message = '')</em></td>
 </tr>
 <tr>
-  <td><strong>assertHttpStatusCodeAtUrl</strong> <em>($expected_http_status_code, $url)</em></td>
+  <td><strong>assertManual</strong> <em>($assertion, array $prerequisite_steps = Array)</em></td>
 </tr>
 <tr>
-  <td><strong>assertManual</strong> <em>($assertion, array $prerequisite_steps = Array)</em></td>
+  <td><strong>assertUrlContentTypeEquals</strong> <em>($content_type, $url)</em></td>
+</tr>
+<tr>
+  <td><strong>assertUrlRedirectsTo</strong> <em>($final_url, $url)</em></td>
+</tr>
+<tr>
+  <td><strong>assertUrlStatusCodeEquals</strong> <em>($status_code, $url)</em></td>
+</tr>
+<tr>
+  <td><strong>assertUrlStatusCodeNotEquals</strong> <em>($status_code, $url)</em></td>
 </tr>
 <tr>
   <td><strong>beginObservation</strong> <em>($button_title = '', array $button_css_classes = Array)</em></td>
@@ -118,10 +127,19 @@
   <td><strong>els</strong> <em>($css_selector)</em></td>
 </tr>
 <tr>
+  <td><strong>emptyCookieJar</strong> <em>()</em></td>
+</tr>
+<tr>
   <td><strong>endObservation</strong> <em>()</em></td>
 </tr>
 <tr>
   <td><strong>generate</strong> <em>($method)</em></td>
+</tr>
+<tr>
+  <td><strong>getClient</strong> <em>(array $options = Array)</em></td>
+</tr>
+<tr>
+  <td><strong>getCookieJar</strong> <em>()</em></td>
 </tr>
 <tr>
   <td><strong>getDomElements</strong> <em>(array $css_selectors)</em></td>
@@ -187,6 +205,110 @@
   <p>There is some overlap in assertions between methods of <code>ClientTestCase</code> and methods on Mink's <code>WebAssert</code> class, but the former always uses css selectors, so it's a little less verbose.</p>
 </blockquote>
 
+<h2>Working with <code>DocumentElement</code> objects</h2>
+
+<p>Learn <a href="http://mink.behat.org/en/latest/guides/traversing-pages.html#documentelement-and-nodeelement">more here</a>.</p>
+
+<table>
+<thead>
+<tr>
+  <th>DocumentElement</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><strong>attachFileToField</strong> <em>($locator, $path)</em></td>
+</tr>
+<tr>
+  <td><strong>checkField</strong> <em>($locator)</em></td>
+</tr>
+<tr>
+  <td><strong>clickLink</strong> <em>($locator)</em></td>
+</tr>
+<tr>
+  <td><strong>fillField</strong> <em>($locator, $value)</em></td>
+</tr>
+<tr>
+  <td><strong>find</strong> <em>($selector, $locator)</em></td>
+</tr>
+<tr>
+  <td><strong>findAll</strong> <em>($selector, $locator)</em></td>
+</tr>
+<tr>
+  <td><strong>findButton</strong> <em>($locator)</em></td>
+</tr>
+<tr>
+  <td><strong>findById</strong> <em>($id)</em></td>
+</tr>
+<tr>
+  <td><strong>findField</strong> <em>($locator)</em></td>
+</tr>
+<tr>
+  <td><strong>findLink</strong> <em>($locator)</em></td>
+</tr>
+<tr>
+  <td><strong>getContent</strong> <em>()</em></td>
+</tr>
+<tr>
+  <td><strong>getHtml</strong> <em>()</em></td>
+</tr>
+<tr>
+  <td><strong>getOuterHtml</strong> <em>()</em></td>
+</tr>
+<tr>
+  <td><strong>getSession</strong> <em>()</em></td>
+</tr>
+<tr>
+  <td><strong>getText</strong> <em>()</em></td>
+</tr>
+<tr>
+  <td><strong>getXpath</strong> <em>()</em></td>
+</tr>
+<tr>
+  <td><strong>has</strong> <em>($selector, $locator)</em></td>
+</tr>
+<tr>
+  <td><strong>hasButton</strong> <em>($locator)</em></td>
+</tr>
+<tr>
+  <td><strong>hasCheckedField</strong> <em>($locator)</em></td>
+</tr>
+<tr>
+  <td><strong>hasContent</strong> <em>($content)</em></td>
+</tr>
+<tr>
+  <td><strong>hasField</strong> <em>($locator)</em></td>
+</tr>
+<tr>
+  <td><strong>hasLink</strong> <em>($locator)</em></td>
+</tr>
+<tr>
+  <td><strong>hasSelect</strong> <em>($locator)</em></td>
+</tr>
+<tr>
+  <td><strong>hasTable</strong> <em>($locator)</em></td>
+</tr>
+<tr>
+  <td><strong>hasUncheckedField</strong> <em>($locator)</em></td>
+</tr>
+<tr>
+  <td><strong>isValid</strong> <em>()</em></td>
+</tr>
+<tr>
+  <td><strong>pressButton</strong> <em>($locator)</em></td>
+</tr>
+<tr>
+  <td><strong>selectFieldOption</strong> <em>($locator, $value, $multiple = false)</em></td>
+</tr>
+<tr>
+  <td><strong>uncheckField</strong> <em>($locator)</em></td>
+</tr>
+<tr>
+  <td><strong>waitFor</strong> <em>($timeout, $callback)</em></td>
+</tr>
+</tbody>
+</table>
+
 <h2>Working with <code>NodeElement</code> objects</h2>
 
 <p>Learn <a href="http://mink.behat.org/en/latest/guides/traversing-pages.html#documentelement-and-nodeelement">more here</a>.</p>
@@ -206,8 +328,7 @@ class Test {
     // $el['.t-link'] is an instance of NodeElement.
     $el['.t-link']-&gt;click();
 
-    // Altenatively you could do this.  But it will not break if there is
-    // more than one '.t-link' on the page. So it's less certain.
+    // Altenatively you could do this.
     $this-&gt;el('.t-link')-&gt;click()
       }
 
@@ -225,13 +346,22 @@ class Test {
   <td><strong>attachFile</strong> <em>($path)</em></td>
 </tr>
 <tr>
+  <td><strong>attachFileToField</strong> <em>($locator, $path)</em></td>
+</tr>
+<tr>
   <td><strong>blur</strong> <em>()</em></td>
 </tr>
 <tr>
   <td><strong>check</strong> <em>()</em></td>
 </tr>
 <tr>
+  <td><strong>checkField</strong> <em>($locator)</em></td>
+</tr>
+<tr>
   <td><strong>click</strong> <em>()</em></td>
+</tr>
+<tr>
+  <td><strong>clickLink</strong> <em>($locator)</em></td>
 </tr>
 <tr>
   <td><strong>doubleClick</strong> <em>()</em></td>
@@ -240,16 +370,49 @@ class Test {
   <td><strong>dragTo</strong> <em>(Behat\Mink\Element\ElementInterface $destination)</em></td>
 </tr>
 <tr>
+  <td><strong>fillField</strong> <em>($locator, $value)</em></td>
+</tr>
+<tr>
+  <td><strong>find</strong> <em>($selector, $locator)</em></td>
+</tr>
+<tr>
+  <td><strong>findAll</strong> <em>($selector, $locator)</em></td>
+</tr>
+<tr>
+  <td><strong>findButton</strong> <em>($locator)</em></td>
+</tr>
+<tr>
+  <td><strong>findById</strong> <em>($id)</em></td>
+</tr>
+<tr>
+  <td><strong>findField</strong> <em>($locator)</em></td>
+</tr>
+<tr>
+  <td><strong>findLink</strong> <em>($locator)</em></td>
+</tr>
+<tr>
   <td><strong>focus</strong> <em>()</em></td>
 </tr>
 <tr>
   <td><strong>getAttribute</strong> <em>($name)</em></td>
 </tr>
 <tr>
+  <td><strong>getHtml</strong> <em>()</em></td>
+</tr>
+<tr>
+  <td><strong>getOuterHtml</strong> <em>()</em></td>
+</tr>
+<tr>
   <td><strong>getParent</strong> <em>()</em></td>
 </tr>
 <tr>
+  <td><strong>getSession</strong> <em>()</em></td>
+</tr>
+<tr>
   <td><strong>getTagName</strong> <em>()</em></td>
+</tr>
+<tr>
+  <td><strong>getText</strong> <em>()</em></td>
 </tr>
 <tr>
   <td><strong>getValue</strong> <em>()</em></td>
@@ -258,16 +421,43 @@ class Test {
   <td><strong>getXpath</strong> <em>()</em></td>
 </tr>
 <tr>
+  <td><strong>has</strong> <em>($selector, $locator)</em></td>
+</tr>
+<tr>
   <td><strong>hasAttribute</strong> <em>($name)</em></td>
 </tr>
 <tr>
+  <td><strong>hasButton</strong> <em>($locator)</em></td>
+</tr>
+<tr>
+  <td><strong>hasCheckedField</strong> <em>($locator)</em></td>
+</tr>
+<tr>
   <td><strong>hasClass</strong> <em>($className)</em></td>
+</tr>
+<tr>
+  <td><strong>hasField</strong> <em>($locator)</em></td>
+</tr>
+<tr>
+  <td><strong>hasLink</strong> <em>($locator)</em></td>
+</tr>
+<tr>
+  <td><strong>hasSelect</strong> <em>($locator)</em></td>
+</tr>
+<tr>
+  <td><strong>hasTable</strong> <em>($locator)</em></td>
+</tr>
+<tr>
+  <td><strong>hasUncheckedField</strong> <em>($locator)</em></td>
 </tr>
 <tr>
   <td><strong>isChecked</strong> <em>()</em></td>
 </tr>
 <tr>
   <td><strong>isSelected</strong> <em>()</em></td>
+</tr>
+<tr>
+  <td><strong>isValid</strong> <em>()</em></td>
 </tr>
 <tr>
   <td><strong>isVisible</strong> <em>()</em></td>
@@ -288,7 +478,13 @@ class Test {
   <td><strong>press</strong> <em>()</em></td>
 </tr>
 <tr>
+  <td><strong>pressButton</strong> <em>($locator)</em></td>
+</tr>
+<tr>
   <td><strong>rightClick</strong> <em>()</em></td>
+</tr>
+<tr>
+  <td><strong>selectFieldOption</strong> <em>($locator, $value, $multiple = false)</em></td>
 </tr>
 <tr>
   <td><strong>selectOption</strong> <em>($option, $multiple = false)</em></td>
@@ -301,6 +497,12 @@ class Test {
 </tr>
 <tr>
   <td><strong>uncheck</strong> <em>()</em></td>
+</tr>
+<tr>
+  <td><strong>uncheckField</strong> <em>($locator)</em></td>
+</tr>
+<tr>
+  <td><strong>waitFor</strong> <em>($timeout, $callback)</em></td>
 </tr>
 </tbody>
 </table>
@@ -454,7 +656,7 @@ class Test {
 <footer>
   <div class="pager"><a href="e2e--example.html" class="prev e2e--example">&laquo;An Example End To End Test</a><a href="index.html" class="index pager__book-title">Drupal Test</a><a href="e2e--observation-mode.html" class="next observation-mode">Observation Mode&raquo;</a></div>  
   <div id="footer-legaleeze">
-    <p class="legaleeze center">Version: 0.5.9 &bull; Last Updated: Sat, 01 Jun 2019 08:25:03 -0700</p>
+    <p class="legaleeze center">Version: 0.6.0 &bull; Last Updated: Tue, 04 Jun 2019 16:55:09 -0700</p>
   </div>
 </footer>
 
