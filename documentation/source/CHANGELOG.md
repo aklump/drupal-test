@@ -1,3 +1,13 @@
+## 0.6.0
+ 
+* `getDrupalCommandsClient` is no longer static.
+* `getXmlClient` is no longer static.
+* `getHtmlClient` is no longer static.
+* `getJsonClient` is no longer static.
+* `emptyCookieJar` is no longer static. 
+* `assertHttpStatusCodeAtUrl` renamed to `assertUrlStatusCodeEquals`.
+* `assertContentType` has been replaced with `assertUrlContentTypeEquals`.
+
 ## 0.5.3
 
 * Signature changed for `\AKlump\DrupalTest\BrowserTestCase::el()`.  You must pass `false` as the second argument to avoid an exception when `$css_selector` finds more than one node.

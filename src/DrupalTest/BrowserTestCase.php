@@ -7,6 +7,7 @@ use AKlump\DrupalTest\Utilities\Generators;
 use AKlump\DrupalTest\Utilities\GuzzleWebAssert;
 use AKlump\DrupalTest\Utilities\WebAssert;
 use GuzzleHttp\Client;
+use GuzzleHttp\Cookie\CookieJar;
 use GuzzleHttp\Exception\BadResponseException;
 
 /**
@@ -38,6 +39,13 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
   protected static $baseUrl = NULL;
 
   /**
+   * Holds the cookie jar used by requests.
+   *
+   * @var \GuzzleHttp\Cookie\CookieJar
+   */
+  protected static $cookieJar;
+
+  /**
    * Holds an instance with the current session.
    *
    * @var \AKlump\DrupalTest\Utilities\WebAssert
@@ -50,6 +58,13 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
    * @var string
    */
   protected $content;
+
+  /**
+   * Stores the most recent headless response.
+   *
+   * @var
+   */
+  protected $response;
 
   /**
    * {@inheritdoc}
@@ -288,32 +303,122 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
   }
 
   /**
-   * Assert the response code at a given URL.
+   * Assert the status code at a given URL equals expected.
    *
-   * @param int $expected_http_status_code
+   * @param int $status_code
    *   The expected status code.
    * @param string $url
-   *   The URL to check for a respnose code.
+   *   The URL to access.
    *
    * @return \AKlump\DrupalTest\BrowserTestCase
    *   Self for chaining.
    */
-  public function assertHttpStatusCodeAtUrl($expected_http_status_code, $url) {
-    $options = [
-      'cookies' => static::$cookieJar,
-      'allow_redirects' => TRUE,
-    ];
+  public function assertUrlStatusCodeEquals($status_code, $url) {
+    $assertion = function ($response) use ($status_code) {
+      static::assertThat($status_code == $response->getStatusCode(), static::isTrue(), "HTTP status code of " . $response->getStatusCode() . " does not equal expected $status_code.");
+    };
+
+    return $this->requestThenAssert($assertion, $url, [], 'HEAD', $assertion);
+  }
+
+  /**
+   * Assert the status code at a given URL does not equal a value.
+   *
+   * @param int $status_code
+   *   The status code to not equal.
+   * @param string $url
+   *   The URL to access.
+   *
+   * @return \AKlump\DrupalTest\BrowserTestCase
+   *   Self for chaining.
+   */
+  public function assertUrlStatusCodeNotEquals($status_code, $url) {
+    $assertion = function ($response) use ($status_code) {
+      static::assertThat($status_code != $response->getStatusCode(), static::isTrue(), "HTTP status code of " . $response->getStatusCode() . " should not equal $status_code.");
+    };
+
+    return $this->requestThenAssert($assertion, $url, [], 'HEAD', $assertion);
+  }
+
+  /**
+   * Assert an URL returns a certain content type header.
+   *
+   * @param string $content_type
+   *   The expected mime-type in the content-type header.
+   * @param string $url
+   *   The URL to access.
+   *
+   * @return \AKlump\DrupalTest\BrowserTestCase
+   *   Self for chaining.
+   */
+  public function assertUrlContentTypeEquals($content_type, $url) {
+    return $this->requestThenAssert(function ($response) use ($content_type) {
+      $actual = $response->getHeader('content-type');
+      $actual = array_pop($actual);
+      static::assertThat($content_type == $actual, static::isTrue(), "Actual content type \"$actual\" does not match expected \"$content_type\".");
+    }, $url);
+  }
+
+  /**
+   * Assert that one URL redirects to another.
+   *
+   * @param string $final_url
+   *   The expected destinaton URL.
+   * @param string $url
+   *   The URL that will redirect.
+   *
+   * @return $this
+   *   Self for chaining.
+   */
+  public function assertUrlRedirectsTo($final_url, $url) {
+    return $this->requestThenAssert(function ($response) use ($final_url, $url) {
+      if ($location = $response->getHeader('location')) {
+        $location = array_pop($location);
+        $final_url = $this->resolveUrl($final_url, TRUE);
+      }
+      static::assertThat($final_url === $location, static::isTrue(), "Failed asserting that $url redirects to $final_url");
+    }, $url, ['allow_redirects' => FALSE]);
+  }
+
+  /**
+   * Shared helper function to make a HEAD request and then assertions.
+   *
+   * Note: this will also set $this->response.
+   *
+   * @param callable $callback
+   *   Callback that receives ($request) and must make one or more assertions.
+   * @param string $url
+   *   The URL to make a head request against.
+   * @param array $client_options
+   *   An optional array to send to getClient().
+   * @param string $method
+   *   The http method to use, defaults to 'HEAD'.
+   * @param callable|null $on_fail
+   *   Optional, custom handler if the request throws BadResponseException.
+   *
+   * @return $this
+   *   Self for chaining.
+   */
+  protected function requestThenAssert(callable $callback, $url, array $client_options = [], $method = 'HEAD', callable $on_fail = NULL) {
+    $client = $this->getClient($client_options);
     $url = $this->resolveUrl($url);
-    $client = new Client($options);
     if (empty($url)) {
       throw new \RuntimeException("\$url cannot be empty");
     }
     try {
-      $response = $client->head($url);
-      $this->assertEquals($expected_http_status_code, $response->getStatusCode());
+      $method = strtolower($method);
+      $this->response = $client->{$method}($url);
+      $callback($this->response);
+
     }
     catch (BadResponseException $exception) {
       $this->response = $exception->getResponse();
+      if (is_callable($on_fail)) {
+        $on_fail($this->response);
+      }
+      else {
+        $this->fail($exception->getMessage());
+      }
     }
 
     return $this;
@@ -410,6 +515,46 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
     }
 
     return static::$stored->{$key};
+  }
+
+  /**
+   * Empty the cookie jar to create a new browsing session.
+   */
+  public function emptyCookieJar() {
+    static::$cookieJar = new CookieJar();
+  }
+
+  /**
+   * Get the current cookie jar.
+   *
+   * @return \GuzzleHttp\Cookie\CookieJar
+   *   The current cookie jar instance.
+   */
+  public function getCookieJar() {
+    if (!static::$cookieJar) {
+      static::emptyCookieJar();
+    }
+
+    return static::$cookieJar;
+  }
+
+  /**
+   * Return a headless HTTP client.
+   *
+   * @param array $options
+   *   The options to pass to the constructor of Guzzle.
+   *
+   * @return \GuzzleHttp\Client
+   *   An instance.
+   */
+  public function getClient(array $options = []) {
+    $options += [
+      'base_uri' => static::$baseUrl,
+      'cookies' => static::getCookieJar(),
+      'allow_redirects' => TRUE,
+    ];
+
+    return new Client($options);
   }
 
 }

@@ -4,7 +4,6 @@ namespace AKlump\DrupalTest;
 
 use AKlump\DrupalTest\Utilities\DestructiveTrait;
 use GuzzleHttp\Client;
-use GuzzleHttp\Cookie\CookieJar;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Psr7\Response;
@@ -40,13 +39,6 @@ abstract class ClientTestCase extends BrowserTestCase {
   protected static $jsonSchema = [];
 
   /**
-   * Holds the cookie jar used by requests.
-   *
-   * @var \GuzzleHttp\Cookie\CookieJar
-   */
-  protected static $cookieJar;
-
-  /**
    * Holds the response of the last remote call.
    *
    * @var null
@@ -72,9 +64,6 @@ abstract class ClientTestCase extends BrowserTestCase {
    */
   public static function setUpBeforeClass() {
     static::handleBaseUrl();
-    if (empty(static::$cookieJar)) {
-      static::emptyCookieJar();
-    }
   }
 
   /**
@@ -85,13 +74,6 @@ abstract class ClientTestCase extends BrowserTestCase {
    */
   public function getResponse() {
     return $this->response;
-  }
-
-  /**
-   * Empty the cookie jar to create a new browsing session.
-   */
-  public static function emptyCookieJar() {
-    static::$cookieJar = new CookieJar();
   }
 
   /**
@@ -282,10 +264,8 @@ abstract class ClientTestCase extends BrowserTestCase {
    *
    * @link http://docs.guzzlephp.org/en/stable/quickstart.html#using-responses
    */
-  public static function getHtmlClient() {
-    return new Client([
-      'cookies' => static::$cookieJar,
-      'base_uri' => static::$baseUrl,
+  public function getHtmlClient() {
+    return $this->getClient([
       'headers' => static::getSharedRequestHeaders() + [
           'Accept' => 'application/html',
         ],
@@ -300,10 +280,8 @@ abstract class ClientTestCase extends BrowserTestCase {
    *
    * @link http://docs.guzzlephp.org/en/stable/quickstart.html#using-responses
    */
-  public static function getXmlClient() {
-    return new Client([
-      'cookies' => static::$cookieJar,
-      'base_uri' => static::$baseUrl,
+  public function getXmlClient() {
+    return $this->getClient([
       'headers' => static::getSharedRequestHeaders() + [
           'Accept' => 'application/xml',
         ],
@@ -319,10 +297,7 @@ abstract class ClientTestCase extends BrowserTestCase {
    * @return $this
    *  Self for chaining.
    *
-   * @code
-   * $this->loadHeadByUrl('get/discussion-guide/22')
-   *   ->assertContentType('application/pdf');
-   * @endcode
+   * @deprecated
    */
   public function assertContentType($expected_type) {
     $actual_type = strtolower($this->getSession()
@@ -338,10 +313,8 @@ abstract class ClientTestCase extends BrowserTestCase {
    * @return \GuzzleHttp\Client
    *   The client to use for requests.
    */
-  public static function getDrupalCommandsClient() {
-    return new Client([
-      'cookies' => static::$cookieJar,
-      'base_uri' => static::$baseUrl,
+  public function getDrupalCommandsClient() {
+    return $this->getClient([
       'headers' => static::getSharedRequestHeaders() + [
           'Accept' => 'application/vnd.drupal7+json',
         ],
@@ -356,10 +329,8 @@ abstract class ClientTestCase extends BrowserTestCase {
    *
    * @link http://docs.guzzlephp.org/en/stable/quickstart.html#using-responses
    */
-  public static function getJsonClient() {
-    return new Client([
-      'cookies' => static::$cookieJar,
-      'base_uri' => static::$baseUrl,
+  public function getJsonClient() {
+    return $this->getClient([
       'headers' => static::getSharedRequestHeaders() + [
           'Accept' => 'application/json',
         ],
@@ -473,44 +444,6 @@ abstract class ClientTestCase extends BrowserTestCase {
   public function tearDown() {
     $this->response = NULL;
     CommandAssertion::handleAssertions($this);
-  }
-
-  /**
-   * Assert that one URL redirects to another.
-   *
-   * @param string $redirected_url
-   *   The expected destinaton URL.
-   * @param string $url
-   *   The URL that will redirect.
-   *
-   * @return $this
-   *   Self for chaining.
-   */
-  public function assertUrlRedirectsTo($redirected_url, $url) {
-    $options = [
-      'cookies' => static::$cookieJar,
-      'allow_redirects' => FALSE,
-      'headers' => static::getSharedRequestHeaders(),
-    ];
-    $url = $this->resolveUrl($url);
-    $client = new Client($options);
-    if (empty($url)) {
-      throw new \RuntimeException("\$url cannot be empty");
-    }
-    try {
-      $response = $client->head($url);
-      $location = $response->getHeader('location');
-      if (!empty($location)) {
-        $location = reset($location);
-        $redirected_url = $this->resolveUrl($redirected_url, TRUE);
-      }
-      static::assertThat($redirected_url === $location, static::isTrue(), "Failed asserting that $url redirects to $redirected_url");
-    }
-    catch (ClientException $e) {
-      $this->fail($e->getMessage());
-    }
-
-    return $this;
   }
 
 }

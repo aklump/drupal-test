@@ -25,7 +25,19 @@
 
 <h1>CHANGELOG</h1>
 
-<section><h2>0.5.3</h2>
+<section><h2>0.6.0</h2>
+
+<ul>
+<li><code>getDrupalCommandsClient</code> is no longer static.</li>
+<li><code>getXmlClient</code> is no longer static.</li>
+<li><code>getHtmlClient</code> is no longer static.</li>
+<li><code>getJsonClient</code> is no longer static.</li>
+<li><code>emptyCookieJar</code> is no longer static.</li>
+<li><code>assertHttpStatusCodeAtUrl</code> renamed to <code>assertUrlStatusCodeEquals</code>.</li>
+<li><code>assertContentType</code> has been replaced with <code>assertUrlContentTypeEquals</code>.</li>
+</ul>
+
+<h2>0.5.3</h2>
 
 <ul>
 <li>Signature changed for <code>\AKlump\DrupalTest\BrowserTestCase::el()</code>.  You must pass <code>false</code> as the second argument to avoid an exception when <code>$css_selector</code> finds more than one node.</li>
@@ -102,7 +114,7 @@ $el = $this-&gt;getDomElements([
 <footer>
   <div class="pager"><a href="README.html" class="prev README">&laquo;Drupal Test</a><a href="index.html" class="index pager__book-title">Drupal Test</a><a href="extending.html" class="next extending">Extending Classes&raquo;</a></div>  
   <div id="footer-legaleeze">
-    <p class="legaleeze center">Version: 0.5.9 &bull; Last Updated: Sat, 01 Jun 2019 08:25:00 -0700</p>
+    <p class="legaleeze center">Version: 0.6.0 &bull; Last Updated: Tue, 04 Jun 2019 16:55:07 -0700</p>
   </div>
 </footer>
 

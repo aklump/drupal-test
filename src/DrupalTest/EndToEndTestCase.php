@@ -8,6 +8,7 @@ use AKlump\DrupalTest\Utilities\InteractiveTrait;
 use AKlump\DrupalTest\Utilities\Popup;
 use AKlump\DrupalTest\Utilities\WebAssertTrait;
 use GuzzleHttp\Client;
+use GuzzleHttp\Cookie\SetCookie;
 
 /**
  * A class to interact with the browser for forms and navigation.
@@ -931,6 +932,45 @@ CSS;
     }, 'Wait for manual assertion.', 0);
 
     $this->assertTrue($result, strip_tags(implode('; ', $assertion)));
+  }
+
+  /**
+   * Return a headless client with the session and cookies from the browser.
+   *
+   * One use case where this is needed it to check the HTTP status code of an
+   * endpoint, which cannot be done using the Selenium driver.  You can also
+   * use it to check headers like content type.
+   *
+   * @param array $options
+   *   Options for instantiation of the Guzzle client.  You may use this to
+   *   override the defaults or set any additional.
+   *
+   * @return \GuzzleHttp\Client
+   *   A new client instance with all the cookies from the current session
+   *   attached.
+   */
+  public function getClient(array $options = []) {
+
+    // Import all the cookies from the current browsing session.
+    if ($cookies = $this->getSession()
+      ->getDriver()
+      ->getWebDriverSession()
+      ->getAllCookies()) {
+      foreach ($cookies as $cookie) {
+        $cookie = new SetCookie([
+          'Domain' => $cookie['domain'],
+          'Expires' => $cookie['expiry'],
+          'Name' => $cookie['name'],
+          'Path' => $cookie['path'],
+          'Value' => $cookie['value'],
+          'HttpOnly' => $cookie['httpOnly'],
+          'Secure' => $cookie['secure'],
+        ]);
+        $this->getCookieJar()->setCookie($cookie);
+      }
+    }
+
+    return parent::getClient();
   }
 
 }

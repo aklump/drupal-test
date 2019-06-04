@@ -1,5 +1,11 @@
 > There is some overlap in assertions between methods of `ClientTestCase` and methods on Mink's `WebAssert` class, but the former always uses css selectors, so it's a little less verbose.
 
+## Working with `DocumentElement` objects
+
+Learn [more here](http://mink.behat.org/en/latest/guides/traversing-pages.html#documentelement-and-nodeelement).
+
+{% include('_DocumentElement.md') %}
+
 ## Working with `NodeElement` objects
 
 Learn [more here](http://mink.behat.org/en/latest/guides/traversing-pages.html#documentelement-and-nodeelement).
@@ -19,8 +25,7 @@ Learn [more here](http://mink.behat.org/en/latest/guides/traversing-pages.html#d
         // $el['.t-link'] is an instance of NodeElement.
         $el['.t-link']->click();
     
-        // Altenatively you could do this.  But it will not break if there is
-        // more than one '.t-link' on the page. So it's less certain.
+        // Altenatively you could do this.
         $this->el('.t-link')->click()
           }
     
