@@ -7,6 +7,7 @@ use AKlump\DrupalTest\Utilities\Generators;
 use AKlump\DrupalTest\Utilities\GuzzleWebAssert;
 use AKlump\DrupalTest\Utilities\WebAssert;
 use GuzzleHttp\Client;
+use GuzzleHttp\Cookie\CookieJar;
 use GuzzleHttp\Exception\BadResponseException;
 
 /**
@@ -36,6 +37,13 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
    * @var string
    */
   protected static $baseUrl = NULL;
+
+  /**
+   * Holds the cookie jar used by requests.
+   *
+   * @var \GuzzleHttp\Cookie\CookieJar
+   */
+  protected static $cookieJar;
 
   /**
    * Holds an instance with the current session.
@@ -299,21 +307,19 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
    *   Self for chaining.
    */
   public function assertHttpStatusCodeAtUrl($expected_http_status_code, $url) {
-    $options = [
-      'cookies' => static::$cookieJar,
-      'allow_redirects' => TRUE,
-    ];
+    $client = $this->getClient();
     $url = $this->resolveUrl($url);
-    $client = new Client($options);
     if (empty($url)) {
       throw new \RuntimeException("\$url cannot be empty");
     }
     try {
       $response = $client->head($url);
-      $this->assertEquals($expected_http_status_code, $response->getStatusCode());
+      $this->assertEquals($expected_http_status_code, $response->getStatusCode(), "HTTP status code of " . $response->getStatusCode() . " does not equal expected $expected_http_status_code.");
     }
     catch (BadResponseException $exception) {
       $this->response = $exception->getResponse();
+      $code = $this->response->getStatusCode();
+      $this->assertEquals($expected_http_status_code, $code, "HTTP status code of " . $code . " does not equal expected $expected_http_status_code.");
     }
 
     return $this;
@@ -410,6 +416,45 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
     }
 
     return static::$stored->{$key};
+  }
+
+  /**
+   * Empty the cookie jar to create a new browsing session.
+   */
+  public static function emptyCookieJar() {
+    static::$cookieJar = new CookieJar();
+  }
+
+  /**
+   * Get the current cookie jar.
+   *
+   * @return \GuzzleHttp\Cookie\CookieJar
+   *   The current cookie jar instance.
+   */
+  public static function getCookieJar() {
+    if (!static::$cookieJar) {
+      static::emptyCookieJar();
+    }
+
+    return static::$cookieJar;
+  }
+
+  /**
+   * Return a headless HTTP client.
+   *
+   * @param array $options
+   *   The options to pass to the constructor of Guzzle.
+   *
+   * @return \GuzzleHttp\Client
+   *   An instance.
+   */
+  public function getClient(array $options = []) {
+    $options = [
+      'cookies' => static::getCookieJar(),
+      'allow_redirects' => TRUE,
+    ];
+
+    return new Client($options);
   }
 
 }

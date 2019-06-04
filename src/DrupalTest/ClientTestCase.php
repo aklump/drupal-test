@@ -40,13 +40,6 @@ abstract class ClientTestCase extends BrowserTestCase {
   protected static $jsonSchema = [];
 
   /**
-   * Holds the cookie jar used by requests.
-   *
-   * @var \GuzzleHttp\Cookie\CookieJar
-   */
-  protected static $cookieJar;
-
-  /**
    * Holds the response of the last remote call.
    *
    * @var null
@@ -72,9 +65,6 @@ abstract class ClientTestCase extends BrowserTestCase {
    */
   public static function setUpBeforeClass() {
     static::handleBaseUrl();
-    if (empty(static::$cookieJar)) {
-      static::emptyCookieJar();
-    }
   }
 
   /**
@@ -85,13 +75,6 @@ abstract class ClientTestCase extends BrowserTestCase {
    */
   public function getResponse() {
     return $this->response;
-  }
-
-  /**
-   * Empty the cookie jar to create a new browsing session.
-   */
-  public static function emptyCookieJar() {
-    static::$cookieJar = new CookieJar();
   }
 
   /**
@@ -284,7 +267,7 @@ abstract class ClientTestCase extends BrowserTestCase {
    */
   public static function getHtmlClient() {
     return new Client([
-      'cookies' => static::$cookieJar,
+      'cookies' => static::getCookieJar(),
       'base_uri' => static::$baseUrl,
       'headers' => static::getSharedRequestHeaders() + [
           'Accept' => 'application/html',
@@ -302,7 +285,7 @@ abstract class ClientTestCase extends BrowserTestCase {
    */
   public static function getXmlClient() {
     return new Client([
-      'cookies' => static::$cookieJar,
+      'cookies' => static::getCookieJar(),
       'base_uri' => static::$baseUrl,
       'headers' => static::getSharedRequestHeaders() + [
           'Accept' => 'application/xml',
@@ -340,7 +323,7 @@ abstract class ClientTestCase extends BrowserTestCase {
    */
   public static function getDrupalCommandsClient() {
     return new Client([
-      'cookies' => static::$cookieJar,
+      'cookies' => static::getCookieJar(),
       'base_uri' => static::$baseUrl,
       'headers' => static::getSharedRequestHeaders() + [
           'Accept' => 'application/vnd.drupal7+json',
@@ -358,7 +341,7 @@ abstract class ClientTestCase extends BrowserTestCase {
    */
   public static function getJsonClient() {
     return new Client([
-      'cookies' => static::$cookieJar,
+      'cookies' => static::getCookieJar(),
       'base_uri' => static::$baseUrl,
       'headers' => static::getSharedRequestHeaders() + [
           'Accept' => 'application/json',
@@ -488,7 +471,7 @@ abstract class ClientTestCase extends BrowserTestCase {
    */
   public function assertUrlRedirectsTo($redirected_url, $url) {
     $options = [
-      'cookies' => static::$cookieJar,
+      'cookies' => static::getCookieJar(),
       'allow_redirects' => FALSE,
       'headers' => static::getSharedRequestHeaders(),
     ];
