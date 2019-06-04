@@ -60,6 +60,13 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
   protected $content;
 
   /**
+   * Stores the most recent headless response.
+   *
+   * @var
+   */
+  protected $response;
+
+  /**
    * {@inheritdoc}
    */
   public function getBrowser() {
@@ -296,30 +303,97 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
   }
 
   /**
-   * Assert the response code at a given URL.
+   * Assert the status code at a given URL equals expected.
    *
-   * @param int $expected_http_status_code
+   * @param int $expected_status_code
    *   The expected status code.
    * @param string $url
-   *   The URL to check for a respnose code.
+   *   The URL to access.
    *
    * @return \AKlump\DrupalTest\BrowserTestCase
    *   Self for chaining.
    */
-  public function assertHttpStatusCodeAtUrl($expected_http_status_code, $url) {
+  public function assertUrlStatusCodeEquals($expected_status_code, $url) {
+    $assertion = function ($response) use ($expected_status_code) {
+      $this->assertEquals($expected_status_code, $response->getStatusCode(), "HTTP status code of " . $response->getStatusCode() . " does not equal expected $expected_status_code.");
+    };
+
+    return $this->requestThenAssert($assertion, $url, 'HEAD', $assertion);
+  }
+
+  /**
+   * Assert the status code at a given URL does not equal a value.
+   *
+   * @param int $expected_status_code
+   *   The status code to not equal.
+   * @param string $url
+   *   The URL to access.
+   *
+   * @return \AKlump\DrupalTest\BrowserTestCase
+   *   Self for chaining.
+   */
+  public function assertUrlStatusCodeNotEquals($expected_status_code, $url) {
+    $assertion = function ($response) use ($expected_status_code) {
+      $this->assertNotEquals($expected_status_code, $response->getStatusCode(), "HTTP status code of " . $response->getStatusCode() . " should not equal $expected_status_code.");
+    };
+
+    return $this->requestThenAssert($assertion, $url, 'HEAD', $assertion);
+  }
+
+  /**
+   * Assert an URL returns a certain content type header.
+   *
+   * @param string $expected_content_type
+   *   The expected mime-type in the content-type header.
+   * @param string $url
+   *   The URL to access.
+   *
+   * @return \AKlump\DrupalTest\BrowserTestCase
+   *   Self for chaining.
+   */
+  public function assertUrlContentTypeEquals($expected_content_type, $url) {
+    return $this->requestThenAssert(function ($response) use ($expected_content_type) {
+      $actual = $response->getHeader('content-type');
+      $actual = array_pop($actual);
+      $this->assertEquals($expected_content_type, $actual, "Actual content type \"$actual\" does not match expected \"$expected_content_type\".");
+    }, $url);
+  }
+
+  /**
+   * Shared helper function to make a HEAD request and then assertions.
+   *
+   * Note: this will also set $this->response.
+   *
+   * @param callable $callback
+   *   Callback that receives ($request) and must make one or more assertions.
+   * @param string $url
+   *   The URL to make a head request against.
+   * @param string $method
+   *   The http method to use, defaults to 'HEAD'.
+   *
+   * @return $this
+   *   Self for chaining.
+   */
+  protected function requestThenAssert(callable $callback, $url, $method = 'HEAD', callable $on_fail = NULL) {
     $client = $this->getClient();
     $url = $this->resolveUrl($url);
     if (empty($url)) {
       throw new \RuntimeException("\$url cannot be empty");
     }
     try {
-      $response = $client->head($url);
-      $this->assertEquals($expected_http_status_code, $response->getStatusCode(), "HTTP status code of " . $response->getStatusCode() . " does not equal expected $expected_http_status_code.");
+      $method = strtolower($method);
+      $this->response = $client->{$method}($url);
+      $callback($this->response);
+
     }
     catch (BadResponseException $exception) {
       $this->response = $exception->getResponse();
-      $code = $this->response->getStatusCode();
-      $this->assertEquals($expected_http_status_code, $code, "HTTP status code of " . $code . " does not equal expected $expected_http_status_code.");
+      if (is_callable($on_fail)) {
+        $on_fail($this->response);
+      }
+      else {
+        $this->fail($exception->getMessage());
+      }
     }
 
     return $this;
@@ -449,7 +523,8 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
    *   An instance.
    */
   public function getClient(array $options = []) {
-    $options = [
+    $options += [
+      'base_uri' => static::$baseUrl,
       'cookies' => static::getCookieJar(),
       'allow_redirects' => TRUE,
     ];

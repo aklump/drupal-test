@@ -4,7 +4,6 @@ namespace AKlump\DrupalTest;
 
 use AKlump\DrupalTest\Utilities\DestructiveTrait;
 use GuzzleHttp\Client;
-use GuzzleHttp\Cookie\CookieJar;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Psr7\Response;
@@ -266,9 +265,7 @@ abstract class ClientTestCase extends BrowserTestCase {
    * @link http://docs.guzzlephp.org/en/stable/quickstart.html#using-responses
    */
   public static function getHtmlClient() {
-    return new Client([
-      'cookies' => static::getCookieJar(),
-      'base_uri' => static::$baseUrl,
+    return static::getClient([
       'headers' => static::getSharedRequestHeaders() + [
           'Accept' => 'application/html',
         ],
@@ -284,9 +281,7 @@ abstract class ClientTestCase extends BrowserTestCase {
    * @link http://docs.guzzlephp.org/en/stable/quickstart.html#using-responses
    */
   public static function getXmlClient() {
-    return new Client([
-      'cookies' => static::getCookieJar(),
-      'base_uri' => static::$baseUrl,
+    return static::getClient([
       'headers' => static::getSharedRequestHeaders() + [
           'Accept' => 'application/xml',
         ],
@@ -302,10 +297,7 @@ abstract class ClientTestCase extends BrowserTestCase {
    * @return $this
    *  Self for chaining.
    *
-   * @code
-   * $this->loadHeadByUrl('get/discussion-guide/22')
-   *   ->assertContentType('application/pdf');
-   * @endcode
+   * @deprecated
    */
   public function assertContentType($expected_type) {
     $actual_type = strtolower($this->getSession()
@@ -322,9 +314,7 @@ abstract class ClientTestCase extends BrowserTestCase {
    *   The client to use for requests.
    */
   public static function getDrupalCommandsClient() {
-    return new Client([
-      'cookies' => static::getCookieJar(),
-      'base_uri' => static::$baseUrl,
+    return static::getClient([
       'headers' => static::getSharedRequestHeaders() + [
           'Accept' => 'application/vnd.drupal7+json',
         ],
@@ -340,9 +330,7 @@ abstract class ClientTestCase extends BrowserTestCase {
    * @link http://docs.guzzlephp.org/en/stable/quickstart.html#using-responses
    */
   public static function getJsonClient() {
-    return new Client([
-      'cookies' => static::getCookieJar(),
-      'base_uri' => static::$baseUrl,
+    return static::getClient([
       'headers' => static::getSharedRequestHeaders() + [
           'Accept' => 'application/json',
         ],

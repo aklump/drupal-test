@@ -1,3 +1,8 @@
+## 0.6.0
+ 
+* `assertHttpStatusCodeAtUrl` renamed to `assertUrlStatusCodeEquals`.
+* `assertContentType` has been replaced with `assertUrlContentTypeEquals`.
+
 ## 0.5.3
 
 * Signature changed for `\AKlump\DrupalTest\BrowserTestCase::el()`.  You must pass `false` as the second argument to avoid an exception when `$css_selector` finds more than one node.
