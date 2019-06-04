@@ -264,8 +264,8 @@ abstract class ClientTestCase extends BrowserTestCase {
    *
    * @link http://docs.guzzlephp.org/en/stable/quickstart.html#using-responses
    */
-  public static function getHtmlClient() {
-    return static::getClient([
+  public function getHtmlClient() {
+    return $this->getClient([
       'headers' => static::getSharedRequestHeaders() + [
           'Accept' => 'application/html',
         ],
@@ -280,8 +280,8 @@ abstract class ClientTestCase extends BrowserTestCase {
    *
    * @link http://docs.guzzlephp.org/en/stable/quickstart.html#using-responses
    */
-  public static function getXmlClient() {
-    return static::getClient([
+  public function getXmlClient() {
+    return $this->getClient([
       'headers' => static::getSharedRequestHeaders() + [
           'Accept' => 'application/xml',
         ],
@@ -313,8 +313,8 @@ abstract class ClientTestCase extends BrowserTestCase {
    * @return \GuzzleHttp\Client
    *   The client to use for requests.
    */
-  public static function getDrupalCommandsClient() {
-    return static::getClient([
+  public function getDrupalCommandsClient() {
+    return $this->getClient([
       'headers' => static::getSharedRequestHeaders() + [
           'Accept' => 'application/vnd.drupal7+json',
         ],
@@ -329,8 +329,8 @@ abstract class ClientTestCase extends BrowserTestCase {
    *
    * @link http://docs.guzzlephp.org/en/stable/quickstart.html#using-responses
    */
-  public static function getJsonClient() {
-    return static::getClient([
+  public function getJsonClient() {
+    return $this->getClient([
       'headers' => static::getSharedRequestHeaders() + [
           'Accept' => 'application/json',
         ],
@@ -444,44 +444,6 @@ abstract class ClientTestCase extends BrowserTestCase {
   public function tearDown() {
     $this->response = NULL;
     CommandAssertion::handleAssertions($this);
-  }
-
-  /**
-   * Assert that one URL redirects to another.
-   *
-   * @param string $redirected_url
-   *   The expected destinaton URL.
-   * @param string $url
-   *   The URL that will redirect.
-   *
-   * @return $this
-   *   Self for chaining.
-   */
-  public function assertUrlRedirectsTo($redirected_url, $url) {
-    $options = [
-      'cookies' => static::getCookieJar(),
-      'allow_redirects' => FALSE,
-      'headers' => static::getSharedRequestHeaders(),
-    ];
-    $url = $this->resolveUrl($url);
-    $client = new Client($options);
-    if (empty($url)) {
-      throw new \RuntimeException("\$url cannot be empty");
-    }
-    try {
-      $response = $client->head($url);
-      $location = $response->getHeader('location');
-      if (!empty($location)) {
-        $location = reset($location);
-        $redirected_url = $this->resolveUrl($redirected_url, TRUE);
-      }
-      static::assertThat($redirected_url === $location, static::isTrue(), "Failed asserting that $url redirects to $redirected_url");
-    }
-    catch (ClientException $e) {
-      $this->fail($e->getMessage());
-    }
-
-    return $this;
   }
 
 }
