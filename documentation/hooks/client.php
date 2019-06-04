@@ -68,12 +68,36 @@ $reader->addClassToScan('\AKlump\DrupalTest\Utilities\Generators', [
 ]);
 
 /**
+ * Create the DocumentElement group.
+ */
+$reader->addClassToScan('\Behat\Mink\Element\Element', [
+  PhpClassMethodReader::EXCLUDE,
+  ['/^()$/'],
+], 'DocumentElement');
+$reader->addClassToScan('\Behat\Mink\Element\TraversableElement', [
+  PhpClassMethodReader::EXCLUDE,
+  ['/^()$/'],
+], 'DocumentElement');
+$reader->addClassToScan('\Behat\Mink\Element\DocumentElement', [
+  PhpClassMethodReader::EXCLUDE,
+  ['/^()$/'],
+], 'DocumentElement');
+
+/**
  * Create the NodeElement group.
  */
+$reader->addClassToScan('\Behat\Mink\Element\Element', [
+  PhpClassMethodReader::EXCLUDE,
+  ['/^()$/'],
+], 'NodeElement');
+$reader->addClassToScan('\Behat\Mink\Element\TraversableElement', [
+  PhpClassMethodReader::EXCLUDE,
+  ['/^()$/'],
+], 'NodeElement');
 $reader->addClassToScan('\Behat\Mink\Element\NodeElement', [
   PhpClassMethodReader::EXCLUDE,
   ['/^()$/'],
-]);
+], 'NodeElement');
 
 /**
  * Create the Parser.
