@@ -2,7 +2,7 @@
 
 <html>
 <head>
-  <title>CHANGELOG</title>
+  <title>Changelog</title>
   <link href="search/tipuesearch.css" rel="stylesheet">
   <link href="style.css" rel="stylesheet">
 </head>
@@ -23,9 +23,39 @@
   </section>
 
 
-<h1>CHANGELOG</h1>
+<h1>Changelog</h1>
 
-<section><h2>0.6.0</h2>
+<section>
+
+<p>All notable changes to this project will be documented in this file.</p>
+
+<p>The format is based on <a href="https://keepachangelog.com/en/1.0.0/">Keep a Changelog</a>,
+and this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semantic Versioning</a>.</p>
+
+<h2>[Unreleased]</h2>
+
+<h2>[0.7.0] - 2019-06-11</h2>
+
+<h3>Added</h3>
+
+<ul>
+<li>Supports PhpUnit 6 and PHP 7.2; you will need to replace <code>testSuiteLoaderClass="PHPUnit_Runner_StandardTestSuiteLoader"</code> with <code>testSuiteLoaderClass="PHPUnit\Runner\StandardTestSuiteLoader"</code> in your <em>phpunit.xml</em> file.</li>
+</ul>
+
+<h3>Removed</h3>
+
+<ul>
+<li>Removed support for PHP 5</li>
+<li>Removed support for PhpUnit &lt; 6 for Client and E2E tests.</li>
+</ul>
+
+<h2>[0.6.1] - 2019-06-11</h2>
+
+<ul>
+<li>Final version supporting PHP 5 and PHPUnit &lt; 6</li>
+</ul>
+
+<h2>0.6.0</h2>
 
 <ul>
 <li><code>getDrupalCommandsClient</code> is no longer static.</li>
@@ -114,7 +144,7 @@ $el = $this-&gt;getDomElements([
 <footer>
   <div class="pager"><a href="README.html" class="prev README">&laquo;Drupal Test</a><a href="index.html" class="index pager__book-title">Drupal Test</a><a href="extending.html" class="next extending">Extending Classes&raquo;</a></div>  
   <div id="footer-legaleeze">
-    <p class="legaleeze center">Version: 0.6.1 &bull; Last Updated: Tue, 11 Jun 2019 16:25:44 -0700</p>
+    <p class="legaleeze center">Version: 0.7.0 &bull; Last Updated: Tue, 11 Jun 2019 16:29:50 -0700</p>
   </div>
 </footer>
 
