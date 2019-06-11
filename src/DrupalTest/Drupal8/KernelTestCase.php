@@ -41,13 +41,6 @@ abstract class KernelTestCase extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * {@inheritdoc}
-   */
-  public function setUp() {
-    $this->easyMockSetUp();
-  }
-
-  /**
    * Assert HTML markup contains a class.
    *
    * This is helpful for testing theme renders.
