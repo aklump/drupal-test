@@ -17,13 +17,6 @@ abstract class KernelTestCase extends \PHPUnit_Framework_TestCase {
   use EasyMockTrait;
 
   /**
-   * {@inheritdoc}
-   */
-  public function setUp() {
-    $this->easyMockSetUp();
-  }
-
-  /**
    * Tracks if the Kernel tests have bootstrapped Drupal.
    *
    * @var bool

@@ -17,13 +17,6 @@ abstract class UnitTestCase extends \PHPUnit_Framework_TestCase {
   /**
    * {@inheritdoc}
    */
-  public function setUp() {
-    $this->easyMockSetUp();
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public function getService($service_name) {
     return \Drupal::getContainer()->get(ltrim($service_name, '@'));
   }
