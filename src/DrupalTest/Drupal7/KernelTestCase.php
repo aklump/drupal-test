@@ -18,13 +18,6 @@ abstract class KernelTestCase extends TestCase {
   use EasyMockTrait;
 
   /**
-   * {@inheritdoc}
-   */
-  public function setUp() {
-    $this->easyMockSetUp();
-  }
-
-  /**
    * Tracks if the Kernel tests have bootstrapped Drupal.
    *
    * @var bool
