@@ -231,7 +231,7 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
    *   An instance to use for asserting.
    */
   public function assert($fail_message = '') {
-    if (get_class($this->response) === 'GuzzleHttp\Psr7\Response') {
+    if ($this->response && get_class($this->response) === 'GuzzleHttp\Psr7\Response') {
       $this->webAssert = new GuzzleWebAssert($this);
     }
     else {
@@ -257,6 +257,7 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
    */
   public function assertElementExists($css_selector, $failure_message = '') {
     $this->assert($failure_message)->elementExists('css', $css_selector);
+    $this->assertTrue(TRUE);
 
     return $this;
   }
@@ -273,8 +274,8 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
    *   Self for chaining.
    */
   public function assertElementNotExists($css_selector, $failure_message = '') {
-    $this->assert($failure_message)
-      ->elementNotExists('css', $css_selector);
+    $this->assert($failure_message)->elementNotExists('css', $css_selector);
+    $this->assertTrue(TRUE);
 
     return $this;
   }
