@@ -3,6 +3,7 @@
 namespace AKlump\DrupalTest;
 
 use GuzzleHttp\Psr7\Response;
+use PHPUnit\Framework\TestCase;
 
 /**
  * A PHPUnit Helper to assert Drupal 7 Command arrays.
@@ -77,12 +78,12 @@ class CommandAssertion {
   /**
    * Process all registered assertions.
    *
-   * This should be called from \PHPUnit_Framework_TestCase::TearDown.
+   * This should be called from \PHPUnit\Framework\TestCase::TearDown.
    *
-   * @param \PHPUnit_Framework_TestCase $test_case
+   * @param \PHPUnit\Framework\TestCase $test_case
    *   The PHPUnit Test Runner.
    */
-  public static function handleAssertions(\PHPUnit_Framework_TestCase $test_case) {
+  public static function handleAssertions(TestCase $test_case) {
     foreach (self::$assertions as $test) {
 
       $commands = json_decode($test->response->getBody());

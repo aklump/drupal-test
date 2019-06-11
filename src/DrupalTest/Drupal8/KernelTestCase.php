@@ -2,6 +2,7 @@
 
 namespace AKlump\DrupalTest\Drupal8;
 
+use AKlump\LoftTesting\PhpUnit\TestCase;
 use AKlump\PHPUnit\EasyMockTrait;
 use Drupal\Driver\DrupalDriver;
 
@@ -12,7 +13,7 @@ use Drupal\Driver\DrupalDriver;
  * Extend this class when a unit test is too mockey or relies on too many
  * outside things, e.g. constants and global functions.
  */
-abstract class KernelTestCase extends \PHPUnit_Framework_TestCase {
+abstract class KernelTestCase extends TestCase {
 
   use EasyMockTrait;
 

@@ -1,3 +1,23 @@
+# Changelog
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+## [0.7.0] - 2019-06-11
+### Added
+- Supports PhpUnit 6 and PHP 7.2; you will need to replace `testSuiteLoaderClass="PHPUnit_Runner_StandardTestSuiteLoader"` with `testSuiteLoaderClass="PHPUnit\Runner\StandardTestSuiteLoader"` in your _phpunit.xml_ file.
+  
+### Removed
+- Removed support for PHP 5
+- Removed support for PhpUnit < 6 for Client and E2E tests.
+
+## [0.6.1] - 2019-06-11
+
+* Final version supporting PHP 5 and PHPUnit < 6
+
 ## 0.6.0
  
 * `getDrupalCommandsClient` is no longer static.
