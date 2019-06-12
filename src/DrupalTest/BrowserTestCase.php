@@ -183,8 +183,10 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
     if ($limit_to_one && count($el) > 1) {
       throw new \RuntimeException("Expecting a single element for ::el($css_selector); for multiple elements use ::els() or set \$limit_to_one to false.");
     }
+    $el = reset($el);
+    $this->assertInstanceOf(NodeElement::class, $el);
 
-    return reset($el);
+    return $el;
   }
 
   /**
@@ -199,7 +201,10 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
    *   All located node elements.
    */
   public function els($css_selector) {
-    return $this->getSession()->getPage()->findAll('css', $css_selector);
+    $els = $this->getSession()->getPage()->findAll('css', $css_selector);
+    $this->assertNotEmpty($els);
+
+    return $els;
   }
 
   /**
@@ -215,8 +220,10 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
    */
   public function loadPageByUrl($url) {
     $url = $this->resolveUrl($url);
+    $this->assertNotEmpty($url);
     $this->getSession()->visit($url);
     $this->content = $this->getSession()->getPage()->getContent();
+    $this->assertNotEmpty($this->content);
 
     return $this;
   }
