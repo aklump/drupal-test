@@ -9,6 +9,7 @@ use AKlump\DrupalTest\Utilities\WebAssert;
 use GuzzleHttp\Client;
 use GuzzleHttp\Cookie\CookieJar;
 use GuzzleHttp\Exception\BadResponseException;
+use Behat\Mink\Element\NodeElement;
 
 /**
  * A base class for Browser Tests.
