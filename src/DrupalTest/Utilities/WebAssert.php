@@ -46,7 +46,6 @@ class WebAssert extends MinkWebAssert implements AssertInterface {
   protected function assert($condition, $message) {
     if ($condition) {
       $this->testcase->assertThat(TRUE, $this->testcase->isTrue());
-
     }
     else {
       $this->testcase->fail(empty($this->message) ? $message : $this->message);

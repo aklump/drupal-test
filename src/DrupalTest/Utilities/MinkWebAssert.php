@@ -727,6 +727,8 @@ class MinkWebAssert {
    */
   protected function assert($condition, $message) {
     if ($condition) {
+      $this->testcase->assertTrue(TRUE, $message);
+
       return;
     }
 
@@ -743,6 +745,8 @@ class MinkWebAssert {
    */
   private function assertResponseText($condition, $message) {
     if ($condition) {
+      $this->testcase->assertTrue(TRUE, $message);
+
       return;
     }
 
@@ -760,6 +764,8 @@ class MinkWebAssert {
    */
   private function assertElement($condition, $message, Element $element) {
     if ($condition) {
+      $this->testcase->assertTrue(TRUE, $message);
+
       return;
     }
 
@@ -777,6 +783,8 @@ class MinkWebAssert {
    */
   private function assertElementText($condition, $message, Element $element) {
     if ($condition) {
+      $this->testcase->assertTrue(TRUE, $message);
+
       return;
     }
 
