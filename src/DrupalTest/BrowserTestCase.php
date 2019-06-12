@@ -82,11 +82,15 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
    * This should be called in ::setUpBeforeClass.
    */
   protected static function handleBaseUrl() {
-    if (!($url = getenv('TEST_BASE_URL')) && !($url = getenv('SIMPLETEST_BASE_URL'))) {
-      static::markTestSkipped("Missing environment variable: TEST_BASE_URL or SIMPLETEST_BASE_URL");
+    if (empty(static::$baseUrl)) {
+      if (!($url = getenv('TEST_BASE_URL')) && !($url = getenv('SIMPLETEST_BASE_URL'))) {
+        static::markTestSkipped("Missing environment variable: TEST_BASE_URL or SIMPLETEST_BASE_URL");
+      }
+      static::$baseUrl = rtrim($url, '/');
+
+      // TODO Move this to a onBeforeFirstTest extension hook?
+      echo "Testing against: " . static::$baseUrl . "\n";
     }
-    static::$baseUrl = rtrim($url, '/');
-    echo "Testing against: " . static::$baseUrl;
   }
 
   /**
