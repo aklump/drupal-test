@@ -9,7 +9,6 @@ use AKlump\DrupalTest\Utilities\WebAssert;
 use GuzzleHttp\Client;
 use GuzzleHttp\Cookie\CookieJar;
 use GuzzleHttp\Exception\BadResponseException;
-use Behat\Mink\Element\NodeElement;
 
 /**
  * A base class for Browser Tests.
@@ -186,7 +185,6 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
       throw new \RuntimeException("Expecting a single element for ::el($css_selector); for multiple elements use ::els() or set \$limit_to_one to false.");
     }
     $el = reset($el);
-    $this->assertInstanceOf(NodeElement::class, $el);
 
     return $el;
   }
@@ -204,7 +202,6 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
    */
   public function els($css_selector) {
     $els = $this->getSession()->getPage()->findAll('css', $css_selector);
-    $this->assertNotEmpty($els);
 
     return $els;
   }
