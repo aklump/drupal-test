@@ -57,6 +57,6 @@ function exact_match_dir() {
 
 update_dir bin
 source "$root/_update.sh"
-cd $app && composer update --lock || exit 1
+cd $app && composer update || exit 1
 
 echo && echo "Updated to the latest version."
