@@ -53,7 +53,7 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
   protected $webAssert;
 
   /**
-   * The loaded content from loadPageByUrl.
+   * The loaded content from most recent loadPageByUrl.
    *
    * @var string
    */
@@ -62,9 +62,18 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
   /**
    * Stores the most recent headless response.
    *
-   * @var
+   * @var \GuzzleHttp\Psr7\Response
    */
   protected $response;
+
+  /**
+   * Contains the most recent response object.
+   *
+   * This can be used to determine headless or not.
+   *
+   * @var mixed
+   */
+  protected $lastResponse;
 
   /**
    * {@inheritdoc}
@@ -225,7 +234,8 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
     $url = $this->resolveUrl($url);
     $this->assertNotEmpty($url);
     $this->getSession()->visit($url);
-    $this->content = $this->getSession()->getPage()->getContent();
+    $this->lastResponse = $this->getSession()->getPage();
+    $this->content = $this->lastResponse->getContent();
     $this->assertNotEmpty($this->content);
 
     return $this;
@@ -241,7 +251,8 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
    *   An instance to use for asserting.
    */
   public function assert($fail_message = '') {
-    if ($this->response && get_class($this->response) === 'GuzzleHttp\Psr7\Response') {
+    if (isset($this->lastResponse)
+      && get_class($this->lastResponse) === 'GuzzleHttp\Psr7\Response') {
       $this->webAssert = new GuzzleWebAssert($this);
     }
     else {
@@ -431,6 +442,8 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
         $this->fail($exception->getMessage());
       }
     }
+
+    $this->lastResponse = $this->response;
 
     return $this;
   }
