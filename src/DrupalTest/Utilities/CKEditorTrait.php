@@ -4,6 +4,8 @@
 namespace AKlump\DrupalTest\Utilities;
 
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Trait CKEditorTrait helps to simplify tests against a CK Editor.
  *
@@ -23,7 +25,7 @@ trait CKEditorTrait {
    * @return \AKlump\DrupalTest\Utilities\CKEditorTrait
    *   Self for chaining.
    */
-  public function setCkEditorValue(string $css_selector, $value): CKEditorTrait {
+  public function setCkEditorValue(string $css_selector, $value): TestCase {
     $id = $this->el($css_selector)->getAttribute('id');
     $js = implode('', [
       "CKEDITOR.instances['",
