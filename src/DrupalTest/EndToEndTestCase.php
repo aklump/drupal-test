@@ -387,10 +387,10 @@ abstract class EndToEndTestCase extends BrowserTestCase {
    * @return \AKlump\DrupalTest\EndToEndTestCase
    *   Self for chaining.
    */
-  public function waitForObserver($css_selector) {
+  public function waitForObserver($css_selector, $balloon_message = '') {
     if ($element = $this->requireElement($css_selector)) {
       if ($this->observerIsObserving) {
-        $this->injectObserverUiIntoDom($css_selector);
+        $this->injectObserverUiIntoDom($css_selector, $balloon_message);
 
         // When button is clicked it is removed and the waitFor will continue.
         $this->waitFor(function () {
@@ -521,7 +521,7 @@ JS;
       return "document.getElementsByClassName('$selector')[0]";
     }
     elseif ($type === '#') {
-      return "document.getElementsById('$selector')";
+      return "document.getElementById('$selector')";
     }
 
     return "document.getElementsByTagName('$css_selector')[0]";
@@ -534,7 +534,7 @@ JS;
    * @param string $css_selector
    *   The element to attach our observation UI to.
    */
-  protected function injectObserverUiIntoDom($css_selector) {
+  protected function injectObserverUiIntoDom($css_selector, $short_message) {
     $button_title = $this->getObserverButtonTitle();
     $this->injectCssStyles($this->getObserverUiCssStyles());
     $class_name = $this->observerButtonClasses;
@@ -544,16 +544,29 @@ JS;
     $next_selector = $this->getJavascriptSelectorCode('.observe__next');
 
     // Create a "continue" button and then wait for it to be removed from the DOM.
-    $js = "(function(){ 
+    $js = <<<JS
+(function(){ 
   var el = ${selector};
   var pointer = document.createElement('button');
-  pointer.innerHTML = '${button_title}';
   pointer.className = '${class_name}';
   pointer.addEventListener('click', function() {
     this.remove();
   }, false);
   el.after(pointer);
-  
+  pointer.innerHTML = '${button_title}';
+JS;
+    if ($short_message) {
+      $short_message = str_replace("'", "\'", strip_tags($short_message));
+      $js .= <<<JS
+   pointer.innerHTML += '<div class="observe__message">${short_message}</div>';     
+   // var message = document.createElement('div');
+   // message.innerHTML = '${short_message}';
+   // message.className = 'observe__message';
+   // pointer.before(message);
+JS;
+    }
+    $js .= <<<JS
+  pointer.innerHTML = '${button_title}';
   function getOffsetTop(element) {
     // Starting value is the offset from the top edge the button will appear.
     var offsetTop = -20;
@@ -567,7 +580,8 @@ JS;
   // Scroll to make sure the button is visible.
   var y = getOffsetTop(${next_selector});
   document.documentElement.scrollTop = document.body.scrollTop = y;
-})();";
+})();
+JS;
     $this
       ->getSession()
       ->executeScript(trim($js));
@@ -584,6 +598,7 @@ JS;
   protected function getObserverUiCssStyles() {
     return /** @lang CSS */ <<<CSS
 .observe__next {
+  position: relative;
   margin-left: .5em;
   -moz-box-shadow:inset 0px 39px 0px -24px #fbafe3;
   -webkit-box-shadow:inset 0px 39px 0px -24px #fbafe3;
@@ -602,6 +617,7 @@ JS;
   padding:6px 15px;
   text-decoration:none;
   z-index: 10000;
+  outline: none;
 }
 .observe__next:hover {
   background-color:#ef027d;
@@ -624,6 +640,34 @@ JS;
 }
 .observe__next.is-debug-breakpoint:hover {
   background-color:#5cbf2a;
+}
+.observe__message {
+    position: absolute;
+    padding: 6px 15px;
+    margin: 0;
+    color: #fff;
+    background-color:#ff5bb0;
+    -moz-border-radius:4px;
+    -webkit-border-radius:4px;
+    border-radius:4px;
+    text-align: left;
+    transform: translateY(-100%);
+    top: -30px;
+    left: 0;
+    font-size: 16px;
+    text-shadow: none;
+    width: 30vw;
+}
+.observe__message:after {
+    content: "";
+    position: absolute;
+    bottom: -40px;
+    left: 50px;
+    border-width: 0 20px 40px 0px;
+    border-style: solid;
+    border-color: transparent #ff5bb0;
+    display: block;
+    width: 0;
 }
 CSS;
   }
