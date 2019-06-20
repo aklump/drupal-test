@@ -1056,7 +1056,7 @@ CSS;
    * @return int|null
    *   The id or NULL if not found.
    */
-  protected function getIdFromCurrentUrl() {
+  public function getIdFromCurrentUrl() {
     return ($id = $this->getMatchedFromCurrentUrl('/\/(\d+)\/?/')) === NULL ? NULL : (int) $id;
   }
 
@@ -1070,7 +1070,7 @@ CSS;
    * @return mixed
    *   Null if not found, otherwise the [1] as found by $regex.
    */
-  protected function getMatchedFromCurrentUrl(string $regex) {
+  public function getMatchedFromCurrentUrl(string $regex) {
     preg_match($regex, $this->getSession()->getCurrentUrl(), $matches);
 
     return $matches[1] ?? NULL;

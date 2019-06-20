@@ -29,7 +29,7 @@ $reader->excludeFromAll([
  */
 $reader->addClassToScan('\AKlump\DrupalTest\BrowserTestCase', [
   PhpClassMethodReader::EXCLUDE,
-  ['/^(getBrowser)$/'],
+  ['/^(getBrowser|setUp)$/'],
 ], 'ClientTestCase');
 $reader->addClassToScan('\aik099\PHPUnit\BrowserTestCase', [
   PhpClassMethodReader::INCLUDE,
@@ -39,7 +39,7 @@ $reader->addClassToScan('\AKlump\DrupalTest\ClientTestCase', [
   PhpClassMethodReader::EXCLUDE,
   [
     '/^setUp/',
-    '/^(resolveSchemaFilename|tearDown|getSharedRequestHeaders)$/',
+    '/^(resolveSchemaFilename|tearDown|getSharedRequestHeaders|setUp)$/',
   ],
 ]);
 
@@ -48,7 +48,7 @@ $reader->addClassToScan('\AKlump\DrupalTest\ClientTestCase', [
  */
 $reader->addClassToScan('\AKlump\DrupalTest\BrowserTestCase', [
   PhpClassMethodReader::EXCLUDE,
-  ['/^(getBrowser)$/'],
+  ['/^(getBrowser|setUp)$/'],
 ], 'EndToEndTestCase');
 $reader->addClassToScan('\aik099\PHPUnit\BrowserTestCase', [
   PhpClassMethodReader::INCLUDE,
@@ -56,7 +56,7 @@ $reader->addClassToScan('\aik099\PHPUnit\BrowserTestCase', [
 ], 'EndToEndTestCase');
 $reader->addClassToScan('\AKlump\DrupalTest\EndToEndTestCase', [
   PhpClassMethodReader::EXCLUDE,
-  ['/^(isBrowserOnline|injectCssStyles)$/'],
+  ['/^(isBrowserOnline|injectCssStyles|.+AssertPreConditions|setUp)$/'],
 ]);
 
 /**
