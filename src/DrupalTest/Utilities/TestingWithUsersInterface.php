@@ -25,11 +25,13 @@ interface TestingWithUsersInterface {
    *   establishUser, in which case this method will use that context.
    * @param string $password
    *   The password.
+   * @param string $destination_url
+   *   An optional value to set as query string ?destination=.
    *
    * @return \PHPUnit\Framework\TestCase
    *   Self for chaining.
    */
-  public function loginUser(string $username = '', string $password = ''): TestCase;
+  public function loginUser(string $username = '', string $password = '', string $destination_url = ''): TestCase;
 
   /**
    * Destroy any current logged in user session.
