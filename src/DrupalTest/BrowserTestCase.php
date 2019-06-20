@@ -373,13 +373,21 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
    *   The expected status code.
    * @param string $url
    *   The URL to access.
+   * @param string $message
+   *   You may use '@status' as a placeholder to be filled with the actual
+   *   status.
    *
    * @return \AKlump\DrupalTest\BrowserTestCase
    *   Self for chaining.
    */
-  public function assertUrlStatusCodeEquals($status_code, $url) {
-    $assertion = function ($response) use ($status_code) {
-      static::assertThat($status_code == $response->getStatusCode(), static::isTrue(), "HTTP status code of " . $response->getStatusCode() . " does not equal expected $status_code.");
+  public function assertUrlStatusCodeEquals($status_code, $url, $message = '') {
+    $assertion = function ($response) use ($status_code, $message) {
+      $actual_status = $response->getStatusCode();
+      if (empty($message)) {
+        $message = "HTTP status code of @status does not equal expected $status_code.";
+      }
+
+      static::assertThat($status_code == $actual_status, static::isTrue(), str_replace('@status', $actual_status, $message));
     };
 
     return $this->requestThenAssert($assertion, $url, [], 'HEAD', $assertion);
