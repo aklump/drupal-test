@@ -2,6 +2,7 @@
 
 namespace AKlump\DrupalTest;
 
+use aik099\PHPUnit\Session\ISessionStrategyFactory;
 use AKlump\DrupalTest\Utilities\DestructiveTrait;
 use AKlump\DrupalTest\Utilities\EmailHandlerInterface;
 use AKlump\DrupalTest\Utilities\InteractiveTrait;
@@ -30,7 +31,7 @@ abstract class EndToEndTestCase extends BrowserTestCase {
       'host' => 'localhost',
       'port' => 4444,
       'browserName' => 'chrome',
-      'sessionStrategy' => 'shared',
+      'sessionStrategy' => ISessionStrategyFactory::TYPE_SHARED,
     ),
   );
 
@@ -489,7 +490,7 @@ JS;
    */
   public function requireElement($css_selector) {
     if (!($element = $this->el($css_selector))) {
-      $this->fail('Missing element .' . $css_selector);
+      $this->fail('Missing element ' . $css_selector);
     }
 
     return $element ? $element : NULL;
@@ -979,6 +980,29 @@ CSS;
   }
 
   /**
+   * Make sure a web session has begun by visiting the homepage.
+   *
+   * @return \WebDriver\Session
+   *   The web driver session.
+   */
+  protected function ensureWebSessionStarted() {
+    $web_driver_session = $this->getSession()
+      ->getDriver()
+      ->getWebDriverSession();
+
+    // We have to start up a web driver session if not yet started, or else
+    // cookie sharing will fail.
+    if (!$web_driver_session) {
+      $web_driver_session = $this->loadPageByUrl('/')
+        ->getSession()
+        ->getDriver()
+        ->getWebDriverSession();
+    }
+
+    return $web_driver_session;
+  }
+
+  /**
    * Return a headless client with the session and cookies from the browser.
    *
    * One use case where this is needed it to check the HTTP status code of an
@@ -994,12 +1018,19 @@ CSS;
    *   attached.
    */
   public function getClient(array $options = []) {
-
-    // Import all the cookies from the current browsing session.
-    if ($cookies = $this->getSession()
+    $web_driver_session = $this->getSession()
       ->getDriver()
-      ->getWebDriverSession()
-      ->getAllCookies()) {
+      ->getWebDriverSession();
+
+    // We have to start up a web driver session if not yet started, or else
+    // cookie sharing will fail.
+    if (!$web_driver_session) {
+      $web_driver_session = $this->ensureWebSessionStarted();
+    }
+
+    // Import all the cookies from the current web-driver browsing session if
+    // it's been started yet.
+    if (($cookies = $web_driver_session->getAllCookies())) {
       foreach ($cookies as $cookie) {
         $cookie = new SetCookie([
           'Domain' => $cookie['domain'],
@@ -1015,6 +1046,34 @@ CSS;
     }
 
     return parent::getClient();
+  }
+
+  /**
+   * Extract the numeric ID from current URL.
+   *
+   * This can be used to pull the Node ID or User ID, for example.
+   *
+   * @return int|null
+   *   The id or NULL if not found.
+   */
+  protected function getIdFromCurrentUrl() {
+    return ($id = $this->getMatchedFromCurrentUrl('/\/(\d+)\/?/')) === NULL ? NULL : (int) $id;
+  }
+
+  /**
+   * Extract an part of the current URL using a regex expression.
+   *
+   * @param string $regex
+   *   The regex to use to match the desired part of the current url.  The
+   *   value at [1] will be used so be sure to include parentheses.
+   *
+   * @return mixed
+   *   Null if not found, otherwise the [1] as found by $regex.
+   */
+  protected function getMatchedFromCurrentUrl(string $regex) {
+    preg_match($regex, $this->getSession()->getCurrentUrl(), $matches);
+
+    return $matches[1] ?? NULL;
   }
 
 }

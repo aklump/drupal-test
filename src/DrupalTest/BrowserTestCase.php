@@ -19,7 +19,8 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
   /**
    * Holds data from the generator, keyed by method name.
    *
-   * Use this to access earlier generated data, later in the test.
+   * Use this to access earlier generated data, later in the test or test
+   * suite.  This persists across all test in a single test suite run.
    *
    * @var \stdClass
    */
@@ -96,6 +97,7 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
         $dispatcher = new EventDispatcher();
         $dispatcher->addListener(static::TEST_SUITE_ENDED_EVENT, function () {
           $this->onAfterLastTest();
+          self::$fixturesEstablished = FALSE;
         });
         $this->setEventDispatcher($dispatcher);
       }
