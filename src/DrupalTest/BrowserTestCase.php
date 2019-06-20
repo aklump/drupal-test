@@ -9,6 +9,7 @@ use AKlump\DrupalTest\Utilities\WebAssert;
 use GuzzleHttp\Client;
 use GuzzleHttp\Cookie\CookieJar;
 use GuzzleHttp\Exception\BadResponseException;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
  * A base class for Browser Tests.
@@ -46,6 +47,13 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
   protected static $cookieJar;
 
   /**
+   * Holds if the event listener is established yet.
+   *
+   * @var bool
+   */
+  private static $fixturesEstablished = FALSE;
+
+  /**
    * Holds an instance with the current session.
    *
    * @var \AKlump\DrupalTest\Utilities\WebAssert
@@ -74,6 +82,40 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
    * @var mixed
    */
   protected $lastResponse;
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setUp() {
+    // Create two extra fixtures: onBeforeFirstTest, onAfterLastTest.
+    if (!self::$fixturesEstablished) {
+      if (method_exists($this, 'onBeforeFirstTest')) {
+        $this->onBeforeFirstTest();
+      }
+      if (method_exists($this, 'onAfterLastTest')) {
+        $dispatcher = new EventDispatcher();
+        $dispatcher->addListener(static::TEST_SUITE_ENDED_EVENT, function () {
+          $this->onAfterLastTest();
+        });
+        $this->setEventDispatcher($dispatcher);
+      }
+      self::$fixturesEstablished = TRUE;
+    }
+  }
+
+  /**
+   * Non-static method called before the first test suite and after ::setUp.
+   */
+  public function onBeforeFirstTest() {
+
+  }
+
+  /**
+   * Non-static method called after the final test is called.
+   */
+  public function onAfterLastTest() {
+
+  }
 
   /**
    * {@inheritdoc}
