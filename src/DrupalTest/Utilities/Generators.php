@@ -156,6 +156,9 @@ class Generators {
       $user = $this->username();
     }
     $parsed = parse_url($this->config['baseUrl']);
+    if (!pathinfo($this->config['baseUrl'], PATHINFO_EXTENSION)) {
+      $parsed['host'] = "website.com";
+    }
 
     return $user . '@' . $parsed['host'];
   }
