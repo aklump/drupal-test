@@ -15,7 +15,7 @@ Using the `\AKlump\DrupalTest\EndToEndTestCase` tests, you can:
 
 ## Test Implementation
 
-1. In `setUpBeforeClass` indicate the email handler to use.  At this time there is only one provided handler, `AKlump\DrupalTest\Utilities\UnixMail`, but you may write your own by implementing `\AKlump\DrupalTest\Utilities\EmailHandlerInterface`.
+1. In `setUpBeforeClass` indicate the email handler to use.  At this time there are two handlers, `AKlump\DrupalTest\Utilities\UnixMail` and `\AKlump\DrupalTest\Utilities\MailhogMail`, and you may write your own by implementing `\AKlump\DrupalTest\Utilities\EmailHandlerInterface`.
         
         use AKlump\DrupalTest\Utilities\UnixMail;
         ...
@@ -46,6 +46,8 @@ Using the `\AKlump\DrupalTest\EndToEndTestCase` tests, you can:
 
 ## On the Drupal Side of Things
 
+### Reroute Email Module
+
 1. Install the [reroute email module](https://www.drupal.org/project/reroute_email).
 1. Route all email so that your `EmailHandlerInterface` can retrieve it.
 1. You can determine the email address used by your handler with `\AKlump\DrupalTest\Utilities\EmailHandlerInterface::getInboxAddress`.  For example, you could do this temporarily and then read the console output:
@@ -55,6 +57,9 @@ Using the `\AKlump\DrupalTest\EndToEndTestCase` tests, you can:
             echo $this->emailHandler->getInboxAddress(); die;
           }
 
+### MailHog
+
+When using [Lando](https://docs.devwithlando.io/) this is the strategy to use; use [MailHog](https://github.com/mailhog/MailHog) and `\AKlump\DrupalTest\Utilities\MailhogMail`.
 
 ## Sending Test Emails with Bash
 
