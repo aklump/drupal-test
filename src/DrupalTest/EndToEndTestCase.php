@@ -50,6 +50,29 @@ abstract class EndToEndTestCase extends BrowserTestCase {
   private static $emailHandler;
 
   /**
+   * True when the test is being observed.
+   *
+   * @var bool
+   */
+  private static $observerIsObserving = FALSE;
+
+  /**
+   * The configured title of the continue button as shown to the observer.
+   *
+   * @var string
+   */
+  private static $observerButton = '▶';
+
+  /**
+   * An array of classes to be added to the observer button.
+   *
+   * This can be used to affect it's appearance.
+   *
+   * @var array
+   */
+  private static $observerButtonClasses = [];
+
+  /**
    * Holds the response of the last remote call.
    *
    * @var null
@@ -62,30 +85,6 @@ abstract class EndToEndTestCase extends BrowserTestCase {
    * @var \Behat\Mink\Element\NodeElement
    */
   protected $page;
-
-  /**
-   * True when the test is being observed.
-   *
-   * @var bool
-   */
-  private $observerIsObserving = FALSE;
-
-  /**
-   * The configured title of the continue button as shown to the observer.
-   *
-   * @var string
-   * @see ::getObserverButtonTitle
-   */
-  private $observerButton = '';
-
-  /**
-   * An array of classes to be added to the observer button.
-   *
-   * This can be used to affect it's appearance.
-   *
-   * @var array
-   */
-  private $observerButtonClasses = [];
 
   /**
    * {@inheritdoc}
@@ -228,7 +227,7 @@ abstract class EndToEndTestCase extends BrowserTestCase {
     $to = $this->getEmailHandler()->getInboxAddress();
     $this->waitFor(function () use (&$emails, $expected_count) {
       $new = $this->getEmailHandler()->readMail();
-      if ($this->observerIsObserving) {
+      if (self::$observerIsObserving) {
         foreach ($new as $email) {
           $body = $email->getMessageBody('text');
           $this->waitForObserverPopup(Popup::create($body)
@@ -357,14 +356,15 @@ abstract class EndToEndTestCase extends BrowserTestCase {
    * the previous state.  It also changes the button title to Debugger.
    */
   public function debugger() {
-    $stash = [
-      $this->observerButton,
-      $this->observerButtonClasses,
-    ];
     // https://unicode.org/emoji/charts/full-emoji-list.html#25b6.
-    $this->beginObservation('▶', ['is-debug-breakpoint']);
-    $this->waitForObserver('body');
-    $this->beginObservation($stash[0], $stash[1]);
+    $this->injectObserverUiIntoDom('body', '▶', '', ['is-debug-breakpoint']);
+
+    // When button is clicked it is removed and the waitFor will continue.
+    $this->waitFor(function () {
+      return !$this->el('.observe__next');
+    }, 'Pause for debugging', 0);
+
+    return $this;
   }
 
   /**
@@ -390,14 +390,27 @@ abstract class EndToEndTestCase extends BrowserTestCase {
    */
   public function waitForObserver($css_selector, $balloon_message = '') {
     if ($element = $this->requireElement($css_selector)) {
-      if ($this->observerIsObserving) {
-        $this->injectObserverUiIntoDom($css_selector, $balloon_message);
+      if (self::$observerIsObserving) {
+        $this->injectObserverUiIntoDom($css_selector, self::$observerButton, $balloon_message, self::$observerButtonClasses);
 
         // When button is clicked it is removed and the waitFor will continue.
         $this->waitFor(function () {
           return !$this->el('.observe__next');
         }, 'Pause while demo is explained', 0);
       }
+    }
+
+    return $this;
+  }
+
+  public function waitForFinished() {
+    if (self::$observerIsObserving) {
+      $this->injectObserverUiIntoDom('body', '🛑', '', ['is-final-screen']);
+
+      // When button is clicked it is removed and the waitFor will continue.
+      $this->waitFor(function () {
+        return !$this->el('.observe__next');
+      }, 'Pause after demo has ended.', 0);
     }
 
     return $this;
@@ -416,11 +429,15 @@ abstract class EndToEndTestCase extends BrowserTestCase {
    * @throws \Behat\Mink\Exception\UnsupportedDriverActionException
    */
   public function waitForObserverPopup(Popup $popup) {
-    if (!$this->observerIsObserving) {
+    if (!self::$observerIsObserving) {
       return $this;
     }
     $this->injectCssStyles($this->getPopupCssStyles());
     $container_markup = str_replace('"', '\"', $popup->getContainerInnerHtml());
+    // Some non-printable chars cause problems with the JS popup, so we remove them here.
+    // @link https://stackoverflow.com/questions/1176904/php-how-to-remove-all-non-printable-characters-in-a-string
+    // @link https://alvinalexander.com/php/how-to-remove-non-printable-characters-in-string-regex
+    $container_markup = preg_replace('/[\x00-\x1F\x80-\xFF]/u', '', $container_markup);
     $js = <<<JS
 (function(){ 
   var popup = document.createElement('div');
@@ -461,22 +478,32 @@ JS;
    *   A title to override the default text.
    * @param array $button_css_classes
    *   Optional classes to add to the button.
+   *
+   * @return \PHPUnit\Framework\TestCase.
+   *   Self for chaining.
    */
   public function beginObservation($button_title = '', array $button_css_classes = []) {
-    $this->observerIsObserving = TRUE;
+    self::$observerIsObserving = TRUE;
     if ($button_title) {
-      $this->observerButton = $button_title;
+      self::$observerButton = $button_title;
     }
-    $this->observerButtonClasses = $button_css_classes;
+    if ($button_css_classes) {
+      self::$observerButtonClasses = $button_css_classes;
+    }
+
+    return $this;
   }
 
   /**
    * Turn off observation mode.
+   *
+   * @return \AKlump\LoftTesting\PhpUnit\TestCase
+   *   Self for chaining.
    */
   public function endObservation() {
-    $this->observerIsObserving = FALSE;
-    $this->observerButton = '';
-    $this->observerButtonClasses = [];
+    self::$observerIsObserving = FALSE;
+
+    return $this;
   }
 
   /**
@@ -494,16 +521,6 @@ JS;
     }
 
     return $element ? $element : NULL;
-  }
-
-  /**
-   * Get the title of the observer continue button to use.
-   *
-   * @return string
-   *   The overridden or default title.
-   */
-  protected function getObserverButtonTitle() {
-    return $this->observerButton ? $this->observerButton : '&nbsp;';
   }
 
   /**
@@ -534,13 +551,20 @@ JS;
    *
    * @param string $css_selector
    *   The element to attach our observation UI to.
+   * @param string $button_title
+   *   The title to display on the button.
+   * @param string $short_message
+   *   A short message to popup above the button.
+   * @param array $button_classes
+   *   An array of classes to apply to the button.
+   *
+   * @throws \Behat\Mink\Exception\DriverException
+   * @throws \Behat\Mink\Exception\UnsupportedDriverActionException
    */
-  protected function injectObserverUiIntoDom($css_selector, $short_message) {
-    $button_title = $this->getObserverButtonTitle();
+  protected function injectObserverUiIntoDom($css_selector, $button_title, $short_message = '', array $button_classes = []) {
     $this->injectCssStyles($this->getObserverUiCssStyles());
-    $class_name = $this->observerButtonClasses;
-    array_unshift($class_name, 'observe__next');
-    $class_name = implode(' ', $class_name);
+    array_unshift($button_classes, 'observe__next');
+    $class_name = implode(' ', $button_classes);
     $selector = $this->getJavascriptSelectorCode($css_selector);
     $next_selector = $this->getJavascriptSelectorCode('.observe__next');
 
@@ -599,6 +623,9 @@ JS;
   protected function getObserverUiCssStyles() {
     return /** @lang CSS */ <<<CSS
 .observe__next {
+  height: initial;
+  line-height: initial;
+  white-space: normal;
   position: relative;
   margin-left: .5em;
   -moz-box-shadow:inset 0px 39px 0px -24px #fbafe3;
@@ -642,6 +669,26 @@ JS;
 .observe__next.is-debug-breakpoint:hover {
   background-color:#5cbf2a;
 }
+.observe__next.is-final-screen {
+  position: fixed;
+  top: .25em;
+  right: .25em;
+  -moz-box-shadow:inset 0px 39px 0px -24px #c62d1f;
+  -webkit-box-shadow:inset 0px 39px 0px -24px #c62d1f;
+  box-shadow:inset 0px 39px 0px -24px #c62d1f;
+  background-color:#e12f1f;
+  border:1px solid #ab161b;
+  text-shadow:0px 1px 0px #810e05;
+  z-index: 10000;
+}
+.observe__next.is-final-screen:hover {
+  background-color:#f24437;
+}
+.observe__next:after,
+.observe__next:before {
+  content: "";
+  padding: 0;
+}
 .observe__message {
     position: absolute;
     padding: 6px 15px;
@@ -662,9 +709,9 @@ JS;
 .observe__message:after {
     content: "";
     position: absolute;
-    bottom: -40px;
-    left: 50px;
-    border-width: 0 20px 40px 0px;
+    bottom: -35px;
+    left: 30px;
+    border-width: 0 0 35px 20px;
     border-style: solid;
     border-color: transparent #ff5bb0;
     display: block;
