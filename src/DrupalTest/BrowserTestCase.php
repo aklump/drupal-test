@@ -206,7 +206,12 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
       throw new \RuntimeException("::getElements() must come after starting a Mink session.");
     }
 
-    return array_combine($css_selectors, array_map(function ($selector) use ($page) {
+    return array_combine(array_map(function ($selector) {
+      list($selector, $alias) = explode(' as ', $selector . ' as ');
+
+      return $alias ? $alias : $selector;
+    }, $css_selectors), array_map(function ($selector) use ($page) {
+      list($selector) = explode(' as ', $selector);
       $el = $page->findAll('css', $selector);
       $this->assertNotEmpty($el, "Cannot locate $selector in the DOM.");
       $this->assertCount(1, $el, "\"$selector\" must only return a single node.");
@@ -460,7 +465,7 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
    * Note: this will also set $this->response.
    *
    * @param callable $callback
-   *   Callback that receives ($request) and must make one or more assertions.
+   *   Callback that receives ($response) and must make one or more assertions.
    * @param string $url
    *   The URL to make a head request against.
    * @param array $client_options
@@ -528,8 +533,8 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
    *
    * @param string $method
    *   Any method on \AKlump\DrupalTest\Utilities\Generators.  If you pass a
-   *   string with a colon, e.g. 'title:my_title', the latter will be used as
-   *   the storage key.
+   *   string with an alias, e.g. 'title as my_title', the latter will be used
+   *   as the storage key.
    * @param ...
    *   Any additional params will be sent to generator function.
    *
@@ -543,6 +548,7 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
         'baseUrl' => static::$baseUrl,
       ]);
     }
+    $method = str_replace(' as ', ':', $method);
     list($method, $as) = explode(':', $method) + [NULL, NULL];
     $args = func_get_args();
     array_shift($args);
