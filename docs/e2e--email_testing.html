@@ -44,7 +44,7 @@
 <h2>Test Implementation</h2>
 
 <ol>
-<li><p>In <code>setUpBeforeClass</code> indicate the email handler to use.  At this time there is only one provided handler, <code>AKlump\DrupalTest\Utilities\UnixMail</code>, but you may write your own by implementing <code>\AKlump\DrupalTest\Utilities\EmailHandlerInterface</code>.</p>
+<li><p>In <code>setUpBeforeClass</code> indicate the email handler to use.  At this time there are two handlers, <code>AKlump\DrupalTest\Utilities\UnixMail</code> and <code>\AKlump\DrupalTest\Utilities\MailhogMail</code>, and you may write your own by implementing <code>\AKlump\DrupalTest\Utilities\EmailHandlerInterface</code>.</p>
 
 <pre><code>use AKlump\DrupalTest\Utilities\UnixMail;
 ...
@@ -115,6 +115,8 @@ public static function setUpBeforeClass() {
 
 <h2>On the Drupal Side of Things</h2>
 
+<h3>Reroute Email Module</h3>
+
 <ol>
 <li>Install the <a href="https://www.drupal.org/project/reroute_email">reroute email module</a>.</li>
 <li>Route all email so that your <code>EmailHandlerInterface</code> can retrieve it.</li>
@@ -126,6 +128,10 @@ public static function setUpBeforeClass() {
   }
 </code></pre></li>
 </ol>
+
+<h3>MailHog</h3>
+
+<p>When using <a href="https://docs.devwithlando.io/">Lando</a> this is the strategy to use; use <a href="https://github.com/mailhog/MailHog">MailHog</a> and <code>\AKlump\DrupalTest\Utilities\MailhogMail</code>.</p>
 
 <h2>Sending Test Emails with Bash</h2>
 
@@ -144,7 +150,7 @@ public static function setUpBeforeClass() {
 <footer>
   <div class="pager"><a href="e2e--interactive.html" class="prev e2e--interactive">&laquo;Interactive Tests</a><a href="index.html" class="index pager__book-title">Drupal Test</a><a href="e2e--example.html" class="next e2e--example">An Example End To End Test&raquo;</a></div>  
   <div id="footer-legaleeze">
-    <p class="legaleeze center">Version: 0.7.6 &bull; Last Updated: Wed, 12 Jun 2019 14:56:02 -0700</p>
+    <p class="legaleeze center">Version: 0.7.7 &bull; Last Updated: Thu, 15 Aug 2019 22:32:18 -0700</p>
   </div>
 </footer>
 
