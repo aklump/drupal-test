@@ -74,6 +74,49 @@
 </tbody>
 </table>
 
+<h2>Traits</h2>
+
+<table>
+<thead>
+<tr>
+  <th>CKEditorTrait</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><strong>setCkEditorValue</strong> <em>(string $css_selector, $value)</em></td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<thead>
+<tr>
+  <th>InteractiveTrait</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><strong>assertPreConditions</strong> <em>()</em></td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<thead>
+<tr>
+  <th>TimeTrait</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><strong>setTimeValue</strong> <em>($css_selector, $time)</em></td>
+</tr>
+</tbody>
+</table>
+
+<h2>EndToEndTestCase</h2>
+
 <table>
 <thead>
 <tr>
@@ -665,6 +708,79 @@ class Test {
 </tr>
 </tbody>
 </table>
+
+<h2>Helpers</h2>
+
+<table>
+<thead>
+<tr>
+  <th>Balloon</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><strong>__construct</strong> <em>(string $message)</em></td>
+</tr>
+<tr>
+  <td><strong>after</strong> <em>()</em></td>
+</tr>
+<tr>
+  <td><strong>before</strong> <em>()</em></td>
+</tr>
+<tr>
+  <td><strong>create</strong> <em>($message)</em></td>
+</tr>
+<tr>
+  <td><strong>delay</strong> <em>(integer $seconds)</em></td>
+</tr>
+<tr>
+  <td><strong>dispatch</strong> <em>(string $callback_name)</em></td>
+</tr>
+<tr>
+  <td><strong>el</strong> <em>(string $css_selector)</em></td>
+</tr>
+<tr>
+  <td><strong>getBody</strong> <em>()</em></td>
+</tr>
+<tr>
+  <td><strong>getCssSelector</strong> <em>($default = '')</em></td>
+</tr>
+<tr>
+  <td><strong>getOffset</strong> <em>()</em></td>
+</tr>
+<tr>
+  <td><strong>getPosition</strong> <em>($default = '')</em></td>
+</tr>
+<tr>
+  <td><strong>getTitle</strong> <em>()</em></td>
+</tr>
+<tr>
+  <td><strong>offset</strong> <em>(integer $x, integer $y)</em></td>
+</tr>
+<tr>
+  <td><strong>onAfterShow</strong> <em>(callable $callback)</em></td>
+</tr>
+<tr>
+  <td><strong>onBeforeShow</strong> <em>(callable $callback)</em></td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<thead>
+<tr>
+  <th>Url</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><strong>__construct</strong> <em>($url)</em></td>
+</tr>
+<tr>
+  <td><strong>toString</strong> <em>()</em></td>
+</tr>
+</tbody>
+</table>
 </section>
 
 <div class="search__results">
@@ -674,7 +790,7 @@ class Test {
 <footer>
   <div class="pager"><a href="e2e--example.html" class="prev e2e--example">&laquo;An Example End To End Test</a><a href="index.html" class="index pager__book-title">Drupal Test</a><a href="e2e--fixtures.html" class="next e2e--fixtures">Extra Fixtures&raquo;</a></div>  
   <div id="footer-legaleeze">
-    <p class="legaleeze center">Version: 0.8.0 &bull; Last Updated: Fri, 16 Aug 2019 12:44:54 -0700</p>
+    <p class="legaleeze center">Version: 0.8.1 &bull; Last Updated: Fri, 16 Aug 2019 13:02:25 -0700</p>
   </div>
 </footer>
 
