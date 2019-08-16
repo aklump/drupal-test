@@ -429,7 +429,7 @@ JS;
    * @throws \Behat\Mink\Exception\DriverException
    * @throws \Behat\Mink\Exception\UnsupportedDriverActionException
    */
-  public function waitForObserver($display_object) {
+  public function waitForObserver($display_object = NULL) {
     if ($display_object instanceof Popup) {
       $this->waitForObserverPopup($display_object);
     }
@@ -448,11 +448,11 @@ JS;
         NULL,
       ];
       $display_object = Balloon::create($balloon_message)
-        ->el($css_selector)
+        ->el(strval($css_selector))
         ->{$position}()
         ->delay(intval($before));
       if (is_callable($after)) {
-        $css_selector->onAfterShow($after);
+        $display_object->onAfterShow($after);
       }
     }
 
