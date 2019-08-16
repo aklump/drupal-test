@@ -80,7 +80,7 @@
   <td><strong>assertUrlRedirectsTo</strong> <em>($final_url, $url)</em></td>
 </tr>
 <tr>
-  <td><strong>assertUrlStatusCodeEquals</strong> <em>($status_code, $url)</em></td>
+  <td><strong>assertUrlStatusCodeEquals</strong> <em>($status_code, $url, $message = '')</em></td>
 </tr>
 <tr>
   <td><strong>assertUrlStatusCodeNotEquals</strong> <em>($status_code, $url)</em></td>
@@ -135,6 +135,15 @@
 </tr>
 <tr>
   <td><strong>loadXmlByUrl</strong> <em>($url)</em></td>
+</tr>
+<tr>
+  <td><strong>onAfterLastTest</strong> <em>()</em></td>
+</tr>
+<tr>
+  <td><strong>onBeforeFirstTest</strong> <em>()</em></td>
+</tr>
+<tr>
+  <td><strong>resolveUrl</strong> <em>($url, $remove_authentication_credentials = false)</em></td>
 </tr>
 <tr>
   <td><strong>store</strong> <em>($key, $value)</em></td>
@@ -597,7 +606,7 @@ class Test {
 <footer>
   <div class="pager"><a href="cl--client.html" class="prev cl--client">&laquo;Client Tests</a><a href="index.html" class="index pager__book-title">Drupal Test</a><a href="cl--example.html" class="next cl--example">Client Test Examples&raquo;</a></div>  
   <div id="footer-legaleeze">
-    <p class="legaleeze center">Version: 0.7.6 &bull; Last Updated: Wed, 12 Jun 2019 14:56:00 -0700</p>
+    <p class="legaleeze center">Version: 0.7.7 &bull; Last Updated: Thu, 15 Aug 2019 22:32:17 -0700</p>
   </div>
 </footer>
 
