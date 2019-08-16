@@ -27,23 +27,34 @@
 
 <section>
 
-<p>The idea here is that you can build a client demo using an end to end test.  Then you may run the test in front of your client pausing as necessary to explain or discuss.  You must define the "breakpoints" in your test code using <code>::waitForObserver</code>.  You have the ability to run the test either in demonstration mode or not.  The following code illuminates this feature.</p>
+<p>The idea here is that you can build a client demo using an end to end test, with very little extra work.  Then you may run the test in front of your client pausing as necessary to explain or discuss.  You must define the "breakpoints" in your test code using <code>::waitForObserver</code>.</p>
+
+<p>You have the ability to run the test under observation mode which then stops at the defined breakpoints.  The following code illuminates this feature.</p>
 
 <h2>Enable Observation Mode</h2>
 
-<p>At the very least you must call <code>::beginObservation</code>.  How you implement this is up to you.  At some point after that in the test class you should call <code>::waitForObserver</code> one or more times.</p>
+<p>At the very least you must call <code>::beginObservation</code>.  How you implement this is up to you.</p>
 
-<h3>Toggle observation mode with ENV</h3>
+<p>The next practical requirement is that you call <code>::waitForObserver</code> at least once.</p>
+
+<p>When in observation mode, the <code>body</code> of the document will have the class <code>is-being-observed</code>.  Additional observation-only CSS can be added, see below for more info.</p>
+
+<h3>Toggle observation mode with ENV variables</h3>
 
 <ul>
-<li><p>In this implementation, we use the environment variable to be able to toggle the observation mode on or off, in this way you can run this as a test or a demo.  We do it in <code>::setUp</code> as a means of running observation mode throughout the entire test.</p>
+<li><p>In this implementation, we expect an environment variable <code>TEST_DEMO</code> to be truthy when the test should be run in observation mode.  We detect and enable in <code>::setUp</code> as a means of running observation mode for all methods of the test class.</p>
 
-<pre><code>public function setUp() {
+<pre><code>public function onBeforeFirstTest() {
   if (getenv('TEST_DEMO')) {
 
     // The argument defines the button text.
     $this-&gt;beginObservation('Continue demo');
+
+    // We can set the window size for observations.
+    // 130 handles the top bar stuff.
+    $this-&gt;getSession()-&gt;getDriver()-&gt;resizeWindow(1366, 1024 + 130);
   }
+  parent::onBeforeFirstTest();
 }
 </code></pre></li>
 <li><p>Read the docblocs for <code>::beginObservation</code> and <code>::endObservation</code> for more info.</p></li>
@@ -70,6 +81,47 @@
 
 <p><img src="images/observation-mode.jpg" alt="Observation Mode" /></p>
 
+<h2>Adding a Breakpoint Balloon</h2>
+
+<p>Here is a code example for adding an observation balloon, see <code>\AKlump\DrupalTest\Utilities\Balloon</code> for more info.</p>
+
+<pre><code>    $this-&gt;waitForObserver(
+      Balloon::create('Notice this part here.')
+        -&gt;el('.t-interesting-div')
+        -&gt;before()
+        -&gt;delay(1)
+    );
+</code></pre>
+
+<p><img src="images/balloon.jpg" alt="Balloon" /></p>
+
+<h2>Adding a Breakpoint Popup</h2>
+
+<p>The popup is a nice way to begin a demonstration, i.e., a title page.</p>
+
+<p>The use of an icon is optional, but in this example you can see that we pass it an SVG string, which is defined as a class constant for easy reuse.  In practice you might define the CONST as a trait or super test class.</p>
+
+<pre><code>    &lt;?php
+
+    class WebsiteEndToEndTest extends AbstractEndToEndTest {
+
+      const STAR = '&lt;svg xmlns="http://www.w3.org/2000/svg" width="267" height="254" viewBox="0 0 267 254"&gt;&lt;polygon fill="#D8D8D8" fill-rule="evenodd" stroke="#979797" points="133.5 209.75 52.092 252.549 67.639 161.899 1.779 97.701 92.796 84.476 133.5 2 174.204 84.476 265.221 97.701 199.361 161.899 214.908 252.549"/&gt;&lt;/svg&gt;';
+
+      public function testCanLoadHomepage() {
+        $this-&gt;loadPageByUrl('/');
+
+        $this-&gt;waitForObserver(
+          Popup::create("Welcome to your website demo")
+            -&gt;setTitle('Website Demo')
+            -&gt;setIcon(self::STAR)
+        );
+      }
+
+    }
+</code></pre>
+
+<p><img src="images/popup.jpg" alt="Popup" /></p>
+
 <h2>Add Custom CSS During Observation Mode</h2>
 
 <ul>
@@ -90,7 +142,7 @@
 <footer>
   <div class="pager"><a href="e2e--fixtures.html" class="prev e2e--fixtures">&laquo;Extra Fixtures</a><a href="index.html" class="index pager__book-title">Drupal Test</a><a href="m--manual.html" class="next manual">Add Manual Tests&raquo;</a></div>  
   <div id="footer-legaleeze">
-    <p class="legaleeze center">Version: 0.7.7 &bull; Last Updated: Thu, 15 Aug 2019 22:32:20 -0700</p>
+    <p class="legaleeze center">Version: 0.8.0 &bull; Last Updated: Fri, 16 Aug 2019 12:44:55 -0700</p>
   </div>
 </footer>
 
