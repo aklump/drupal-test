@@ -4,7 +4,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.8] - 2019-08-16
+### Added
+- Support for MailHog
+- Added `\AKlump\DrupalTest\Utilities\TimeTrait` for E2E tests.
+- Added custom CSS for observation mode; see docs for more info.
+  
+### Changed
+- `WaitForObserver()` should now receive a single object, an instance of `\AKlump\DrupalTest\Utilities\DisplayObjectInterface`; for the balloon you should pass in instance of `\AKlump\DrupalTest\Utilities\Balloon`
+  
+### Deprecated
+- Non-object arguments to `WaitForObserver()`
+  
+### Removed
+- `WaitForObserverPopup()`; simply replace all calls to this method from tests with `WaitForObserver()`.
+  
+### Fixed
+- Various bugs.
 
 ## [0.7.0] - 2019-06-11
 ### Added
