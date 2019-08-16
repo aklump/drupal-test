@@ -9,6 +9,7 @@ use AKlump\DrupalTest\Utilities\WebAssert;
 use GuzzleHttp\Client;
 use GuzzleHttp\Cookie\CookieJar;
 use GuzzleHttp\Exception\BadResponseException;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
  * A base class for Browser Tests.
@@ -18,7 +19,8 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
   /**
    * Holds data from the generator, keyed by method name.
    *
-   * Use this to access earlier generated data, later in the test.
+   * Use this to access earlier generated data, later in the test or test
+   * suite.  This persists across all test in a single test suite run.
    *
    * @var \stdClass
    */
@@ -46,6 +48,13 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
   protected static $cookieJar;
 
   /**
+   * Holds if the event listener is established yet.
+   *
+   * @var bool
+   */
+  private static $fixturesEstablished = FALSE;
+
+  /**
    * Holds an instance with the current session.
    *
    * @var \AKlump\DrupalTest\Utilities\WebAssert
@@ -53,7 +62,7 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
   protected $webAssert;
 
   /**
-   * The loaded content from loadPageByUrl.
+   * The loaded content from most recent loadPageByUrl.
    *
    * @var string
    */
@@ -62,9 +71,53 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
   /**
    * Stores the most recent headless response.
    *
-   * @var
+   * @var \GuzzleHttp\Psr7\Response
    */
   protected $response;
+
+  /**
+   * Contains the most recent response object.
+   *
+   * This can be used to determine headless or not.
+   *
+   * @var mixed
+   */
+  protected $lastResponse;
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setUp() {
+    // Create two extra fixtures: onBeforeFirstTest, onAfterLastTest.
+    if (!self::$fixturesEstablished) {
+      if (method_exists($this, 'onBeforeFirstTest')) {
+        $this->onBeforeFirstTest();
+      }
+      if (method_exists($this, 'onAfterLastTest')) {
+        $dispatcher = new EventDispatcher();
+        $dispatcher->addListener(static::TEST_SUITE_ENDED_EVENT, function () {
+          $this->onAfterLastTest();
+          self::$fixturesEstablished = FALSE;
+        });
+        $this->setEventDispatcher($dispatcher);
+      }
+      self::$fixturesEstablished = TRUE;
+    }
+  }
+
+  /**
+   * Non-static method called before the first test suite and after ::setUp.
+   */
+  public function onBeforeFirstTest() {
+
+  }
+
+  /**
+   * Non-static method called after the final test is called.
+   */
+  public function onAfterLastTest() {
+
+  }
 
   /**
    * {@inheritdoc}
@@ -105,7 +158,7 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
    * @return mixed|string
    *   An absolute URL.
    */
-  protected function resolveUrl($url, $remove_authentication_credentials = FALSE) {
+  public function resolveUrl($url, $remove_authentication_credentials = FALSE) {
     if (strpos($url, 'http') !== 0) {
       if (substr($url, 0, 1) !== '/') {
         throw new \RuntimeException("relative \$url must begin with a forward slash.");
@@ -153,7 +206,12 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
       throw new \RuntimeException("::getElements() must come after starting a Mink session.");
     }
 
-    return array_combine($css_selectors, array_map(function ($selector) use ($page) {
+    return array_combine(array_map(function ($selector) {
+      list($selector, $alias) = explode(' as ', $selector . ' as ');
+
+      return $alias ? $alias : $selector;
+    }, $css_selectors), array_map(function ($selector) use ($page) {
+      list($selector) = explode(' as ', $selector);
       $el = $page->findAll('css', $selector);
       $this->assertNotEmpty($el, "Cannot locate $selector in the DOM.");
       $this->assertCount(1, $el, "\"$selector\" must only return a single node.");
@@ -225,7 +283,8 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
     $url = $this->resolveUrl($url);
     $this->assertNotEmpty($url);
     $this->getSession()->visit($url);
-    $this->content = $this->getSession()->getPage()->getContent();
+    $this->lastResponse = $this->getSession()->getPage();
+    $this->content = $this->lastResponse->getContent();
     $this->assertNotEmpty($this->content);
 
     return $this;
@@ -241,7 +300,8 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
    *   An instance to use for asserting.
    */
   public function assert($fail_message = '') {
-    if ($this->response && get_class($this->response) === 'GuzzleHttp\Psr7\Response') {
+    if (isset($this->lastResponse)
+      && get_class($this->lastResponse) === 'GuzzleHttp\Psr7\Response') {
       $this->webAssert = new GuzzleWebAssert($this);
     }
     else {
@@ -320,13 +380,21 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
    *   The expected status code.
    * @param string $url
    *   The URL to access.
+   * @param string $message
+   *   You may use '@status' as a placeholder to be filled with the actual
+   *   status.
    *
    * @return \AKlump\DrupalTest\BrowserTestCase
    *   Self for chaining.
    */
-  public function assertUrlStatusCodeEquals($status_code, $url) {
-    $assertion = function ($response) use ($status_code) {
-      static::assertThat($status_code == $response->getStatusCode(), static::isTrue(), "HTTP status code of " . $response->getStatusCode() . " does not equal expected $status_code.");
+  public function assertUrlStatusCodeEquals($status_code, $url, $message = '') {
+    $assertion = function ($response) use ($status_code, $message) {
+      $actual_status = $response->getStatusCode();
+      if (empty($message)) {
+        $message = "HTTP status code of @status does not equal expected $status_code.";
+      }
+
+      static::assertThat($status_code == $actual_status, static::isTrue(), str_replace('@status', $actual_status, $message));
     };
 
     return $this->requestThenAssert($assertion, $url, [], 'HEAD', $assertion);
@@ -397,7 +465,7 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
    * Note: this will also set $this->response.
    *
    * @param callable $callback
-   *   Callback that receives ($request) and must make one or more assertions.
+   *   Callback that receives ($response) and must make one or more assertions.
    * @param string $url
    *   The URL to make a head request against.
    * @param array $client_options
@@ -432,6 +500,8 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
       }
     }
 
+    $this->lastResponse = $this->response;
+
     return $this;
   }
 
@@ -463,8 +533,8 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
    *
    * @param string $method
    *   Any method on \AKlump\DrupalTest\Utilities\Generators.  If you pass a
-   *   string with a colon, e.g. 'title:my_title', the latter will be used as
-   *   the storage key.
+   *   string with an alias, e.g. 'title as my_title', the latter will be used
+   *   as the storage key.
    * @param ...
    *   Any additional params will be sent to generator function.
    *
@@ -478,6 +548,7 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
         'baseUrl' => static::$baseUrl,
       ]);
     }
+    $method = str_replace(' as ', ':', $method);
     list($method, $as) = explode(':', $method) + [NULL, NULL];
     $args = func_get_args();
     array_shift($args);

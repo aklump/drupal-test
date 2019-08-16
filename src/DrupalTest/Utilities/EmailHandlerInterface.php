@@ -17,9 +17,9 @@ interface EmailHandlerInterface {
    * to ::readMail().  In other words no two calls to this method should ever
    * return the same email.
    *
-   * @return array
-   *   Each element is a raw MIME encoded email message.  Returns an empty
-   *   array if there is no unread mail.
+   * @return array[\PhpMimeMailParser\Parser]
+   *   Each element is an instance of \PhpMimeMailParser\Parser  Returns an
+   *   empty array if there is no unread mail.
    *
    * @throws \AKlump\DrupalTest\Utilities\MailOfflineException
    * @throws \AKlump\DrupalTest\Utilities\UnreadableMailException

@@ -2,6 +2,7 @@
 
 namespace AKlump\DrupalTest;
 
+use aik099\PHPUnit\Session\ISessionStrategyFactory;
 use AKlump\DrupalTest\Utilities\DestructiveTrait;
 use AKlump\DrupalTest\Utilities\EmailHandlerInterface;
 use AKlump\DrupalTest\Utilities\InteractiveTrait;
@@ -30,7 +31,7 @@ abstract class EndToEndTestCase extends BrowserTestCase {
       'host' => 'localhost',
       'port' => 4444,
       'browserName' => 'chrome',
-      'sessionStrategy' => 'shared',
+      'sessionStrategy' => ISessionStrategyFactory::TYPE_SHARED,
     ),
   );
 
@@ -49,6 +50,29 @@ abstract class EndToEndTestCase extends BrowserTestCase {
   private static $emailHandler;
 
   /**
+   * True when the test is being observed.
+   *
+   * @var bool
+   */
+  private static $observerIsObserving = FALSE;
+
+  /**
+   * The configured title of the continue button as shown to the observer.
+   *
+   * @var string
+   */
+  private static $observerButton = '▶';
+
+  /**
+   * An array of classes to be added to the observer button.
+   *
+   * This can be used to affect it's appearance.
+   *
+   * @var array
+   */
+  private static $observerButtonClasses = [];
+
+  /**
    * Holds the response of the last remote call.
    *
    * @var null
@@ -63,28 +87,11 @@ abstract class EndToEndTestCase extends BrowserTestCase {
   protected $page;
 
   /**
-   * True when the test is being observed.
-   *
-   * @var bool
-   */
-  private $observerIsObserving = FALSE;
-
-  /**
-   * The configured title of the continue button as shown to the observer.
+   * User-injected CSS to be included during observation.
    *
    * @var string
-   * @see ::getObserverButtonTitle
    */
-  private $observerButton = '';
-
-  /**
-   * An array of classes to be added to the observer button.
-   *
-   * This can be used to affect it's appearance.
-   *
-   * @var array
-   */
-  private $observerButtonClasses = [];
+  private $observationCss = '';
 
   /**
    * {@inheritdoc}
@@ -227,7 +234,7 @@ abstract class EndToEndTestCase extends BrowserTestCase {
     $to = $this->getEmailHandler()->getInboxAddress();
     $this->waitFor(function () use (&$emails, $expected_count) {
       $new = $this->getEmailHandler()->readMail();
-      if ($this->observerIsObserving) {
+      if (self::$observerIsObserving) {
         foreach ($new as $email) {
           $body = $email->getMessageBody('text');
           $this->waitForObserverPopup(Popup::create($body)
@@ -356,14 +363,15 @@ abstract class EndToEndTestCase extends BrowserTestCase {
    * the previous state.  It also changes the button title to Debugger.
    */
   public function debugger() {
-    $stash = [
-      $this->observerButton,
-      $this->observerButtonClasses,
-    ];
     // https://unicode.org/emoji/charts/full-emoji-list.html#25b6.
-    $this->beginObservation('▶', ['is-debug-breakpoint']);
-    $this->waitForObserver('body');
-    $this->beginObservation($stash[0], $stash[1]);
+    $this->injectObserverUiIntoDom('body', 'after', '▶', '', ['is-debug-breakpoint']);
+
+    // When button is clicked it is removed and the waitFor will continue.
+    $this->waitFor(function () {
+      return !$this->el('.observe__next');
+    }, 'Pause for debugging', 0);
+
+    return $this;
   }
 
   /**
@@ -371,6 +379,30 @@ abstract class EndToEndTestCase extends BrowserTestCase {
    */
   public function scrollTop() {
     $this->getSession()->executeScript('window.scrollTo(0,0);');
+  }
+
+  /**
+   * Scroll page so that an element's top is at window top.
+   *
+   * @param string $css_selector
+   *   The element selector.
+   * @param int $offset
+   *   An additional number of pixels from the top.
+   */
+  public function scrollToElementTop($css_selector, $offset = 20) {
+    // TODO Look at injectObserverUiIntoDom.
+    $selection = $this->getJavascriptSelectorCode($css_selector);
+    $js = <<<JS
+var el = ${selection};
+if (el !== undefined) {
+  var bound = el.getBoundingClientRect();
+  var y = window.pageYOffset;
+  var margin = bound.y < 0 ? -1 * $offset : $offset;
+  window.scrollTo(0, y + bound.y + margin);
+}
+JS;
+
+    $this->getSession()->executeScript($js);
   }
 
   /**
@@ -383,20 +415,71 @@ abstract class EndToEndTestCase extends BrowserTestCase {
    *
    * @param string $css_selector
    *   The CSS selector of the existing DOM element to attach our UI button to.
+   *    You can leave this blank to use the default .observe__anchor which is
+   *   created automatically if not already in the DOM and placed center
+   *   screen.
+   * @param string $balloon_message
+   *   The optional message to appear into a balloon, next to the button.
+   * @param string $position
+   *   One of 'after' or 'before'.
+   * @param int|callable $before
+   *   Pass a positive integer to delay the popup by that many seconds.  Pass a
+   *   callable to be called before displaying the popup.
+   * @param callable|null $after
+   *   A callback that is called after the message has been place and before
+   *   the waiting begins.  You could use this to scroll the page if you need
+   *   to.
    *
    * @return \AKlump\DrupalTest\EndToEndTestCase
    *   Self for chaining.
+   *
+   * @throws \Behat\Mink\Exception\DriverException
+   * @throws \Behat\Mink\Exception\UnsupportedDriverActionException
    */
-  public function waitForObserver($css_selector) {
+  public function waitForObserver($css_selector = NULL, $balloon_message = '', $position = 'after', $before = 0, callable $after = NULL) {
+    $this->assertTrue(TRUE);
+    $css_selector = empty($css_selector) ? '.observe__anchor' : $css_selector;
+    $this->injectObserverAnchors();
     if ($element = $this->requireElement($css_selector)) {
-      if ($this->observerIsObserving) {
-        $this->injectObserverUiIntoDom($css_selector);
-
+      if (self::$observerIsObserving) {
+        if ($before) {
+          if (is_callable($before)) {
+            $before();
+          }
+          elseif (is_numeric($before)) {
+            $this->wait($before);
+          }
+        }
+        $this->injectObserverUiIntoDom($css_selector, $position, self::$observerButton, $balloon_message, self::$observerButtonClasses);
+        //        $this->scrollToElementTop('.observe__message');
+        if (is_callable($after)) {
+          $after();
+        }
         // When button is clicked it is removed and the waitFor will continue.
         $this->waitFor(function () {
           return !$this->el('.observe__next');
         }, 'Pause while demo is explained', 0);
       }
+    }
+
+    return $this;
+  }
+
+  /**
+   * This is called automatically, so you needed add it generally.
+   *
+   * @return $this
+   * @throws \Behat\Mink\Exception\DriverException
+   * @throws \Behat\Mink\Exception\UnsupportedDriverActionException
+   */
+  public function waitForFinished() {
+    if (self::$observerIsObserving) {
+      $this->injectObserverUiIntoDom('body', 'after', '🛑', '', ['is-final-screen']);
+
+      // When button is clicked it is removed and the waitFor will continue.
+      $this->waitFor(function () {
+        return !$this->el('.observe__next');
+      }, 'Pause after demo has ended.', 0);
     }
 
     return $this;
@@ -415,11 +498,16 @@ abstract class EndToEndTestCase extends BrowserTestCase {
    * @throws \Behat\Mink\Exception\UnsupportedDriverActionException
    */
   public function waitForObserverPopup(Popup $popup) {
-    if (!$this->observerIsObserving) {
+    $this->assertTrue(TRUE);
+    if (!self::$observerIsObserving) {
       return $this;
     }
     $this->injectCssStyles($this->getPopupCssStyles());
     $container_markup = str_replace('"', '\"', $popup->getContainerInnerHtml());
+    // Some non-printable chars cause problems with the JS popup, so we remove them here.
+    // @link https://stackoverflow.com/questions/1176904/php-how-to-remove-all-non-printable-characters-in-a-string
+    // @link https://alvinalexander.com/php/how-to-remove-non-printable-characters-in-string-regex
+    $container_markup = preg_replace('/[\x00-\x1F\x80-\xFF]/u', '', $container_markup);
     $js = <<<JS
 (function(){ 
   var popup = document.createElement('div');
@@ -460,22 +548,32 @@ JS;
    *   A title to override the default text.
    * @param array $button_css_classes
    *   Optional classes to add to the button.
+   *
+   * @return \PHPUnit\Framework\TestCase.
+   *   Self for chaining.
    */
   public function beginObservation($button_title = '', array $button_css_classes = []) {
-    $this->observerIsObserving = TRUE;
+    self::$observerIsObserving = TRUE;
     if ($button_title) {
-      $this->observerButton = $button_title;
+      self::$observerButton = $button_title;
     }
-    $this->observerButtonClasses = $button_css_classes;
+    if ($button_css_classes) {
+      self::$observerButtonClasses = $button_css_classes;
+    }
+
+    return $this;
   }
 
   /**
    * Turn off observation mode.
+   *
+   * @return \AKlump\LoftTesting\PhpUnit\TestCase
+   *   Self for chaining.
    */
   public function endObservation() {
-    $this->observerIsObserving = FALSE;
-    $this->observerButton = '';
-    $this->observerButtonClasses = [];
+    self::$observerIsObserving = FALSE;
+
+    return $this;
   }
 
   /**
@@ -489,20 +587,10 @@ JS;
    */
   public function requireElement($css_selector) {
     if (!($element = $this->el($css_selector))) {
-      $this->fail('Missing element .' . $css_selector);
+      $this->fail('Missing element ' . $css_selector);
     }
 
     return $element ? $element : NULL;
-  }
-
-  /**
-   * Get the title of the observer continue button to use.
-   *
-   * @return string
-   *   The overridden or default title.
-   */
-  protected function getObserverButtonTitle() {
-    return $this->observerButton ? $this->observerButton : '&nbsp;';
   }
 
   /**
@@ -514,14 +602,17 @@ JS;
    * @return string
    *   The JS snippet to use.
    */
-  protected function getJavascriptSelectorCode($css_selector) {
+  public function getJavascriptSelectorCode($css_selector) {
     $selector = substr($css_selector, 1);
     $type = substr($css_selector, 0, 1);
     if ($type === '.') {
       return "document.getElementsByClassName('$selector')[0]";
     }
     elseif ($type === '#') {
-      return "document.getElementsById('$selector')";
+      return "document.getElementById('$selector')";
+    }
+    elseif ($type === '[') {
+      return "document.querySelectorAll('${type}${selector}')[0]";
     }
 
     return "document.getElementsByTagName('$css_selector')[0]";
@@ -529,31 +620,85 @@ JS;
   }
 
   /**
+   * Inject observer anchors into DOM.
+   */
+  protected function injectObserverAnchors() {
+    $anchor_selector = $this->getJavascriptSelectorCode('.observe__anchor');
+    $js = <<<JS
+(function(){ 
+  document.body.classList.add("in-demo")
+  var anchor = ${anchor_selector};
+  if (anchor === undefined) {
+    var middle = document.createElement('div');
+    middle.className = 'observe__center';
+    middle.innerHTML = '<div class="observe__anchor"></div>';
+    document.body.appendChild(middle);
+  }
+})();
+JS;
+    $this
+      ->getSession()
+      ->executeScript(trim($js));
+  }
+
+  /**
    * Inject our UI element into the DOM relative to $css_selector.
    *
    * @param string $css_selector
    *   The element to attach our observation UI to.
+   * @param string $position
+   *   One of 'before' or 'after', which defines the placement of the button
+   *   relative to the $css_selector.
+   * @param string $button_title
+   *   The title to display on the button.
+   * @param string $short_message
+   *   A short message to popup above the button.
+   * @param array $button_classes
+   *   An array of classes to apply to the button.
+   *
+   * @throws \Behat\Mink\Exception\DriverException
+   * @throws \Behat\Mink\Exception\UnsupportedDriverActionException
    */
-  protected function injectObserverUiIntoDom($css_selector) {
-    $button_title = $this->getObserverButtonTitle();
+  protected function injectObserverUiIntoDom($css_selector, $position, $button_title, $short_message = '', array $button_classes = []) {
     $this->injectCssStyles($this->getObserverUiCssStyles());
-    $class_name = $this->observerButtonClasses;
-    array_unshift($class_name, 'observe__next');
-    $class_name = implode(' ', $class_name);
+    if ($this->observationCss) {
+      $this->injectCssStyles($this->observationCss);
+    }
+    array_unshift($button_classes, 'observe__next');
+    $class_name = implode(' ', $button_classes);
     $selector = $this->getJavascriptSelectorCode($css_selector);
     $next_selector = $this->getJavascriptSelectorCode('.observe__next');
+    if (!in_array($position, ['after', 'before'])) {
+      throw new \InvalidArgumentException("\$position must be one of 'before' or 'after'; not \"$position\".");
+    }
 
     // Create a "continue" button and then wait for it to be removed from the DOM.
-    $js = "(function(){ 
+    $js = <<<JS
+(function(){ 
   var el = ${selector};
   var pointer = document.createElement('button');
-  pointer.innerHTML = '${button_title}';
   pointer.className = '${class_name}';
   pointer.addEventListener('click', function() {
+    // window.scrollTo(0, 0);
+    el.classList.remove('observe__target');
     this.remove();
   }, false);
-  el.after(pointer);
-  
+  el.${position}(pointer);
+  pointer.innerHTML = '${button_title}';
+  el.classList.add('observe__target');
+JS;
+    if ($short_message) {
+      $short_message = str_replace("'", "\'", strip_tags($short_message));
+      $js .= <<<JS
+   pointer.innerHTML += '<div class="observe__message">${short_message}</div>';     
+   // var message = document.createElement('div');
+   // message.innerHTML = '${short_message}';
+   // message.className = 'observe__message';
+   // pointer.before(message);
+JS;
+    }
+    $js .= <<<JS
+  pointer.innerHTML = '${button_title}';
   function getOffsetTop(element) {
     // Starting value is the offset from the top edge the button will appear.
     var offsetTop = -20;
@@ -566,8 +711,9 @@ JS;
 
   // Scroll to make sure the button is visible.
   var y = getOffsetTop(${next_selector});
-  document.documentElement.scrollTop = document.body.scrollTop = y;
-})();";
+  // document.documentElement.scrollTop = document.body.scrollTop = y;
+})();
+JS;
     $this
       ->getSession()
       ->executeScript(trim($js));
@@ -584,6 +730,10 @@ JS;
   protected function getObserverUiCssStyles() {
     return /** @lang CSS */ <<<CSS
 .observe__next {
+  height: initial;
+  line-height: initial;
+  white-space: normal;
+  position: relative;
   margin-left: .5em;
   -moz-box-shadow:inset 0px 39px 0px -24px #fbafe3;
   -webkit-box-shadow:inset 0px 39px 0px -24px #fbafe3;
@@ -602,6 +752,7 @@ JS;
   padding:6px 15px;
   text-decoration:none;
   z-index: 10000;
+  outline: none;
 }
 .observe__next:hover {
   background-color:#ef027d;
@@ -625,7 +776,77 @@ JS;
 .observe__next.is-debug-breakpoint:hover {
   background-color:#5cbf2a;
 }
+.observe__next.is-final-screen {
+  position: fixed;
+  top: .25em;
+  right: .25em;
+  -moz-box-shadow:inset 0px 39px 0px -24px #c62d1f;
+  -webkit-box-shadow:inset 0px 39px 0px -24px #c62d1f;
+  box-shadow:inset 0px 39px 0px -24px #c62d1f;
+  background-color:#e12f1f;
+  border:1px solid #ab161b;
+  text-shadow:0px 1px 0px #810e05;
+  z-index: 10000;
+}
+.observe__next.is-final-screen:hover {
+  background-color:#f24437;
+}
+.observe__next:after,
+.observe__next:before {
+  content: "";
+  padding: 0;
+}
+.observe__target:not(.observe__anchor){
+    -webkit-box-shadow: 0px 0px 5px 5px #ff5bb0 !important;
+    -moz-box-shadow: 0px 0px 5px 5px #ff5bb0 !important;
+    box-shadow: 0px 0px 5px 5px #ff5bb0 !important;
+}
+.observe__message {
+    position: absolute;
+    padding: 15px 20px;
+    margin: 0;
+    color: #fff;
+    background-color:#ff5bb0;
+    -moz-border-radius:4px;
+    -webkit-border-radius:4px;
+    border-radius:4px;
+    text-align: left;
+    transform: translateY(-100%);
+    top: -30px;
+    left: 0;
+    font-size: 18px;
+    line-height: 1.4;
+    text-shadow: none;
+    width: 240px
+}
+.observe__message:after {
+    content: "";
+    position: absolute;
+    bottom: -35px;
+    left: 30px;
+    border-width: 0 0 35px 20px;
+    border-style: solid;
+    border-color: transparent #ff5bb0;
+    display: block;
+    width: 0;
+}
+.observe__center {
+    position: fixed;
+    top: 35%;
+    left: 47%;
+    z-index: 10000;
+}
 CSS;
+  }
+
+  /**
+   * Allow tests to inject their own custom observation CSS.
+   *
+   * @param string $css
+   *   A valid CSS string.
+   */
+  public function attachObservationCss($css) {
+    $this->observationCss = $css;
   }
 
   /**
@@ -935,6 +1156,29 @@ CSS;
   }
 
   /**
+   * Make sure a web session has begun by visiting the homepage.
+   *
+   * @return \WebDriver\Session
+   *   The web driver session.
+   */
+  protected function ensureWebSessionStarted() {
+    $web_driver_session = $this->getSession()
+      ->getDriver()
+      ->getWebDriverSession();
+
+    // We have to start up a web driver session if not yet started, or else
+    // cookie sharing will fail.
+    if (!$web_driver_session) {
+      $web_driver_session = $this->loadPageByUrl('/')
+        ->getSession()
+        ->getDriver()
+        ->getWebDriverSession();
+    }
+
+    return $web_driver_session;
+  }
+
+  /**
    * Return a headless client with the session and cookies from the browser.
    *
    * One use case where this is needed it to check the HTTP status code of an
@@ -950,12 +1194,19 @@ CSS;
    *   attached.
    */
   public function getClient(array $options = []) {
-
-    // Import all the cookies from the current browsing session.
-    if ($cookies = $this->getSession()
+    $web_driver_session = $this->getSession()
       ->getDriver()
-      ->getWebDriverSession()
-      ->getAllCookies()) {
+      ->getWebDriverSession();
+
+    // We have to start up a web driver session if not yet started, or else
+    // cookie sharing will fail.
+    if (!$web_driver_session) {
+      $web_driver_session = $this->ensureWebSessionStarted();
+    }
+
+    // Import all the cookies from the current web-driver browsing session if
+    // it's been started yet.
+    if (($cookies = $web_driver_session->getAllCookies())) {
       foreach ($cookies as $cookie) {
         $cookie = new SetCookie([
           'Domain' => $cookie['domain'],
@@ -971,6 +1222,34 @@ CSS;
     }
 
     return parent::getClient();
+  }
+
+  /**
+   * Extract the numeric ID from current URL.
+   *
+   * This can be used to pull the Node ID or User ID, for example.
+   *
+   * @return int|null
+   *   The id or NULL if not found.
+   */
+  public function getIdFromCurrentUrl() {
+    return ($id = $this->getMatchedFromCurrentUrl('/\/(\d+)\/?/')) === NULL ? NULL : (int) $id;
+  }
+
+  /**
+   * Extract an part of the current URL using a regex expression.
+   *
+   * @param string $regex
+   *   The regex to use to match the desired part of the current url.  The
+   *   value at [1] will be used so be sure to include parentheses.
+   *
+   * @return mixed
+   *   Null if not found, otherwise the [1] as found by $regex.
+   */
+  public function getMatchedFromCurrentUrl(string $regex) {
+    preg_match($regex, $this->getSession()->getCurrentUrl(), $matches);
+
+    return $matches[1] ?? NULL;
   }
 
 }

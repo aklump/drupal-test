@@ -42,3 +42,13 @@ To pause the demo at the point just before a field has a value set on it, you wo
 This is what is shown to the observer during the test run.
 
 ![Observation Mode](images/observation-mode.jpg)
+
+## Add Custom CSS During Observation Mode
+
+* The body will have the additional class `.under-observation`.
+* You can attach custom CSS by doing something such as:
+
+      public function onBeforeFirstTest() {
+        $css = ".observe__center {top: 10%}";    
+        $this->attachObservationCss($css);
+      }
