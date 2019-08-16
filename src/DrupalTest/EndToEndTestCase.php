@@ -3,7 +3,9 @@
 namespace AKlump\DrupalTest;
 
 use aik099\PHPUnit\Session\ISessionStrategyFactory;
+use AKlump\DrupalTest\Utilities\Balloon;
 use AKlump\DrupalTest\Utilities\DestructiveTrait;
+use AKlump\DrupalTest\Utilities\DisplayObjectInterface;
 use AKlump\DrupalTest\Utilities\EmailHandlerInterface;
 use AKlump\DrupalTest\Utilities\InteractiveTrait;
 use AKlump\DrupalTest\Utilities\Popup;
@@ -237,11 +239,11 @@ abstract class EndToEndTestCase extends BrowserTestCase {
       if (self::$observerIsObserving) {
         foreach ($new as $email) {
           $body = $email->getMessageBody('text');
-          $this->waitForObserverPopup(Popup::create($body)
-            ->setTitle('Received by: ' . $email->getHeader('to'))
-            ->setSubTitle('Subject: ' . $email->getHeader('subject'))
+          $this->waitForObserver(Popup::create($body)
+            ->title('Received by: ' . $email->getHeader('to'))
+            ->subtitle('Subject: ' . $email->getHeader('subject'))
             // https://www.vecteezy.com/vector-art/166803-contact-me-icon-vector-pack
-            ->setIcon('<svg width="110" height="119" viewBox="0 0 110 119" xmlns="http://www.w3.org/2000/svg"><title>envelope</title><g fill="none" fill-rule="evenodd"><path d="M99.98 119H9.965C4.465 119 0 114.536 0 109.037V50.785C0 46.485 3.485 43 7.787 43h94.426A7.784 7.784 0 0 1 110 50.785v58.252c-.054 5.499-4.52 9.963-10.02 9.963z" fill="#383754" fill-rule="nonzero"/><path d="M3.761 40.068L47.914 2.62c4.088-3.493 10.139-3.493 14.227 0l44.152 37.448a10.67 10.67 0 0 1 3.707 8.08L55 91 0 48.148c0-3.167 1.363-6.114 3.761-8.08z" fill="#FCB341" fill-rule="nonzero"/><path d="M2 115.107l46.644-38.811c3.71-3.061 9.056-3.061 12.712 0L108 115.106s-2.51 3.882-7.91 3.882H9.91s-5.237.437-7.91-3.881z" fill="#45466D" fill-rule="nonzero"/><text fill="#FFF" font-family="Helvetica" font-size="40"><tspan x="34" y="58">@</tspan></text></g></svg>')
+            ->icon('<svg width="110" height="119" viewBox="0 0 110 119" xmlns="http://www.w3.org/2000/svg"><title>envelope</title><g fill="none" fill-rule="evenodd"><path d="M99.98 119H9.965C4.465 119 0 114.536 0 109.037V50.785C0 46.485 3.485 43 7.787 43h94.426A7.784 7.784 0 0 1 110 50.785v58.252c-.054 5.499-4.52 9.963-10.02 9.963z" fill="#383754" fill-rule="nonzero"/><path d="M3.761 40.068L47.914 2.62c4.088-3.493 10.139-3.493 14.227 0l44.152 37.448a10.67 10.67 0 0 1 3.707 8.08L55 91 0 48.148c0-3.167 1.363-6.114 3.761-8.08z" fill="#FCB341" fill-rule="nonzero"/><path d="M2 115.107l46.644-38.811c3.71-3.061 9.056-3.061 12.712 0L108 115.106s-2.51 3.882-7.91 3.882H9.91s-5.237.437-7.91-3.881z" fill="#45466D" fill-rule="nonzero"/><text fill="#FFF" font-family="Helvetica" font-size="40"><tspan x="34" y="58">@</tspan></text></g></svg>')
           );
         }
       }
@@ -408,27 +410,18 @@ JS;
   /**
    * Indicate an observation stopping point in your test.
    *
-   *   When observation mode is disabled this method does nothing.  However,
-   *   when enabled, a UI button will be injected into the DOM after
-   *   $css_selector, the test will pause indefinitely until this button is
-   *   clicked, at which time the test will continue.
+   * When observation mode is disabled this method has no effect.  However,
+   * when enabled, a UI button will be injected into the DOM after
+   * $css_selector, the test will pause indefinitely until this button is
+   * clicked, at which time the test will continue.
    *
-   * @param string $css_selector
-   *   The CSS selector of the existing DOM element to attach our UI button to.
-   *    You can leave this blank to use the default .observe__anchor which is
-   *   created automatically if not already in the DOM and placed center
-   *   screen.
-   * @param string $balloon_message
-   *   The optional message to appear into a balloon, next to the button.
-   * @param string $position
-   *   One of 'after' or 'before'.
-   * @param int|callable $before
-   *   Pass a positive integer to delay the popup by that many seconds.  Pass a
-   *   callable to be called before displaying the popup.
-   * @param callable|null $after
-   *   A callback that is called after the message has been place and before
-   *   the waiting begins.  You could use this to scroll the page if you need
-   *   to.
+   * @param \AKlump\DrupalTest\Utilities\DisplayObjectInterface|string $display_object
+   *   If you just want to attach a play button to an element, you may send the
+   *   $css_selector as a single argument. An instance of a display object.
+   *   For legacy support arguments are still accepted following this footprint
+   *   $css_selector, $balloon_message,
+   *   $position, $before, $after), but this is deprecated and will be removed
+   *   in future versions.
    *
    * @return \AKlump\DrupalTest\EndToEndTestCase
    *   Self for chaining.
@@ -436,25 +429,42 @@ JS;
    * @throws \Behat\Mink\Exception\DriverException
    * @throws \Behat\Mink\Exception\UnsupportedDriverActionException
    */
-  public function waitForObserver($css_selector = NULL, $balloon_message = '', $position = 'after', $before = 0, callable $after = NULL) {
+  public function waitForObserver($display_object) {
+    if ($display_object instanceof Popup) {
+      $this->waitForObserverPopup($display_object);
+    }
+
     $this->assertTrue(TRUE);
-    $css_selector = empty($css_selector) ? '.observe__anchor' : $css_selector;
+
+    $default_position = 'after';
+
+    // Legacy support.
+    if (!$display_object instanceof DisplayObjectInterface) {
+      list($css_selector, $balloon_message, $position, $before, $after) = func_get_args() + [
+        '',
+        '',
+        $default_position,
+        '',
+        NULL,
+      ];
+      $display_object = Balloon::create($balloon_message)
+        ->el($css_selector)
+        ->{$position}()
+        ->delay(intval($before));
+      if (is_callable($after)) {
+        $css_selector->onAfterShow($after);
+      }
+    }
+
+    $css_selector = $display_object->getCssSelector('.observe__anchor');
     $this->injectObserverAnchors();
     if ($element = $this->requireElement($css_selector)) {
       if (self::$observerIsObserving) {
-        if ($before) {
-          if (is_callable($before)) {
-            $before();
-          }
-          elseif (is_numeric($before)) {
-            $this->wait($before);
-          }
-        }
-        $this->injectObserverUiIntoDom($css_selector, $position, self::$observerButton, $balloon_message, self::$observerButtonClasses);
+        $display_object->dispatch('onBeforeShow');
+        $this->injectObserverUiIntoDom($css_selector, $display_object->getPosition($default_position), self::$observerButton, $display_object->getBody(), self::$observerButtonClasses);
         //        $this->scrollToElementTop('.observe__message');
-        if (is_callable($after)) {
-          $after();
-        }
+        $display_object->dispatch('onAfterShow');
+
         // When button is clicked it is removed and the waitFor will continue.
         $this->waitFor(function () {
           return !$this->el('.observe__next');
@@ -496,8 +506,10 @@ JS;
    *
    * @throws \Behat\Mink\Exception\DriverException
    * @throws \Behat\Mink\Exception\UnsupportedDriverActionException
+   *
+   * @deprecated Use waitForObserver with Popup argument instead.
    */
-  public function waitForObserverPopup(Popup $popup) {
+  private function waitForObserverPopup(Popup $popup) {
     $this->assertTrue(TRUE);
     if (!self::$observerIsObserving) {
       return $this;
@@ -626,7 +638,7 @@ JS;
     $anchor_selector = $this->getJavascriptSelectorCode('.observe__anchor');
     $js = <<<JS
 (function(){ 
-  document.body.classList.add("in-demo")
+  document.body.classList.add("is-being-observed")
   var anchor = ${anchor_selector};
   if (anchor === undefined) {
     var middle = document.createElement('div');

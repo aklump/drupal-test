@@ -17,6 +17,15 @@
 
         $el['.search-widget']->isVisible()
 
+1. Notice how we use aliasing `$last` here to simplify code writing for long selectors, by defining it in `$this->getComElements()` it can be reused, both as a key to `$el` as well as an argument to a method requiring a CSS selector.
+
+          $el = $this->getDomElements([
+            $last = '#main .content-area .first .field--user span.first',
+          ]);
+        
+          $this->waitForObserver(Balloon::create('Enter last name.')->el($last));
+          $el[$last]->setValue('Some name');
+
 1. Notice the messages passed to the assertions.  These should be an affirmative statement describing the correct result.  You should include these as assert arguments, rather than as code comments in order to make your tests more readable.
 
         $this->assertFalse(

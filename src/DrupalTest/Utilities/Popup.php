@@ -5,17 +5,15 @@ namespace AKlump\DrupalTest\Utilities;
 /**
  * A container for a popup message for interactive tests.
  */
-final class Popup {
+final class Popup implements DisplayObjectInterface {
 
-  private $body;
-
-  private $title;
-
-  private $subtitle;
-
-  private $icon;
-
-  private $columns = 1;
+  private $data = [
+    'body' => '',
+    'columns' => 1,
+    'icon' => '',
+    'subtitle' => '',
+    'title' => '',
+  ];
 
   /**
    * Factory method to create a new instance.
@@ -33,7 +31,7 @@ final class Popup {
   }
 
   public function setTwoCol() {
-    $this->columns = 2;
+    $this->data['columns'] = 2;
 
     return $this;
   }
@@ -49,19 +47,19 @@ final class Popup {
     $class = '';
 
     // Make a smart layout for some configurations.
-    if ($this->title && !$this->subtitle && strlen($this->body) < 1000) {
+    if ($this->data['title'] && !$this->data['subtitle'] && strlen($this->data['body']) < 1000) {
       $class = ' layout-two-col';
     }
     $inner_html[] = '<div class="popup__inner' . $class . '">';
-    if ($this->title) {
-      $inner_html[] = '<h1 class="popup__title">' . $this->title . '</h1>';
+    if ($this->data['title']) {
+      $inner_html[] = '<h1 class="popup__title">' . $this->data['title'] . '</h1>';
     }
-    if ($this->subtitle) {
-      $inner_html[] = '<h1 class="popup__subtitle">' . $this->subtitle . '</h1>';
+    if ($this->data['subtitle']) {
+      $inner_html[] = '<h1 class="popup__subtitle">' . $this->data['subtitle'] . '</h1>';
     }
-    $inner_html[] = '<div class="popup__body">' . $this->body . '</div></div>';
-    if ($this->icon) {
-      $inner_html[] = '<div class="popup__icon">' . $this->icon . '</div>';
+    $inner_html[] = '<div class="popup__body">' . $this->data['body'] . '</div></div>';
+    if ($this->data['icon']) {
+      $inner_html[] = '<div class="popup__icon">' . $this->data['icon'] . '</div>';
     }
 
     return implode('', $inner_html);
@@ -76,10 +74,17 @@ final class Popup {
    * @return \AKlump\DrupalTest\Utilities\Popup
    *   Self for chaining.
    */
-  public function setIcon($icon) {
-    $this->icon = $icon;
+  public function icon($icon) {
+    $this->data['icon'] = $icon;
 
     return $this;
+  }
+
+  /**
+   * @deprecated Use icon() instead.
+   */
+  public function setIcon($icon) {
+    return $this->icon($icon);
   }
 
   /**
@@ -91,10 +96,17 @@ final class Popup {
    * @return \AKlump\DrupalTest\Utilities\Popup
    *   Self for chaining.
    */
-  public function setSubtitle($subtitle) {
-    $this->subtitle = $subtitle;
+  public function subtitle($subtitle) {
+    $this->data['subtitle'] = $subtitle;
 
     return $this;
+  }
+
+  /**
+   * @deprecated Use subtitle() instead.
+   */
+  public function setSubtitle($subtitle) {
+    return $this->subtitle($subtitle);
   }
 
   /**
@@ -106,10 +118,17 @@ final class Popup {
    * @return \AKlump\DrupalTest\Utilities\Popup
    *   Self for chaining.
    */
-  public function setTitle($title) {
-    $this->title = $title;
+  public function title($title) {
+    $this->data['title'] = $title;
 
     return $this;
+  }
+
+  /**
+   * @deprecated Use title() instead.
+   */
+  public function setTitle($title) {
+    return $this->title($title);
   }
 
   /**
@@ -121,10 +140,17 @@ final class Popup {
    * @return \AKlump\DrupalTest\Utilities\Popup
    *   Self for chaining.
    */
-  public function setBody($body) {
-    $this->body = str_replace("\n", '<br/>', trim($body));
+  public function body($body) {
+    $this->data['body'] = str_replace("\n", '<br/>', trim($body));
 
     return $this;
+  }
+
+  /**
+   * @deprecated Use body() instead.
+   */
+  public function setBody($body) {
+    return $this->body($body);
   }
 
   /**
@@ -143,6 +169,48 @@ final class Popup {
    */
   public function setPinpointIcon() {
     return $this->setIcon('<svg width="135" height="214" viewBox="0 0 135 214" xmlns="http://www.w3.org/2000/svg"><title>pinpoint</title><g fill="none" fill-rule="nonzero"><path d="M135 67.5C135 30.4 104.9 0 67.5 0 30.4 0 0 30.1 0 67.5c0 20.3 9.1 38.6 23.6 51l43.6 94.9 43.6-94.9c15.1-12.1 24.2-30.3 24.2-51z" fill="#FCB341"/><path d="M11.5 68.6c0 30.9 25.1 56.3 56.3 56.3V12.3c-30.9 0-56.3 25.3-56.3 56.3z" fill="#45466D"/><path d="M67.4 12.3v112.6c30.9 0 56.3-25.1 56.3-56.3 0-31-25.3-56.3-56.3-56.3z" fill="#383754"/></g></svg>');
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getTitle(): string {
+    return $this->data['title'];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getBody(): string {
+    return $this->data['body'];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getOffset(): array {
+    return [0, 0];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getPosition($default = ''): string {
+    return $default;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getCssSelector($default = ''): string {
+    return $default;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function dispatch(string $event_name): DisplayObjectInterface {
+    return $this;
   }
 
 }

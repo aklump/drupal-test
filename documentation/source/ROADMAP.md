@@ -1,0 +1,5 @@
+- add scroll on \AKlump\DrupalTest\Utilities\DisplayObjectInterface
+- add support for offset to \AKlump\DrupalTest\Utilities\DisplayObjectInterface
+- add autoplay of demos with smart duration based on length of balloon content.
+- add screenshots on failure
+- add screenshot method
