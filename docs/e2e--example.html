@@ -35,25 +35,26 @@
 <li><p>Then we get the elements by CSS selectors, which we'll need to work the test.  Notice the latter two begin with <code>.t-</code>.  To keep tests as flexible as possible I prefer to add <em>test only</em> classes directly to elements, using these over any other kind of identification (class, id, XPath, etc).  These test classes will only be rendered during testing.  <code>::getDomElements</code> requires there is only one DOM node with each given class.</p>
 
 <pre><code>$el = $this-&gt;getDomElements([
-  '.search-widget',
-  '.page-header__search a',
-  '.t-text-search__input',
-  '.t-text-search__submit',
+  $widget = '.search-widget',
+  $link = '.page-header__search a',
+  $input = '.t-text-search__input',
+  $submit = '.t-text-search__submit',
 ]);
 </code></pre></li>
 <li><p>If all elements are located in the DOM then you will be able to work with them as in the example; if not the test will fail.  Each element is a <a href="http://mink.behat.org/en/latest/guides/traversing-pages.html">Node Element</a>, with all the corresponding methods.</p>
 
-<pre><code>$el['.search-widget']-&gt;isVisible()
+<pre><code>$el[$widget]-&gt;isVisible()
 </code></pre></li>
+<li><p>Notice how we use aliasing <code>.search-widget</code> to <code>$widget</code> to be more DRY, by defining it in <code>$this-&gt;getDomElements()</code> it can be reused, both as a key to <code>$el</code> as well as an argument to a method requiring a CSS selector.</p></li>
 <li><p>Notice the messages passed to the assertions.  These should be an affirmative statement describing the correct result.  You should include these as assert arguments, rather than as code comments in order to make your tests more readable.</p>
 
 <pre><code>$this-&gt;assertFalse(
-  $el['.search-widget']-&gt;isVisible(),
+  $el[$widget]-&gt;isVisible(),
   "The search modal is hidden by default."
 );
 </code></pre></li>
-<li>The use of <code>waitFor</code> is only necessary if you have to wait for some JS to execute, or to wait for an AJAX load.</li>
-<li>Lastly notice the use of <code>::readPage</code>, it must be called because the session has changed pages, and we want to make assertions on the newest page.</li>
+<li><p>The use of <code>waitFor</code> is only necessary if you have to wait for some JS to execute, or to wait for an AJAX load.</p></li>
+<li><p>Lastly notice the use of <code>::readPage</code>, it must be called because the session has changed pages, and we want to make assertions on the newest page.</p></li>
 </ol>
 
 <h2>The Entire Test</h2>
@@ -73,36 +74,36 @@ class SearchEndToEndTest extends EndToEndTestCase {
     $this-&gt;loadPageByUrl('/');
 
     $el = $this-&gt;getDomElements([
-      '.search-widget',
-      '.page-header__search a',
-      '.t-text-search__input',
-      '.t-text-search__submit',
+      $widget = '.search-widget',
+      $link = '.page-header__search a',
+      $input = '.t-text-search__input',
+      $submit = '.t-text-search__submit',
     ]);
 
     $this-&gt;assertFalse(
-      $el['.search-widget']-&gt;isVisible(),
+      $el[$widget]-&gt;isVisible(),
       "The search modal is hidden by default."
     );
 
-    $el['.page-header__search a']-&gt;click();
+    $el[$link]-&gt;click();
 
     $this-&gt;assertTrue(
-      $el['.search-widget']-&gt;isVisible(),
+      $el[$widget]-&gt;isVisible(),
       "The search modal is revealed after clicking link."
     );
 
     $this-&gt;assertFalse(
-      $el['.t-text-search__submit']-&gt;isVisible(),
+      $el[$submit]-&gt;isVisible(),
       "The text search submit button is hidden by default."
     );
-    $el['.t-text-search__input']-&gt;setValue('tree');
+    $el[$input]-&gt;setValue('tree');
 
     $this-&gt;waitFor(function () use ($el) {
-      return $el['.t-text-search__submit']-&gt;isVisible();
+      return $el[$submit]-&gt;isVisible();
     },
       'Submit button is made visible after entering a search phrase.'
     );
-    $el['.t-text-search__submit']-&gt;click();
+    $el[$submit]-&gt;click();
 
     $this-&gt;readPage()
       -&gt;assertPageContains('Planting a Tree of Peace', 'Search term yielded expected results.')
@@ -120,7 +121,7 @@ class SearchEndToEndTest extends EndToEndTestCase {
 <footer>
   <div class="pager"><a href="e2e--email_testing.html" class="prev e2e--email_testing">&laquo;Email Testing</a><a href="index.html" class="index pager__book-title">Drupal Test</a><a href="e2e--end-to-end-cs.html" class="next e2e--end-to-end-cs">Cheatsheet for End to End Tests&raquo;</a></div>  
   <div id="footer-legaleeze">
-    <p class="legaleeze center">Version: 0.7.7 &bull; Last Updated: Thu, 15 Aug 2019 22:32:19 -0700</p>
+    <p class="legaleeze center">Version: 0.8.0 &bull; Last Updated: Fri, 16 Aug 2019 12:44:55 -0700</p>
   </div>
 </footer>
 

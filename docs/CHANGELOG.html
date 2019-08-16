@@ -32,7 +32,39 @@
 <p>The format is based on <a href="https://keepachangelog.com/en/1.0.0/">Keep a Changelog</a>,
 and this project adheres to <a href="https://semver.org/spec/v2.0.0.html">Semantic Versioning</a>.</p>
 
-<h2>[Unreleased]</h2>
+<h2>[0.8] - 2019-08-16</h2>
+
+<h3>Added</h3>
+
+<ul>
+<li>Support for MailHog</li>
+<li>Added <code>\AKlump\DrupalTest\Utilities\TimeTrait</code> for E2E tests.</li>
+<li>Added custom CSS for observation mode; see docs for more info.</li>
+</ul>
+
+<h3>Changed</h3>
+
+<ul>
+<li><code>WaitForObserver()</code> should now receive a single object, an instance of <code>\AKlump\DrupalTest\Utilities\DisplayObjectInterface</code>; for the balloon you should pass in instance of <code>\AKlump\DrupalTest\Utilities\Balloon</code></li>
+</ul>
+
+<h3>Deprecated</h3>
+
+<ul>
+<li>Non-object arguments to <code>WaitForObserver()</code></li>
+</ul>
+
+<h3>Removed</h3>
+
+<ul>
+<li><code>WaitForObserverPopup()</code>; simply replace all calls to this method from tests with <code>WaitForObserver()</code>.</li>
+</ul>
+
+<h3>Fixed</h3>
+
+<ul>
+<li>Various bugs.</li>
+</ul>
 
 <h2>[0.7.0] - 2019-06-11</h2>
 
@@ -144,7 +176,7 @@ $el = $this-&gt;getDomElements([
 <footer>
   <div class="pager"><a href="README.html" class="prev README">&laquo;Drupal Test</a><a href="index.html" class="index pager__book-title">Drupal Test</a><a href="extending.html" class="next extending">Extending Classes&raquo;</a></div>  
   <div id="footer-legaleeze">
-    <p class="legaleeze center">Version: 0.7.7 &bull; Last Updated: Thu, 15 Aug 2019 22:32:16 -0700</p>
+    <p class="legaleeze center">Version: 0.8.0 &bull; Last Updated: Fri, 16 Aug 2019 12:44:52 -0700</p>
   </div>
 </footer>
 
