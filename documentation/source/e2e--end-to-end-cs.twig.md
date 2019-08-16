@@ -8,5 +8,20 @@ When filling out forms you probably want to use the generators.
 
 {% include('_Generators.md') %}
 
+##  Traits
+
+{% include('_CKEditorTrait.md') %}
+{% include('_InteractiveTrait.md') %}
+{% include('_TimeTrait.md') %}
+
+## EndToEndTestCase
+
 {% include('_EndToEndTestCase.md') %}
+
 {% include('_BrowserTestCase.md') %}
+
+## Helpers
+
+{% include('_Balloon.md') %}
+{% include('_Url.md') %}
+

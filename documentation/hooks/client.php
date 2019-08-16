@@ -20,6 +20,29 @@ require_once $argv[1] . '/../../vendor/autoload.php';
 $reader = new PhpClassMethodReader([
   'show_args' => TRUE,
 ]);
+$trait_reader = new PhpClassMethodReader([
+  'show_args' => TRUE,
+]);
+$helpers_reader = new PhpClassMethodReader([
+  'show_args' => TRUE,
+]);
+
+$helpers_reader->addClassToScan('\AKlump\DrupalTest\Utilities\Balloon');
+$helpers_reader->addClassToScan('\AKlump\DrupalTest\Utilities\Url');
+
+/**
+ * Create the Traits group.
+ */
+$trait_reader->addClassToScan('\AKlump\DrupalTest\Utilities\CKEditorTrait');
+$trait_reader->addClassToScan('\AKlump\DrupalTest\Utilities\InteractiveTrait', [
+  PhpClassMethodReader::INCLUDE,
+  ['/.*/'],
+]);
+$trait_reader->addClassToScan('\AKlump\DrupalTest\Utilities\TimeTrait');
+
+
+
+
 $reader->excludeFromAll([
   '/^(assertPreConditions|setUpBeforeClass|__construct)$/',
 ]);
@@ -131,7 +154,7 @@ $reader->addClassToScan('\AKlump\DrupalTest\Utilities\WebAssert', [
   return 'WebAssert';
 });
 
-$grouped_methods = $reader->scan();
+$grouped_methods = array_merge($reader->scan(), $trait_reader->scan(), $helpers_reader->scan());
 
 // Generate the markup.
 foreach ($grouped_methods as $group => $methods) {
