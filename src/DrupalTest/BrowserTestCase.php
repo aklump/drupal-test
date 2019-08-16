@@ -301,7 +301,9 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
    */
   public function assert($fail_message = '') {
     if (isset($this->lastResponse)
-      && get_class($this->lastResponse) === 'GuzzleHttp\Psr7\Response') {
+      && get_class($this->lastResponse) === 'GuzzleHttp\Psr7\Response'
+      && method_exists($this, 'getResponse')
+    ) {
       $this->webAssert = new GuzzleWebAssert($this);
     }
     else {
