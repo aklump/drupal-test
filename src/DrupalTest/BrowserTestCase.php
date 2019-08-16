@@ -158,7 +158,7 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
    * @return mixed|string
    *   An absolute URL.
    */
-  protected function resolveUrl($url, $remove_authentication_credentials = FALSE) {
+  public function resolveUrl($url, $remove_authentication_credentials = FALSE) {
     if (strpos($url, 'http') !== 0) {
       if (substr($url, 0, 1) !== '/') {
         throw new \RuntimeException("relative \$url must begin with a forward slash.");

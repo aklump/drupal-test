@@ -87,6 +87,13 @@ abstract class EndToEndTestCase extends BrowserTestCase {
   protected $page;
 
   /**
+   * User-injected CSS to be included during observation.
+   *
+   * @var string
+   */
+  private $observationCss = '';
+
+  /**
    * {@inheritdoc}
    */
   public function assertPreConditions() {
@@ -357,7 +364,7 @@ abstract class EndToEndTestCase extends BrowserTestCase {
    */
   public function debugger() {
     // https://unicode.org/emoji/charts/full-emoji-list.html#25b6.
-    $this->injectObserverUiIntoDom('body', '▶', '', ['is-debug-breakpoint']);
+    $this->injectObserverUiIntoDom('body', 'after', '▶', '', ['is-debug-breakpoint']);
 
     // When button is clicked it is removed and the waitFor will continue.
     $this->waitFor(function () {
@@ -375,6 +382,30 @@ abstract class EndToEndTestCase extends BrowserTestCase {
   }
 
   /**
+   * Scroll page so that an element's top is at window top.
+   *
+   * @param string $css_selector
+   *   The element selector.
+   * @param int $offset
+   *   An additional number of pixels from the top.
+   */
+  public function scrollToElementTop($css_selector, $offset = 20) {
+    // TODO Look at injectObserverUiIntoDom.
+    $selection = $this->getJavascriptSelectorCode($css_selector);
+    $js = <<<JS
+var el = ${selection};
+if (el !== undefined) {
+  var bound = el.getBoundingClientRect();
+  var y = window.pageYOffset;
+  var margin = bound.y < 0 ? -1 * $offset : $offset;
+  window.scrollTo(0, y + bound.y + margin);
+}
+JS;
+
+    $this->getSession()->executeScript($js);
+  }
+
+  /**
    * Indicate an observation stopping point in your test.
    *
    *   When observation mode is disabled this method does nothing.  However,
@@ -384,15 +415,46 @@ abstract class EndToEndTestCase extends BrowserTestCase {
    *
    * @param string $css_selector
    *   The CSS selector of the existing DOM element to attach our UI button to.
+   *    You can leave this blank to use the default .observe__anchor which is
+   *   created automatically if not already in the DOM and placed center
+   *   screen.
+   * @param string $balloon_message
+   *   The optional message to appear into a balloon, next to the button.
+   * @param string $position
+   *   One of 'after' or 'before'.
+   * @param int|callable $before
+   *   Pass a positive integer to delay the popup by that many seconds.  Pass a
+   *   callable to be called before displaying the popup.
+   * @param callable|null $after
+   *   A callback that is called after the message has been place and before
+   *   the waiting begins.  You could use this to scroll the page if you need
+   *   to.
    *
    * @return \AKlump\DrupalTest\EndToEndTestCase
    *   Self for chaining.
+   *
+   * @throws \Behat\Mink\Exception\DriverException
+   * @throws \Behat\Mink\Exception\UnsupportedDriverActionException
    */
-  public function waitForObserver($css_selector, $balloon_message = '') {
+  public function waitForObserver($css_selector = NULL, $balloon_message = '', $position = 'after', $before = 0, callable $after = NULL) {
+    $this->assertTrue(TRUE);
+    $css_selector = empty($css_selector) ? '.observe__anchor' : $css_selector;
+    $this->injectObserverAnchors();
     if ($element = $this->requireElement($css_selector)) {
       if (self::$observerIsObserving) {
-        $this->injectObserverUiIntoDom($css_selector, self::$observerButton, $balloon_message, self::$observerButtonClasses);
-
+        if ($before) {
+          if (is_callable($before)) {
+            $before();
+          }
+          elseif (is_numeric($before)) {
+            $this->wait($before);
+          }
+        }
+        $this->injectObserverUiIntoDom($css_selector, $position, self::$observerButton, $balloon_message, self::$observerButtonClasses);
+        //        $this->scrollToElementTop('.observe__message');
+        if (is_callable($after)) {
+          $after();
+        }
         // When button is clicked it is removed and the waitFor will continue.
         $this->waitFor(function () {
           return !$this->el('.observe__next');
@@ -403,9 +465,16 @@ abstract class EndToEndTestCase extends BrowserTestCase {
     return $this;
   }
 
+  /**
+   * This is called automatically, so you needed add it generally.
+   *
+   * @return $this
+   * @throws \Behat\Mink\Exception\DriverException
+   * @throws \Behat\Mink\Exception\UnsupportedDriverActionException
+   */
   public function waitForFinished() {
     if (self::$observerIsObserving) {
-      $this->injectObserverUiIntoDom('body', '🛑', '', ['is-final-screen']);
+      $this->injectObserverUiIntoDom('body', 'after', '🛑', '', ['is-final-screen']);
 
       // When button is clicked it is removed and the waitFor will continue.
       $this->waitFor(function () {
@@ -429,6 +498,7 @@ abstract class EndToEndTestCase extends BrowserTestCase {
    * @throws \Behat\Mink\Exception\UnsupportedDriverActionException
    */
   public function waitForObserverPopup(Popup $popup) {
+    $this->assertTrue(TRUE);
     if (!self::$observerIsObserving) {
       return $this;
     }
@@ -532,7 +602,7 @@ JS;
    * @return string
    *   The JS snippet to use.
    */
-  protected function getJavascriptSelectorCode($css_selector) {
+  public function getJavascriptSelectorCode($css_selector) {
     $selector = substr($css_selector, 1);
     $type = substr($css_selector, 0, 1);
     if ($type === '.') {
@@ -541,9 +611,34 @@ JS;
     elseif ($type === '#') {
       return "document.getElementById('$selector')";
     }
+    elseif ($type === '[') {
+      return "document.querySelectorAll('${type}${selector}')[0]";
+    }
 
     return "document.getElementsByTagName('$css_selector')[0]";
 
+  }
+
+  /**
+   * Inject observer anchors into DOM.
+   */
+  protected function injectObserverAnchors() {
+    $anchor_selector = $this->getJavascriptSelectorCode('.observe__anchor');
+    $js = <<<JS
+(function(){ 
+  document.body.classList.add("in-demo")
+  var anchor = ${anchor_selector};
+  if (anchor === undefined) {
+    var middle = document.createElement('div');
+    middle.className = 'observe__center';
+    middle.innerHTML = '<div class="observe__anchor"></div>';
+    document.body.appendChild(middle);
+  }
+})();
+JS;
+    $this
+      ->getSession()
+      ->executeScript(trim($js));
   }
 
   /**
@@ -551,6 +646,9 @@ JS;
    *
    * @param string $css_selector
    *   The element to attach our observation UI to.
+   * @param string $position
+   *   One of 'before' or 'after', which defines the placement of the button
+   *   relative to the $css_selector.
    * @param string $button_title
    *   The title to display on the button.
    * @param string $short_message
@@ -561,12 +659,18 @@ JS;
    * @throws \Behat\Mink\Exception\DriverException
    * @throws \Behat\Mink\Exception\UnsupportedDriverActionException
    */
-  protected function injectObserverUiIntoDom($css_selector, $button_title, $short_message = '', array $button_classes = []) {
+  protected function injectObserverUiIntoDom($css_selector, $position, $button_title, $short_message = '', array $button_classes = []) {
     $this->injectCssStyles($this->getObserverUiCssStyles());
+    if ($this->observationCss) {
+      $this->injectCssStyles($this->observationCss);
+    }
     array_unshift($button_classes, 'observe__next');
     $class_name = implode(' ', $button_classes);
     $selector = $this->getJavascriptSelectorCode($css_selector);
     $next_selector = $this->getJavascriptSelectorCode('.observe__next');
+    if (!in_array($position, ['after', 'before'])) {
+      throw new \InvalidArgumentException("\$position must be one of 'before' or 'after'; not \"$position\".");
+    }
 
     // Create a "continue" button and then wait for it to be removed from the DOM.
     $js = <<<JS
@@ -575,10 +679,13 @@ JS;
   var pointer = document.createElement('button');
   pointer.className = '${class_name}';
   pointer.addEventListener('click', function() {
+    // window.scrollTo(0, 0);
+    el.classList.remove('observe__target');
     this.remove();
   }, false);
-  el.after(pointer);
+  el.${position}(pointer);
   pointer.innerHTML = '${button_title}';
+  el.classList.add('observe__target');
 JS;
     if ($short_message) {
       $short_message = str_replace("'", "\'", strip_tags($short_message));
@@ -604,7 +711,7 @@ JS;
 
   // Scroll to make sure the button is visible.
   var y = getOffsetTop(${next_selector});
-  document.documentElement.scrollTop = document.body.scrollTop = y;
+  // document.documentElement.scrollTop = document.body.scrollTop = y;
 })();
 JS;
     $this
@@ -689,9 +796,14 @@ JS;
   content: "";
   padding: 0;
 }
+.observe__target:not(.observe__anchor){
+    -webkit-box-shadow: 0px 0px 5px 5px #ff5bb0 !important;
+    -moz-box-shadow: 0px 0px 5px 5px #ff5bb0 !important;
+    box-shadow: 0px 0px 5px 5px #ff5bb0 !important;
+}
 .observe__message {
     position: absolute;
-    padding: 6px 15px;
+    padding: 15px 20px;
     margin: 0;
     color: #fff;
     background-color:#ff5bb0;
@@ -702,9 +814,10 @@ JS;
     transform: translateY(-100%);
     top: -30px;
     left: 0;
-    font-size: 16px;
+    font-size: 18px;
+    line-height: 1.4;
     text-shadow: none;
-    width: 30vw;
+    width: 240px
 }
 .observe__message:after {
     content: "";
@@ -717,7 +830,23 @@ JS;
     display: block;
     width: 0;
 }
+.observe__center {
+    position: fixed;
+    top: 35%;
+    left: 47%;
+    z-index: 10000;
+}
 CSS;
+  }
+
+  /**
+   * Allow tests to inject their own custom observation CSS.
+   *
+   * @param string $css
+   *   A valid CSS string.
+   */
+  public function attachObservationCss($css) {
+    $this->observationCss = $css;
   }
 
   /**
