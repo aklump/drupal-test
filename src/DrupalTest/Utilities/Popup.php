@@ -27,7 +27,7 @@ final class Popup implements DisplayObjectInterface {
   public static function create($body) {
     $popup = new self();
 
-    return $popup->setBody($body);
+    return $popup->body($body);
   }
 
   public function setTwoCol() {
