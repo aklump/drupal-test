@@ -431,7 +431,7 @@ JS;
    */
   public function waitForObserver($display_object = NULL) {
     if ($display_object instanceof Popup) {
-      $this->waitForObserverPopup($display_object);
+      return $this->waitForObserverPopup($display_object);
     }
 
     $this->assertTrue(TRUE);
