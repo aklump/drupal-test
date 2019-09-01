@@ -989,8 +989,17 @@ CSS;
    */
   protected function getManualAssertUICssStyles() {
     return /** @lang CSS */ <<<CSS
+.manual-test {
+    font-size: 1.1em;
+    line-height: 1.6;
+}
 .manual-test a {
     text-decoration: underline;
+}
+
+.manual-test.popup .popup__inner {
+    display: flex;
+    flex-direction: column;
 }
 
 .manual-test__steps {
@@ -999,19 +1008,19 @@ CSS;
     padding-left: 0;
 }
 
-.manual-test__assertion {
-    font-size: 1.1em;
+.manual-test__assertions {
     margin-bottom: 2.5em;
     list-style: none;
     padding: 0;
+    flex-grow: 1;
 }
 
-.manual-test__assertion li {
+.manual-test__assertions li {
     padding-left: 1.4em;
     position: relative;
 }
 
-.manual-test__assertion li:before {
+.manual-test__assertions li:before {
     position: absolute;
     left: 0;
     content: "✔ ";
@@ -1079,20 +1088,17 @@ CSS;
    * @throws \Behat\Mink\Exception\DriverException
    * @throws \Behat\Mink\Exception\UnsupportedDriverActionException
    */
-  public function assertManual($assertion, array $prerequisite_steps = []) {
-    $manualTestMarkup = [];
+  public function assertManual($assertions, array $prerequisite_steps = []) {
     $markdown = new \Parsedown();
     if ($prerequisite_steps) {
       $prerequisite_steps = array_map([$markdown, 'line'], $prerequisite_steps);
-      $manualTestMarkup[] = '<ol class="manual-test__steps"><li>' . implode('</li><li>', $prerequisite_steps) . '</ol>';
+      $prerequisite_steps_markup = '<li>' . implode('</li><li>', $prerequisite_steps);
     }
-    if (!is_array($assertion)) {
-      $assertion = [$assertion];
+    if (!is_array($assertions)) {
+      $assertions = [$assertions];
     }
-    $assertion = array_map([$markdown, 'line'], $assertion);
-    $manualTestMarkup[] = '<ul class="manual-test__assertion"><li>' . implode('</li><li>', $assertion) . '</ul>';
-
-    $manualTestMarkup = implode('', $manualTestMarkup);
+    $assertions = array_map([$markdown, 'line'], $assertions);
+    $assertions_markup = '<li>' . implode('</li><li>', $assertions);
 
     $this->injectCssStyles($this->getPopupCssStyles());
     $this->injectCssStyles($this->getManualAssertUICssStyles());
@@ -1101,18 +1107,32 @@ CSS;
   var manualTest = document.createElement('div');
   manualTest.className = 'popup manual-test';
   
+  var container = document.createElement('div');
+  container.className = 'popup__container';
+  manualTest.appendChild(container);
+  
   var inner = document.createElement('div');
   inner.className = 'popup__inner';
-  manualTest.appendChild(inner);
-  
-  var assertion = document.createElement('div');
-  assertion.innerHTML = '{$manualTestMarkup}';
-  inner.appendChild(assertion);
-  
-  var buttons = document.createElement('div');
+  container.appendChild(inner);";
+
+    if ($prerequisite_steps) {
+      $js .= "var steps = document.createElement('ol');
+  steps.className = 'manual-test__steps';
+  steps.innerHTML = '{$prerequisite_steps_markup}';
+  inner.appendChild(steps);";
+    }
+
+    if ($assertions) {
+      $js .= "var assertions = document.createElement('ol');
+  assertions.className = 'manual-test__assertions';
+  assertions.innerHTML = '{$assertions_markup}';
+  inner.appendChild(assertions);";
+    }
+
+    $js .= "var buttons = document.createElement('div');
   buttons.className = 'manual-test__buttons';
   inner.appendChild(buttons);
-  
+
   var failButton = document.createElement('button');
   failButton.innerHTML = 'Fail';
   failButton.className = 'manual-test__fail';
@@ -1120,7 +1140,7 @@ CSS;
     passButton.remove();
   }, false);
   buttons.appendChild(failButton);
-  
+
   var passButton = document.createElement('button');
   passButton.innerHTML = 'Pass';
   passButton.className = 'manual-test__pass';
@@ -1128,7 +1148,7 @@ CSS;
     failButton.remove();
   }, false);
   buttons.appendChild(passButton);
-  
+
   document.getElementsByTagName('body')[0].appendChild(manualTest);
 })();";
 
@@ -1164,7 +1184,7 @@ CSS;
 
     }, 'Wait for manual assertion.', 0);
 
-    $this->assertTrue($result, strip_tags(implode('; ', $assertion)));
+    $this->assertTrue($result, strip_tags(implode('; ', $assertions)));
   }
 
   /**
