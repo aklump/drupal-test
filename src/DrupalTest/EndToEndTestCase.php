@@ -45,6 +45,13 @@ abstract class EndToEndTestCase extends BrowserTestCase {
   protected static $cookieJar;
 
   /**
+   * Holds a string of CSS To be injected into pages during testing.
+   *
+   * @var string
+   */
+  private static $injectedCss = '';
+
+  /**
    * Holds an email handler interface for email testing.
    *
    * @var \AKlump\DrupalTest\Utilities\EmailHandlerInterface
@@ -257,6 +264,18 @@ abstract class EndToEndTestCase extends BrowserTestCase {
     }
 
     return $emails;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function loadPageByUrl($url) {
+    parent::loadPageByUrl($url);
+    if (self::$injectedCss) {
+      $this->injectCssStyles(self::$injectedCss);
+    }
+
+    return $this;
   }
 
   /**
@@ -849,6 +868,19 @@ JS;
     z-index: 10000;
 }
 CSS;
+  }
+
+  /**
+   * Allow tests to inject their own custom observation CSS.
+   *
+   * Once this is called, the CSS will be injected on every page loaded via
+   * loadPageByUrl.
+   *
+   * @param string $css
+   *   A valid CSS string.
+   */
+  public static function injectCss($css) {
+    self::$injectedCss = $css;
   }
 
   /**
