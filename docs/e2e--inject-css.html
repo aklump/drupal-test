@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>Injecting CSS During Testing</title>
+  <link href="search/tipuesearch.css" rel="stylesheet">
+  <link href="style.css" rel="stylesheet">
+</head>
+
+<body class="page--e2e--inject-css">
+<header>
+  <div class="pager"><a href="e2e--fixtures.html" class="prev e2e--fixtures">&laquo;Extra Fixtures</a><a href="index.html" class="index pager__book-title">Drupal Test</a><a href="e2e--observation-mode.html" class="next observation-mode">Observation Mode&raquo;</a></div></header>
+<section class="sub-header">
+  <div class="breadcrumbs"><a href="index.html">Index</a>
+         &raquo
+                        <a href="e2e--end-to-end.html">End to End Testing</a>
+         &raquo
+      </div>      <div class="search__wrapper">
+  <form action="search--results.html">
+    <input type="text" class="search-input" name="q" id="tipue_search_input" autocomplete="off" required>
+  </form>
+</div>
+  </section>
+
+
+<h1>Injecting CSS During Testing</h1>
+
+<section>
+
+<p>In some cases there may be an HTML element that should not be present during testing.  In such cases you can inject CSS during testing that will hide the element.  Beyond that example, you are free to inject any CSS and as long as you use <code>loadPageByUrl</code>, then your CSS will be added to each page as soon as it's loaded.</p>
+
+<p>Here's how to inject CSS to every test page of a an End to End test.</p>
+
+<pre><code>    &lt;?php
+    public static function setUpBeforeClass() {
+        static::injectCSS(".taskcamp-reporter__trigger{display:none !important;}");
+    }        
+</code></pre>
+</section>
+
+<div class="search__results">
+  <div id="tipue_search_content"></div>
+</div>
+
+<footer>
+  <div class="pager"><a href="e2e--fixtures.html" class="prev e2e--fixtures">&laquo;Extra Fixtures</a><a href="index.html" class="index pager__book-title">Drupal Test</a><a href="e2e--observation-mode.html" class="next observation-mode">Observation Mode&raquo;</a></div>  
+  <div id="footer-legaleeze">
+    <p class="legaleeze center">Version: 0.8.3 &bull; Last Updated: Sat, 02 Nov 2019 12:39:19 -0700</p>
+  </div>
+</footer>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  <script src="search/tipuesearch_content.js"></script>
+  <script src="search/tipuesearch_set.js"></script>
+  <script src="search/tipuesearch.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      $('#tipue_search_input').tipuesearch()
+    })
+  </script>
+<script src="js/core.js"></script>
+</body>
+</html>
+
