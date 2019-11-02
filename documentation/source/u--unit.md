@@ -1,10 +1,17 @@
 ---
 id: unit
 ---
-# Unit Tests        
+# Unit Tests
 
+Unit tests do not have access to the Drupal bootstrap; these are very fast.  You should try to write unit tests whenever possible.  Only move to Kernel tests if unit tests are not appropriate.
+
+## Quick Start
+
+* Test classes should use namespace `\Drupal\Test\{module name}\`
 * Test classnames should follow: _\*UnitTest_
-* Unit tests do not have access to the Drupal bootstrap; these are very fast.  You should try to write unit tests whenever possible.  Only move to Kernel tests if unit tests are not appropriate.
+* Test classes should `extend PHPUnit\Framework\TestCase`.
+* Modules must impelement `autoload-dev`.
+* Module _composer.json_ must be added to _drupal_test_config.yml_ under `merge_composer.json:`
 
 ## Setup Autoloading
 
