@@ -47,5 +47,4 @@ trait MailchimpAssertTrait {
   public function mailchimpAssert($email, $list_id = NULL) {
     return new MailchimpAsserts($this, $email, $list_id);
   }
-
 }

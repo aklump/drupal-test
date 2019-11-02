@@ -69,7 +69,7 @@ class MailchimpAsserts {
    */
   public function mergeFieldSame($expected, $merge_field) {
     $this->handleRemoteCall();
-    $dot = new Dot($this->member['merge_fields']);
+    $dot = new Dot($this->member['merge_fields'] ?? []);
     $actual = $dot->get($merge_field);
     $this->testCase->assertSame($expected, $actual);
 
@@ -112,6 +112,20 @@ class MailchimpAsserts {
     $this->handleRemoteCall();
     $status = $this->member['status'] ?? 'archived';
     $this->testCase->assertSame('archived', $status);
+
+    return $this;
+  }
+
+  public function hasInterestGroup($group_id) {
+    $this->handleRemoteCall();
+    $this->testCase->assertArrayHasKey($group_id, $this->member['interests']);
+
+    return $this;
+  }
+
+  public function hasNotInterestGroup($group_id) {
+    $this->handleRemoteCall();
+    $this->testCase->assertTrue(empty($this->member['interests'][$group_id]));
 
     return $this;
   }
