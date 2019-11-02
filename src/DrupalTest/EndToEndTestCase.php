@@ -271,11 +271,24 @@ abstract class EndToEndTestCase extends BrowserTestCase {
    */
   public function loadPageByUrl($url) {
     parent::loadPageByUrl($url);
+    self::doCssInjection();
+
+    return $this;
+  }
+
+  /**
+   * Do the actual CSS injection.
+   *
+   * You may need to do this after a page loaded by clicking a link.  This
+   * simply takes whatever CSS has been defined and injects it into the DOM.
+   *
+   * @throws \Behat\Mink\Exception\DriverException
+   * @throws \Behat\Mink\Exception\UnsupportedDriverActionException
+   */
+  public function doCssInjection() {
     if (self::$injectedCss) {
       $this->injectCssStyles(self::$injectedCss);
     }
-
-    return $this;
   }
 
   /**
