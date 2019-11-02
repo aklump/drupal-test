@@ -16,7 +16,7 @@ Note: the configuration seen below will apply to all tests, so you don't need to
 
 By manually configuring only what needs to be autoloaded for our particular tests, we are able to keep unit testing very fast, without the need to scan for files and dynamically create an autoload map. 
 
-Changes to the `autoload_*` configuration does not require `composer update --lock` to be called.
+Changes to the `autoload_*` configuration does not require `composer update --lock` to be called, but you may need to run `composer dump`.
 
 You may skip `autoload_psr4` if you are testing a module that handles autoloading via it's own _composer.json_ file, in which case you want to use _merge_composer.json_, instead.
 

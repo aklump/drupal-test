@@ -41,7 +41,7 @@
 
 <p>By manually configuring only what needs to be autoloaded for our particular tests, we are able to keep unit testing very fast, without the need to scan for files and dynamically create an autoload map.</p>
 
-<p>Changes to the <code>autoload_*</code> configuration does not require <code>composer update --lock</code> to be called.</p>
+<p>Changes to the <code>autoload_*</code> configuration does not require <code>composer update --lock</code> to be called, but you may need to run <code>composer dump</code>.</p>
 
 <p>You may skip <code>autoload_psr4</code> if you are testing a module that handles autoloading via it's own <em>composer.json</em> file, in which case you want to use <em>merge_composer.json</em>, instead.</p>
 
@@ -116,7 +116,7 @@
 <footer>
   <div class="pager"><a href="u--modules.html" class="prev u--modules">&laquo;How to Setup Testing of Modules and Themes</a><a href="index.html" class="index pager__book-title">Drupal Test</a><a href="u--coverage.html" class="next u--coverage">Code Coverage Reports&raquo;</a></div>  
   <div id="footer-legaleeze">
-    <p class="legaleeze center">Version: 0.8.2 &bull; Last Updated: Fri, 16 Aug 2019 14:35:05 -0700</p>
+    <p class="legaleeze center">Version: 0.8.3 &bull; Last Updated: Sat, 02 Nov 2019 12:39:21 -0700</p>
   </div>
 </footer>
 

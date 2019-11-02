@@ -440,6 +440,32 @@ abstract class BrowserTestCase extends ParentBrowserTestCase {
     }, $url);
   }
 
+
+  /**
+   * Assert the current URL is not the same as $expected.
+   *
+   * @param string $expected
+   *  The relative URL, e.g. /foo/bar, which this must be the same as.
+   *   Trailing forward slash(es) will be removed.
+   *
+   */
+  public function assertUrlSame($expected) {
+    $this->assertSame($this->resolveUrl(rtrim($expected, '/')), $this->getSession()
+      ->getCurrentUrl());
+  }
+
+  /**
+   * Assert the current URL is the same as $expected.
+   *
+   * @param string $expected
+   *  The relative URL, e.g. /foo/bar, which this must not be the same as.
+   *   Trailing forward slash(es) will be removed.
+   */
+  public function assertUrlNotSame($expected) {
+    $this->assertNotSame($this->resolveUrl(rtrim($expected, '/')), $this->getSession()
+      ->getCurrentUrl());
+  }
+
   /**
    * Assert that one URL redirects to another.
    *

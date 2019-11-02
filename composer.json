@@ -35,7 +35,8 @@
         "symfony/browser-kit": "^3.4",
         "symfony/yaml": "^3.0|^4.0",
         "erusev\/parsedown": "^1.7",
-        "php-mime-mail-parser/php-mime-mail-parser": "^4.0"
+        "php-mime-mail-parser/php-mime-mail-parser": "^4.0",
+        "adbario/php-dot-notation": "^2.2"
     },
     "authors": [
         {

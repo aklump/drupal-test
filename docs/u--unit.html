@@ -2,7 +2,7 @@
 
 <html>
 <head>
-  <title>Unit Tests        </title>
+  <title>Unit Tests</title>
   <link href="search/tipuesearch.css" rel="stylesheet">
   <link href="style.css" rel="stylesheet">
 </head>
@@ -23,13 +23,20 @@
   </section>
 
 
-<h1>Unit Tests        </h1>
+<h1>Unit Tests</h1>
 
 <section>
 
+<p>Unit tests do not have access to the Drupal bootstrap; these are very fast.  You should try to write unit tests whenever possible.  Only move to Kernel tests if unit tests are not appropriate.</p>
+
+<h2>Quick Start</h2>
+
 <ul>
+<li>Test classes should use namespace <code>\Drupal\Test\{module name}\</code></li>
 <li>Test classnames should follow: <em>&#42;UnitTest</em></li>
-<li>Unit tests do not have access to the Drupal bootstrap; these are very fast.  You should try to write unit tests whenever possible.  Only move to Kernel tests if unit tests are not appropriate.</li>
+<li>Test classes should <code>extend PHPUnit\Framework\TestCase</code>.</li>
+<li>Modules must impelement <code>autoload-dev</code>.</li>
+<li>Module <em>composer.json</em> must be added to <em>drupal_test_config.yml</em> under <code>merge_composer.json:</code></li>
 </ul>
 
 <h2>Setup Autoloading</h2>
@@ -86,7 +93,7 @@
 <footer>
   <div class="pager"><a href="non-drupal-use.html" class="prev non-drupal-use">&laquo;Usage Without Drupal</a><a href="index.html" class="index pager__book-title">Drupal Test</a><a href="u--modules.html" class="next modules">How to Setup Testing of Modules and Themes&raquo;</a></div>  
   <div id="footer-legaleeze">
-    <p class="legaleeze center">Version: 0.8.2 &bull; Last Updated: Fri, 16 Aug 2019 14:35:06 -0700</p>
+    <p class="legaleeze center">Version: 0.8.3 &bull; Last Updated: Sat, 02 Nov 2019 12:39:23 -0700</p>
   </div>
 </footer>
 

@@ -77,7 +77,13 @@
   <td><strong>assertUrlContentTypeEquals</strong> <em>($content_type, $url)</em></td>
 </tr>
 <tr>
+  <td><strong>assertUrlNotSame</strong> <em>($expected)</em></td>
+</tr>
+<tr>
   <td><strong>assertUrlRedirectsTo</strong> <em>($final_url, $url)</em></td>
+</tr>
+<tr>
+  <td><strong>assertUrlSame</strong> <em>($expected)</em></td>
 </tr>
 <tr>
   <td><strong>assertUrlStatusCodeEquals</strong> <em>($status_code, $url, $message = '')</em></td>
@@ -128,6 +134,9 @@
   <td><strong>getXmlClient</strong> <em>()</em></td>
 </tr>
 <tr>
+  <td><strong>handleBaseUrl</strong> <em>()</em></td>
+</tr>
+<tr>
   <td><strong>loadJsonByUrl</strong> <em>($url)</em></td>
 </tr>
 <tr>
@@ -141,6 +150,9 @@
 </tr>
 <tr>
   <td><strong>onBeforeFirstTest</strong> <em>()</em></td>
+</tr>
+<tr>
+  <td><strong>requestThenAssert</strong> <em>(callable $callback, $url, array $client_options = Array, $method = 'HEAD', callable or NULL $on_fail = NULL)</em></td>
 </tr>
 <tr>
   <td><strong>resolveUrl</strong> <em>($url, $remove_authentication_credentials = false)</em></td>
@@ -176,6 +188,9 @@
   <td><strong>clickLink</strong> <em>($locator)</em></td>
 </tr>
 <tr>
+  <td><strong>elementNotFound</strong> <em>($type, $selector = NULL, $locator = NULL)</em></td>
+</tr>
+<tr>
   <td><strong>fillField</strong> <em>($locator, $value)</em></td>
 </tr>
 <tr>
@@ -200,10 +215,16 @@
   <td><strong>getContent</strong> <em>()</em></td>
 </tr>
 <tr>
+  <td><strong>getDriver</strong> <em>()</em></td>
+</tr>
+<tr>
   <td><strong>getHtml</strong> <em>()</em></td>
 </tr>
 <tr>
   <td><strong>getOuterHtml</strong> <em>()</em></td>
+</tr>
+<tr>
+  <td><strong>getSelectorsHandler</strong> <em>()</em></td>
 </tr>
 <tr>
   <td><strong>getSession</strong> <em>()</em></td>
@@ -320,6 +341,9 @@ class Test {
   <td><strong>dragTo</strong> <em>(Behat\Mink\Element\ElementInterface $destination)</em></td>
 </tr>
 <tr>
+  <td><strong>elementNotFound</strong> <em>($type, $selector = NULL, $locator = NULL)</em></td>
+</tr>
+<tr>
   <td><strong>fillField</strong> <em>($locator, $value)</em></td>
 </tr>
 <tr>
@@ -347,6 +371,9 @@ class Test {
   <td><strong>getAttribute</strong> <em>($name)</em></td>
 </tr>
 <tr>
+  <td><strong>getDriver</strong> <em>()</em></td>
+</tr>
+<tr>
   <td><strong>getHtml</strong> <em>()</em></td>
 </tr>
 <tr>
@@ -354,6 +381,9 @@ class Test {
 </tr>
 <tr>
   <td><strong>getParent</strong> <em>()</em></td>
+</tr>
+<tr>
+  <td><strong>getSelectorsHandler</strong> <em>()</em></td>
 </tr>
 <tr>
   <td><strong>getSession</strong> <em>()</em></td>
@@ -494,10 +524,25 @@ class Test {
   <td><strong>addressNotEquals</strong> <em>($page)</em></td>
 </tr>
 <tr>
+  <td><strong>assert</strong> <em>($condition, $message)</em></td>
+</tr>
+<tr>
+  <td><strong>assertElement</strong> <em>($condition, $message, Behat\Mink\Element\Element $element)</em></td>
+</tr>
+<tr>
+  <td><strong>assertElementText</strong> <em>($condition, $message, Behat\Mink\Element\Element $element)</em></td>
+</tr>
+<tr>
+  <td><strong>assertResponseText</strong> <em>($condition, $message)</em></td>
+</tr>
+<tr>
   <td><strong>checkboxChecked</strong> <em>($field, Behat\Mink\Element\TraversableElement or NULL $container = NULL)</em></td>
 </tr>
 <tr>
   <td><strong>checkboxNotChecked</strong> <em>($field, Behat\Mink\Element\TraversableElement or NULL $container = NULL)</em></td>
+</tr>
+<tr>
+  <td><strong>cleanUrl</strong> <em>($url)</em></td>
 </tr>
 <tr>
   <td><strong>cookieEquals</strong> <em>($name, $value)</em></td>
@@ -546,6 +591,12 @@ class Test {
 </tr>
 <tr>
   <td><strong>fieldValueNotEquals</strong> <em>($field, $value, Behat\Mink\Element\TraversableElement or NULL $container = NULL)</em></td>
+</tr>
+<tr>
+  <td><strong>getCurrentUrlPath</strong> <em>()</em></td>
+</tr>
+<tr>
+  <td><strong>getMatchingElementRepresentation</strong> <em>($selectorType, $selector, $plural = false)</em></td>
 </tr>
 <tr>
   <td><strong>pageTextContains</strong> <em>($text)</em></td>
@@ -606,7 +657,7 @@ class Test {
 <footer>
   <div class="pager"><a href="cl--client.html" class="prev cl--client">&laquo;Client Tests</a><a href="index.html" class="index pager__book-title">Drupal Test</a><a href="cl--example.html" class="next cl--example">Client Test Examples&raquo;</a></div>  
   <div id="footer-legaleeze">
-    <p class="legaleeze center">Version: 0.8.2 &bull; Last Updated: Fri, 16 Aug 2019 14:34:59 -0700</p>
+    <p class="legaleeze center">Version: 0.8.3 &bull; Last Updated: Sat, 02 Nov 2019 12:39:15 -0700</p>
   </div>
 </footer>
 
